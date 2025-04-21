@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Helvetica", "Arial", "sans-serif"; 
+    --font-serif: "Times New Roman";
+    --color-blue: blue;
+    --color-hot: #ff1493;
+}

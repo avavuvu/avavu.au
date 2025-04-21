@@ -1,0 +1,25 @@
+---
+import Layout from "../layouts/Layout.astro";
+import WebComponent from "../components/WebComponent.svelte"
+
+
+
+---
+
+<Layout>
+    <WebComponent 
+        client:only="svlete"/>
+</Layout>
+
+<style>
+    body, html {
+        scroll-behavior: smooth;
+        scroll-snap-type: y mandatory;
+    }
+
+    * {
+        -webkit-transform:translate3d(0,0,0);
+        -webkit-transform-style: preserve-3d;
+        -webkit-backface-visibility: hidden;
+    }
+</style>

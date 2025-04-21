@@ -1,0 +1,32 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PosterSection from "../components/PosterSection.svelte"
+import Magazine from "../components/Magazine.svelte"
+import Divider from "../components/Divider.svelte"
+---
+
+<Layout>
+    <div class="fixed w-full top-0 z-50 py-5">
+        <svg width="0" height="0">
+            <clipPath id="star" clipPathUnits="objectBoundingBox"><path d="M0.5,0,0.378,0.381 L0,0.381,0.303,0.619,0.193,1,0.5,0.774,0.807,1,0.697,0.619,1,0.381,0.622,0.381,0.5,0"></path></clipPath>
+        </svg>
+        <a 
+            href="/"
+            aria-label="logo"
+            class="bg-hot aspect-square h-12 mx-auto block" 
+            style='clip-path: url(#star)'>
+        </a>
+    </div>
+
+
+    <Divider/>
+
+    <PosterSection client:only="svelte"></PosterSection>
+
+    <Divider/>
+
+    <Magazine></Magazine>
+
+    <Divider/>
+
+</Layout>

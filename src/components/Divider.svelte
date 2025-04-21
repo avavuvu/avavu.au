@@ -1,0 +1,1 @@
+<div class="border border-t-black w-[75%] mx-auto my-8"></div>
