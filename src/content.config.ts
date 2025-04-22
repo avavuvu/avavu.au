@@ -1,39 +1,53 @@
 import { defineCollection, z } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 
+const baseSchema = {
+    title: z.string(),
+    date: z.date(),
+    flag: z.string().optional(),
+    rating: z.number().optional(),
+    imageSrc: z.string().or(z.array(z.string())).optional()
+}
+
 const music = defineCollection({
     loader: glob({ pattern: "**/*.yaml", base: "./src/collections/music" }),
     schema: z.object({
-        title: z.string(),
-        "year it came out": z.string(),
+        ...baseSchema,
         description: z.string().optional(),
         links: z.object({
             bandcamp: z.string().url().optional(),
             apple: z.string().url().optional(),
             spotify: z.string().url().optional(),
-        }).optional(),
-        imageSrc: z.string()
+        }).optional()
       })
 });
 
 const video = defineCollection({
     loader: glob({ pattern: "**/*.yaml", base: "./src/collections/video" }),
     schema: z.object({
-        title: z.string(),
+        ...baseSchema,
         year: z.string(),
         description: z.string().optional(),
-        imageSrc: z.string().optional(),
         youtubeUrl: z.string().optional(),
       })
 });
 
-const games = defineCollection({
-    loader: glob({ pattern: "**/*.yaml", base: "./src/collections/games" }),
+const interactive = defineCollection({
+    loader: glob({ pattern: "**/*.yaml", base: "./src/collections/interactive" }),
     schema: z.object({
-        title: z.string(),
-        "year it came out": z.string(),
+        ...baseSchema,
         description: z.string().optional(),
-        imageSrc: z.string().optional(),
+        links: z.object({
+            url: z.string().url(),
+        }).optional(),
+      })
+});
+
+const poster = defineCollection({
+    loader: glob({ pattern: "**/*.yaml", base: "./src/collections/posters" }),
+    schema: z.object({
+        ...baseSchema,
+        description: z.string().optional(),
         links: z.object({
             url: z.string().url(),
         }).optional(),
@@ -41,6 +55,6 @@ const games = defineCollection({
 });
 
 export const collections = { 
-    music, video, games
+    music, video, interactive, poster
 
 }
