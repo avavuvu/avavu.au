@@ -1,0 +1,88 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import { collections } from "../../content.config";
+import type { CollectionKey, DataEntryMap, InferEntrySchema } from "astro:content";
+import AllWork from "../../components/AllWork.svelte"
+import AllWorks from "../../components/AllWorks.astro";
+import type { ProjectData, ProjectSort } from "../../lib/types";
+
+const data = await Promise.all(Object.keys(collections).flatMap(name => getCollection(name as CollectionKey)))
+
+const allProjects: ProjectData[] = data
+    .flat()
+    .toSorted(({data: dataA}, {data: dataB}) => {
+        return dataA.date.getTime() - dataB.date.getTime()})
+    .map(({data, collection}, index) => ({
+        collection,
+        data,
+        id: `${index}`.padStart(3, "0")
+    }))
+    .toReversed()
+
+type SortKey = 'year' | 'rating' | 'type' | "";
+
+const groupProjects = (projects: ProjectData[], sortKey: SortKey) => {
+    const groupers = {
+        year: ({ data }: ProjectData) => data.date.getFullYear().toString(),
+        rating: ({ data }: ProjectData) => 
+            data.rating ? '★'.repeat(data.rating) : 'other',
+        type: ({ collection }: ProjectData) => collection
+    };
+
+    return Object.groupBy(projects, 
+        !sortKey 
+            ? groupers.year
+            : groupers[sortKey]);
+};
+
+
+
+const yearSort: ProjectSort = ([keyA, valueA], [keyB, valueB]) => {
+    return Number(keyB) - Number(keyA)
+}
+
+const ratingSort: ProjectSort = ([keyA, valueA], [keyB, valueB]) => {
+    if(keyB === "other") { 
+        return -1
+    }
+
+    return keyA.length - keyB.length
+}
+
+const typeSort: ProjectSort = undefined
+
+const sortOrderMap: Record<SortKey, ProjectSort> = {
+    rating: ratingSort,
+    year: yearSort,
+    type: typeSort,
+    "": yearSort
+}
+
+export const getStaticPaths = (() => {
+    return [
+        { params: { path: "year" }},
+        { params: { path: "rating" }},
+        { params: { path: "type" }},
+        { params: { path: undefined }},
+    ];
+}) 
+
+const { path } = Astro.params
+
+const sortKey = (path ?? "") as SortKey
+
+const projects  = groupProjects(allProjects, sortKey)
+
+---
+
+<Layout>
+    <main class="">
+        <!-- <AllWork allProjects={projects} {path} client:load></AllWork> -->
+        <AllWorks 
+            sort={sortOrderMap[sortKey]} 
+            allProjects={projects} 
+            {path} />
+    </main>
+
+</Layout>

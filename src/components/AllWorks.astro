@@ -1,0 +1,190 @@
+---
+import type { InferEntrySchema, DataEntryMap } from "astro:content";
+import CategoryButton from "./CategoryButton.svelte"
+import EntryButton from "./EntryButton.svelte"
+import StaticDisplay from "./StaticDisplay.svelte"
+import DyanmicDisplay from "./DynamicDisplay.svelte"
+import type { ProjectData, ProjectSort } from "../lib/types";
+
+type Project = InferEntrySchema<keyof DataEntryMap>
+
+interface Props {
+    allProjects: Record<string,ProjectData[]>,
+    sort: ProjectSort
+    path?: string
+}
+
+const { allProjects, path, sort } = Astro.props
+
+const removedKeys = ["imageSrc", "title", "date", "links", "flag", "rating", "collaborators", "youtubeId"]
+
+function hasLinks(data: Project): data is Project & { links: object } {
+    return 'links' in data;
+}
+
+function hasCollaborators(data: Project): data is Project & { collaborators: object } {
+    return 'collaborators' in data;
+}
+
+const getRelevantData = (data: Project) => {
+    return Object.entries(data).filter(([key, value]) => 
+        !removedKeys.includes(key)
+    )
+}
+---
+
+<script>
+
+</script>
+
+<div class="border-2 font-bold overflow-hidden">
+    <a 
+        href="/"
+        class="block scale-x-[500%] text-center" >
+        RETURN HOME
+    </a>
+</div>
+<div class="border-2 font-bold">
+    <div
+        class="w-full scale-x-[100%] text-center flex justify-center gap-2 p-2">
+        <span>SORT BY:</span>
+        <a 
+            class="[.path]:border-b [.path]:border-black"
+            class:list={{path:  !path || path === "year"}}
+            href="/projects/year"
+            >
+            YEAR
+        </a>
+        <a 
+            class="[.path]:border-b [.path]:border-black"
+            class:list={{path: path === "type"}}
+            href="/projects/type">
+            TYPE
+        </a>
+        <a
+            class="[.path]:border-b [.path]:border-black"
+            class:list={{path: path === "rating"}}
+            href="/projects/rating">
+            HOW MUCH I LIKE IT
+        </a>
+    </div>
+</div>
+
+{
+    Object.entries(allProjects).sort(sort).map(([year, entries]) => (
+            <CategoryButton category={year} client:only="svelte">
+                <div class="projects grid-cols-1 lg:grid-cols-2 grid h-[75vh] lg:h-[90vh] overflow-scroll">
+                    <div>
+                        {
+                            entries.map(({id, collection, data}) => (
+
+                            <EntryButton 
+                                {data} {collection} {id}
+                                client:only="svelte">
+ 
+                                <div class="overflow-scroll
+                                        lg:ml-[10rem] grid-cols-[5rem_1fr] lg:grid-cols-[auto_1fr] gap-x-4 grid">
+                                    {
+                                        getRelevantData(data).map(([key, value]) => 
+                                            <>
+                                                <span>{key}</span>
+                                                <span>{value}</span>
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        hasLinks(data)
+                                        ?
+                                            <>
+                                                <span>links</span>
+                                                <div>
+                                                    {Object.entries(data.links).map(([link, href]) => (
+                                                        <a class="block underline text-blue" {href}>
+                                                            {link}
+                                                        </a>  
+                                                    ))}
+                                                </div>
+                                            </>
+                                        : ""
+                                    }
+                                    {
+                                        hasCollaborators(data)
+                                        ?
+                                            <>
+                                                <span>collaborators</span>
+                                                <div>
+                                                    {
+                                                        Object.entries(data.collaborators).map(([, href]) => {
+                                                            if (href.url) {
+                                                                return (
+                                                                <a class:list={{link: href.url}}
+                                                                    class="block" href={href.url ?? ""}>
+                                                                    {href.name}
+
+                                                                </a>)
+                                                            }
+
+                                                            return (
+                                                                <div>
+                                                                    {href.name}
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                            </>
+                                        : ""
+                                    }
+                                    <div class="block lg:hidden col-span-2">
+                                        <StaticDisplay project={data}></StaticDisplay>
+                                    </div>
+                                </div>
+                            </EntryButton>
+                            ))
+                        }
+                    </div>
+                    <div class="hidden lg:block">
+                        <DyanmicDisplay allProjects={allProjects} client:load></DyanmicDisplay>
+                    </div>
+                </div>
+            </CategoryButton>
+    ))
+}
+
+
+<style is:inline>
+    button {
+        cursor: pointer;
+    }
+
+    .selected text {
+        transform: scaleX(300%);
+        transition-duration: 1000ms;
+    }
+
+    .projects {
+        max-height: 0px;
+        transition: max-height 0.5s ease-in-out;
+    }
+
+    .selected .projects {
+        max-height: 80vh;
+    }
+
+    .entry {
+        display: grid;
+        grid-template-rows: auto 0fr;
+        transition: grid-template-rows 0.3s ease-in-out;
+    }
+
+    .entry-content {
+        overflow: hidden;
+        min-height: 0;
+    }
+
+    .selected-entry.entry {
+        flex-grow: 1;
+        grid-template-rows: auto 1fr;
+    }
+
+</style>

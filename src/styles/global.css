@@ -6,3 +6,9 @@
     --color-blue: blue;
     --color-hot: #ff1493;
 }
+
+.link {
+    text-decoration: underline;
+    cursor: pointer;
+    color: var(--color-blue);
+}

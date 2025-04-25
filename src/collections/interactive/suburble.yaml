@@ -5,3 +5,6 @@ description:
   Guess a Melbourne Suburb every day
 links:
   url: https://suburble.melbourne
+imageSrc:
+  /images/interactive/suburble1.png
+  

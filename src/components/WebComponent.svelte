@@ -129,7 +129,7 @@
     }
 </script>
 
-<div class="border-2 font-bold">
+<div class="border-2 font-bold overflow-clip">
     <a 
         href="/"
         class="block scale-x-[500%] text-center">

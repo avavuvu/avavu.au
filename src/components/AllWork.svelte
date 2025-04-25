@@ -14,10 +14,14 @@
     } = $props()
 
 
-    const removedKeys = ["imageSrc", "title", "date", "links", "flag", "rating"]
+    const removedKeys = ["imageSrc", "title", "date", "links", "flag", "rating", "collaborators", "youtubeId"]
 
     function hasLinks(data: Project): data is Project & { links: object } {
         return 'links' in data;
+    }
+
+    function hasCollaborators(data: Project): data is Project & { collaborators: object } {
+        return 'collaborators' in data;
     }
 
 
@@ -30,20 +34,23 @@
     let yearSelected: string = $state("")
     let entrySelected: string = $state("")
     
-    let currentImageSrc: string | string[] | null = $state(null)
+    let currentProject: Project | null = $state(null)
 
     const selectYear = (year: string) => {
         yearSelected = year
-        currentImageSrc = allProjects[year][0].data.imageSrc ?? null
+        currentProject = allProjects[year][0].data
         entrySelected = allProjects[year][0].id
     }
 
     const selectEntry = (id: string) => {
         entrySelected = id
-        currentImageSrc = allProjects[yearSelected]
-            .find((project) => project.id === id)?.data.imageSrc ?? null
+        currentProject = allProjects[yearSelected]
+            .find((project) => project.id === id)?.data ?? null
+
+        document.getElementById(yearSelected)?.scrollIntoView({
+            behavior: "smooth"
+        })
     }
-    
 </script>
 
 <div class="border-2 font-bold overflow-hidden">
@@ -60,20 +67,20 @@
         <a 
             class="[.path]:border-b [.path]:border-black"
             class:path={!path || path === "year"}
-            href="/ava/year"
+            href="/projects/year"
             >
             YEAR
         </a>
         <a 
             class="[.path]:border-b [.path]:border-black"
             class:path={path === "type"}
-            href="/ava/type">
+            href="/projects/type">
             TYPE
         </a>
         <a
             class="[.path]:border-b [.path]:border-black"
             class:path={path === "rating"}
-            href="/ava/rating">
+            href="/projects/rating">
             HOW MUCH I LIKE IT
         </a>
     </div>
@@ -81,14 +88,17 @@
 
 {#snippet image()}
     <div class="overflow-scroll h-full w-full flex-col flex gap-4 p-4">
-        {#if currentImageSrc}
-            {#if typeof currentImageSrc === "string"}
-                <img src={currentImageSrc} alt="">
+        {#if currentProject?.imageSrc}
+            {#if typeof currentProject.imageSrc === "string"}
+                <img src={currentProject.imageSrc} alt="">
             {:else}
-                {#each currentImageSrc as src}
+                {#each currentProject.imageSrc as src}
                     <img {src} alt="">
                 {/each}
             {/if}
+        {/if}
+        {#if currentProject && "youtubeId" in currentProject}
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/{currentProject.youtubeId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         {/if}
     </div>
 {/snippet}
@@ -96,7 +106,8 @@
 {#each !path || path === "year" ? Object.entries(allProjects).toReversed() : Object.entries(allProjects) as [year, entries]}
     <div class:selected={year === yearSelected}>
         <button 
-            onclick={() => selectYear(year)}
+            id={year}
+            onclick={(event) => selectYear(year)}
             class="block w-full h-full text-left">
             <svg viewBox="0 0 100 14" class="border-2">
                 <text x="0" y="12" fill="black" class="transition-all"  >
@@ -104,8 +115,8 @@
                 </text>
             </svg>
         </button>
-        {#if yearSelected === year}
-            <div transition:slide class="grid-cols-1 lg:grid-cols-2 grid h-[75vh] overflow-scroll">
+        {#if true || yearSelected === year}
+            <div transition:slide class="projects grid-cols-1 lg:grid-cols-2 grid h-[75vh] lg:h-[90vh] overflow-scroll">
                 <div>
                     {#each entries as {id, collection, data}}
                         <div class="px-2 pb-8">
@@ -117,7 +128,9 @@
                                     
                                     w-full text-left
                                     border-b border-y-transparent hover:border-b-black [.se]:border-b-black"
-                                onclick={() => selectEntry(id)}
+                                onclick={() => {
+                                    selectEntry(id)
+                                }}
                                 class:se={id === entrySelected}>
                                 <span>{data.date.getFullYear()}/{data.date.getMonth() + 1}/{data.date.getDate()}</span>
                                 <span class="group-[.se]:font-bold">{data.title}</span>
@@ -129,7 +142,8 @@
                             {#if id === entrySelected}
                                 <div 
                                     transition:slide
-                                    class="lg:ml-[10rem] grid-cols-[5rem_1fr]  lg:grid-cols-[auto_1fr]  gap-x-4 grid">
+                                    class="
+                                        lg:ml-[10rem] grid-cols-[5rem_1fr]  lg:grid-cols-[auto_1fr]  gap-x-4 grid">
                                     {#each getRelevantData(data) as [key, value]}
                                         <span>{key}</span>
                                         <span>{value}</span>
@@ -141,6 +155,18 @@
                                                 <a class="block underline text-blue" {href}>
                                                     {link}
                                                 </a>  
+                                            {/each}
+                                        </div>
+                                    {/if}
+                                    {#if hasCollaborators(data)}
+                                        <span>collaborators</span>
+                                        <div>
+                                            {#each Object.entries(data.collaborators) as [, href]}
+                                                <svelte:element this={href.url ? "a" : "div"} 
+                                                    class:link={href.url}
+                                                    class="block" href={href.url ?? ""}>
+                                                    {href.name}
+                                                </svelte:element>  
                                             {/each}
                                         </div>
                                     {/if}
@@ -164,17 +190,23 @@
 
 <style>
 
+
     button {
         cursor: pointer;
-    }
-
-    .selected-entry {
-
     }
 
     .selected text {
         transform: scaleX(300%);
         transition-duration: 1000ms;
+    }
+
+    .projects {
+        max-height: 0px;
+        transition: max-height 0.5s ease-in-out;
+    }
+
+    .selected .projects {
+        max-height: 80vh;
     }
 
     .content {

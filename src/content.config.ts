@@ -6,7 +6,14 @@ const baseSchema = {
     date: z.date(),
     flag: z.string().optional(),
     rating: z.number().optional(),
-    imageSrc: z.string().or(z.array(z.string())).optional()
+    imageSrc: z.string().or(z.array(z.string())).optional(),
+    youtubeId: z.string().optional(),
+    collaborators: z.array(
+        z.object({
+            name: z.string(),
+            url: z.string().url().optional()
+        })
+    ).optional()
 }
 
 const music = defineCollection({
@@ -26,10 +33,11 @@ const video = defineCollection({
     loader: glob({ pattern: "**/*.yaml", base: "./src/collections/video" }),
     schema: z.object({
         ...baseSchema,
-        year: z.string(),
         description: z.string().optional(),
-        youtubeUrl: z.string().optional(),
-      })
+        links: z.object({
+            youtube: z.string().url()
+        }).optional(),
+    })
 });
 
 const interactive = defineCollection({
@@ -54,7 +62,19 @@ const poster = defineCollection({
       })
 });
 
+const misc = defineCollection({
+    loader: glob({ pattern: "**/*.yaml", base: "./src/collections/misc" }),
+    schema: z.object({
+        ...baseSchema,
+        description: z.string().optional(),
+        links: z.object({
+            url: z.string().url().optional(),
+            youtube: z.string().url().optional(),
+        }).optional(),
+      })
+});
+
 export const collections = { 
-    music, video, interactive, poster
+    music, video, interactive, poster, misc
 
 }
