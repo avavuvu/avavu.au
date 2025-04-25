@@ -2,7 +2,7 @@
 
 @theme {
     --font-sans: "Helvetica", "Arial", "sans-serif"; 
-    --font-serif: "Times New Roman";
+    --font-serif: "Times", "Times New Roman", "serif";
     --color-blue: blue;
     --color-hot: #ff1493;
 }

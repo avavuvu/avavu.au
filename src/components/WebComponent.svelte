@@ -5,12 +5,16 @@
         char: string,
         scale?: number
     } | {
-        type: "link",
+        type: "url",
         image: string,
         backgroundColor: string,
         title: string,
-        link: string,
+        url: string,
         hash: string,
+    } | {
+        type: "text",
+        backgroundColor: string,
+        text: string,
     })
 
     const box: BoxDisplay[] = [
@@ -27,9 +31,9 @@
             char: "B"
         },
         {
-            type: "link",
-            image: "/web/radiofodder2.png",
-            link: "https://radiofodder.live",
+            type: "url",
+            image: "/images/interactive/radiofodder1.png",
+            url: "https://radiofodder.live",
             backgroundColor: "#f44971",
             title: "Radio Fodder Live",
             hash: "radiofodder"
@@ -39,11 +43,11 @@
             char: "D"
         },
         {
-            type: "link",
-            image: "/web/rmitgrad1.png",
+            type: "url",
+            image: "/images/interactive/rmitgrad1.png",
             backgroundColor: "#f7b50e",
             title: "RMIT Grad Show 2024",
-            link: "https://2024.rmitdigitalmedia.com/",
+            url: "https://2024.rmitdigitalmedia.com/",
             hash: "rmitgrad"
         },
         {
@@ -51,11 +55,11 @@
             char: "E"
         },
         {
-            type: "link",
-            image: "/web/crossworddotblue1.png",
+            type: "url",
+            image: "/images/interactive/crossworddotblue1.png",
             backgroundColor: "#0e73f7",
             title: "Crossword Dot Blue",
-            link: "https://crossword.blue",
+            url: "https://crossword.blue",
             hash: "crossworddotblue"
         },
         {
@@ -63,11 +67,11 @@
             char: "S"
         },
         {
-            type: "link",
-            image: "/web/suburble1.png",
+            type: "url",
+            image: "/images/interactive/suburble1.png",
             backgroundColor: "#32db65",
             title: "Suburble",
-            link: "https://suburble-304e2.web.app/",
+            url: "https://suburble.melbourne/",
             hash: "suburble"
         },
         {
@@ -84,12 +88,9 @@
             char: "N"
         },
         {
-            type: "char",
-            char: "E"
-        },
-        {
-            type: "char",
-            char: "R"
+            type: "text",
+            text: "WANT YOUR OWN?",
+            backgroundColor: "#0000ff"
         },
     ] as const
 
@@ -108,24 +109,30 @@
     console.log(hash)
 
     let active = $state(hash
-        ? box.findIndex(display => display.type === "link" && display.hash === hash.slice(1))
+        ? box.findIndex(display => display.type === "url" && display.hash === hash.slice(1))
         : -1
     )
     const setActive = (index: number, display: BoxDisplay) => {
 
         active = index
         
-        if(display.type === "link") {
+        if(display.type === "url") {
             const hash = `#${display.hash}`
             window.location.hash = hash
         }
 
         box.forEach(box => {
-            if(box.type !== "link") {
+            if(box.type !== "url") {
                 return
             }
-            document.querySelector(`#${box.hash} article`)!.scrollTo({ top: 0 })
+            
+            document.querySelector(`#${box.hash} article`)!.scrollTo({ top: 0, })
         })
+
+        window.scroll({
+            top: document.querySelector(".active")?.clientTop
+        })
+
     }
 </script>
 
@@ -150,7 +157,7 @@
                     class:right={boxIndex == 2}
                     class="overflow-clip border-2 min-w-0 cursor-pointer"
                     class:char={boxDisplay.type === "char"}
-                    class:link={boxDisplay.type === "link"}>
+                    class:url={boxDisplay.type === "url"}>
                     
                     {#if boxDisplay.type === "char"}
                         <div class="p-1 lg:p-2" >
@@ -171,7 +178,7 @@
                             </svg>
 
                         </div>
-                    {:else if boxDisplay.type === "link"}
+                    {:else if boxDisplay.type === "url"}
                         <div 
                             id={boxDisplay.hash}
                             style:background-color={boxDisplay.backgroundColor}
@@ -185,7 +192,7 @@
                                         alt=""  
                                         src={boxDisplay.image}>
                                     <div class="article-content bg-white max-w-[min(90vw,100%)] lg:max-w-[min(60vw,100%)] mx-auto ">
-                                        <a class="underline" href={boxDisplay.link}>
+                                        <a class="underline" href={boxDisplay.url}>
                                             <h1 class="text-2xl lg:text-7xl font-serif scale-y-150 origin-center py-4">
                                                 {boxDisplay.title}
                                             </h1>
@@ -194,21 +201,32 @@
                                         <p class="px-4 text-left max-w-[65ch] mx-auto">
 
 
-                                            Molestias magni qui voluptatem. Hic optio eos aut sed excepturi distinctio sunt quidem. Non consequatur fugiat quasi dolorem labore voluptatem dolor. Similique voluptatem dolor consequatur esse tempore quia praesentium accusamus.
-                                            
-                                            Voluptates quia ab corporis asperiores. Voluptatem cupiditate unde et reprehenderit consequatur et dignissimos ea. Blanditiis quae id quod eveniet est facere atque ipsum. Quis et aliquam et occaecati veritatis.
-                                            
-                                            Minima qui saepe inventore et et. Voluptatem incidunt tenetur qui tenetur eum rem. Et veritatis facere voluptatibus similique porro et illum nisi. Eveniet dolor dignissimos dignissimos enim.
-                                            
-                                            Veritatis culpa praesentium ea nihil voluptatem et voluptatem cupiditate. Voluptas asperiores modi numquam rem eos et. Velit laborum nobis exercitationem eum ratione. Error voluptatum nesciunt et eum ex sint. Nemo voluptates rerum labore saepe esse odio asperiores. Blanditiis et quas voluptas.
-                                            
-                                            Voluptatem animi voluptatem et sed quis a. Tempore sint ut facilis officiis. Possimus laboriosam dolor ratione veritatis. Sunt officiis saepe id perferendis. Adipisci blanditiis aut voluptas odio nemo maiores vitae iure. Nihil dicta soluta maxime eum voluptas quos.
-                                            
-                                                                                        </p>
+                                           </p>
                                     </div>
                                 </div>
                             </article>
                         </div>
+                    {:else if boxDisplay.type === "text"}
+                        <div 
+                        style:background-color={boxDisplay.backgroundColor}
+                        class="flex justify-center items-center align-middle h-full p-2 lg:p-4">
+                        <article 
+                            class:active={index === active}
+                            class="overflow-scroll">
+                            <div>
+                                <div class="bg-white py-2">
+                                    <h1 class="text-2xl lg:text-7xl font-serif scale-y-150 origin-center py-4">
+                                        {boxDisplay.text}
+                                    </h1>
+                                </div>
+                                <div class="article-content bg-white max-w-[min(90vw,100%)] lg:max-w-[min(60vw,100%)] mx-auto min-h-[200px] flex flex-col justify-center place-items-center ">
+                                    <p class="px-4  text-left max-w-[65ch] mx-auto">
+                                        I am able open to making websites, portfolios, e-commerce sites, posters, and more. Send me a message at <a class="link" href="mailto:avadinhvu@gmailcom">my email</a> or <a class="link" href="https://instagram.com/avavu.au">my instagram</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
                     {/if}
                 </button>
                 {/each}
@@ -280,16 +298,16 @@
         min-height: 0;
     }
 
-    .grid:has(.left.active.link) {
+    .grid:has(.left.active) {
         grid-template-columns: 2fr 0.05fr 0.05fr;
         min-height: 400px;
     }
 
-    .grid:has(.center.active.link) {
+    .grid:has(.center.active) {
         grid-template-columns: 0.05fr 2fr 0.05fr;
         min-height: 400px;
     }
-    .grid:has(.right.active.link) {
+    .grid:has(.right.active) {
         grid-template-columns: 0.05fr 0.05fr 2fr;
         min-height: 400px;
     }
