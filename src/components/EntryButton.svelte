@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Snippet } from "svelte";
+    import { onMount, type Snippet } from "svelte";
     import { currentEntry } from "../lib/projectStore"
 
     const { collection, children, data, id }: { 
@@ -8,6 +8,8 @@
         data: any,
         id: string
     } = $props()
+
+    onMount(() => console.log(data.title))
 
     const selectEntry = () => {
         currentEntry.set(id)

@@ -9,26 +9,26 @@ import Layout from '../layouts/Layout.astro';
 
 	<div class="flex justify-between flex-col h-dvh p-4 pb-8">
 		<div>
-			<h1 class="text-center text-7xl md:text-8xl lg:text-9xl text-white font-serif font-extralight
-				mix-blend-difference 
-				flex justify-center scale-y-200 origin-bottom pt-20 pb-2">
-				<a href="/about">avavu</a>
-				.au
-			</h1>
-		
 			<div class="flex gap-4 flex-wrap justify-center max-w-[60%] mx-auto text-center">
-				<a href="/web" class="text-3xl">
+				<a href="/web" class="text-4xl">
 					web design
 				</a>
-				<a href="/projects" class="text-3xl">
+				<a href="/projects" class="text-4xl">
 					other projects
 				</a>
 		
 			</div>
 		</div>
 
+        <h1 class="text-center text-4xl md:text-5xl lg:text-7xl text-white font-extralight
+            mix-blend-difference
+            flex justify-center scale-y-200 origin-bottom pt-20 pb-2">
+            <a class="main-link" href="/about">avavu</a>
+            .au
+        </h1>
+
 		<div class="text-4xl flex justify-center flex-col items-center">
-			<a href="https://www.instagram.com/dinhvudesigns">instagram</a>
+			<a href="https://www.instagram.com/avavu.au">instagram</a>
 			<a href="/about">contact</a>
 		</div>
 	</div>
@@ -91,13 +91,13 @@ import Layout from '../layouts/Layout.astro';
             
     }
 
-    a {
+    a:not(.main-link) {
         text-decoration-line: underline;
         cursor: pointer;
     }
 
     a:hover, a:active {
-        background-color: rgb(130, 156, 208);
+        background-color: rgb(194, 124, 229);
     }
 
     div > * {

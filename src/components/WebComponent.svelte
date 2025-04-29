@@ -105,13 +105,23 @@
         return array;
     }, [] as BoxDisplay[][])
 
+    const lastChunkLength = boxChunks.at(-1)!.length
+    if(lastChunkLength < 3) {
+        for (let i = 0; i < 3-lastChunkLength; i++) {
+            boxChunks.at(-1)!.push({
+                type: "char",
+                char: "★"
+            })
+        }
+    }
+
     const hash = window.location.hash
-    console.log(hash)
 
     let active = $state(hash
         ? box.findIndex(display => display.type === "url" && display.hash === hash.slice(1))
         : -1
     )
+
     const setActive = (index: number, display: BoxDisplay) => {
 
         active = index
@@ -132,7 +142,6 @@
         window.scroll({
             top: document.querySelector(".active")?.clientTop
         })
-
     }
 </script>
 
@@ -215,7 +224,7 @@
                             class="overflow-scroll">
                             <div>
                                 <div class="bg-white py-2">
-                                    <h1 class="text-2xl lg:text-7xl font-serif scale-y-150 origin-center py-4">
+                                    <h1 class="text-sm lg:text-7xl font-serif scale-y-150 origin-center py-2 lg:py-4">
                                         {boxDisplay.text}
                                     </h1>
                                 </div>

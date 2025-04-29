@@ -165,10 +165,12 @@ const getRelevantData = (data: Project) => {
     .projects {
         max-height: 0px;
         transition: max-height 0.5s ease-in-out;
+        opacity: 0;
     }
 
     .selected .projects {
         max-height: 80vh;
+        opacity: 100%;
     }
 
     .entry {
@@ -180,11 +182,16 @@ const getRelevantData = (data: Project) => {
     .entry-content {
         overflow: hidden;
         min-height: 0;
+        opacity: 0;
+    }
+
+    .selected-entry .entry-content {
+        opacity: 100%;
     }
 
     .selected-entry.entry {
-        flex-grow: 1;
         grid-template-rows: auto 1fr;
     }
+
 
 </style>
