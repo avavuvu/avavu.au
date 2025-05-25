@@ -1,5 +1,9 @@
 <script lang="ts">
 
+    const { projects }: { 
+        projects: {[key: string]: string} 
+    } = $props()
+
     type BoxDisplay = ({
         type: "char",
         char: string,
@@ -36,7 +40,7 @@
             url: "https://radiofodder.live",
             backgroundColor: "#f44971",
             title: "Radio Fodder Live",
-            hash: "radiofodder"
+            hash: "radiofodder",
         },
         {
             type: "char",
@@ -48,7 +52,7 @@
             backgroundColor: "#f7b50e",
             title: "RMIT Grad Show 2024",
             url: "https://2024.rmitdigitalmedia.com/",
-            hash: "rmitgrad"
+            hash: "rmitgrad",
         },
         {
             type: "char",
@@ -60,7 +64,7 @@
             backgroundColor: "#0e73f7",
             title: "Crossword Dot Blue",
             url: "https://crossword.blue",
-            hash: "crossworddotblue"
+            hash: "crossworddotblue",
         },
         {
             type: "char",
@@ -72,7 +76,7 @@
             backgroundColor: "#32db65",
             title: "Suburble",
             url: "https://suburble.melbourne/",
-            hash: "suburble"
+            hash: "suburble",
         },
         {
             type: "char",
@@ -207,10 +211,9 @@
                                             </h1>
                                         </a>
 
-                                        <p class="px-4 text-left max-w-[65ch] mx-auto">
-
-
-                                           </p>
+                                        <p class="text-box px-4 pb-4 text-left max-w-[65ch] mx-auto">
+                                            {@html projects[boxDisplay.hash]}
+                                        </p>
                                     </div>
                                 </div>
                             </article>
@@ -263,6 +266,22 @@
     article.active {
         overflow-y: scroll;
         cursor: default;
+    }
+
+    :global(.text-box img) {
+        margin: 4rem 0;
+        border: 1px solid black;
+        
+    }
+
+    :global(.text-box a) {
+        color: blue;
+        text-decoration: underline;
+        
+    }
+    :global(.text-box p) {
+        padding: .5rem 0;
+        
     }
 
     @media only screen and (max-width: 1000px) {

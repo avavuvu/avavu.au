@@ -74,7 +74,15 @@ const misc = defineCollection({
       })
 });
 
+const webdesign = defineCollection({
+    loader: glob({ pattern: "**/*.md", base: "./src/collections/webdesign" }),
+    schema: z.object({
+        ...baseSchema
+      })
+});
+
+
 export const collections = { 
-    music, video, interactive, poster, misc
+    music, video, interactive, poster, misc, webdesign
 
 }

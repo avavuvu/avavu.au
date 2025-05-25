@@ -11,6 +11,8 @@ const data = await Promise.all(Object.keys(collections).flatMap(name => getColle
 
 const allProjects: ProjectData[] = data
     .flat()
+    .filter(({data, collection}) => 
+        collection !== "webdesign")
     .toSorted(({data: dataA}, {data: dataB}) => {
         return dataA.date.getTime() - dataB.date.getTime()})
     .map(({data, collection}, index) => ({
@@ -79,7 +81,7 @@ const projects  = groupProjects(allProjects, sortKey)
 <Layout title="Projects">
     <main class="">
         <!-- <AllWork allProjects={projects} {path} client:load></AllWork> -->
-        <AllWorks 
+        <AllWorks  
             sort={sortOrderMap[sortKey]} 
             allProjects={projects} 
             {path} />
