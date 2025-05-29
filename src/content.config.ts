@@ -51,8 +51,8 @@ const interactive = defineCollection({
       })
 });
 
-const poster = defineCollection({
-    loader: glob({ pattern: "**/*.yaml", base: "./src/collections/posters" }),
+const ephemera = defineCollection({
+    loader: glob({ pattern: "**/*.yaml", base: "./src/collections/ephemera" }),
     schema: z.object({
         ...baseSchema,
         description: z.string().optional(),
@@ -83,6 +83,6 @@ const webdesign = defineCollection({
 
 
 export const collections = { 
-    music, video, interactive, poster, misc, webdesign
+    music, video, interactive, ephemera, misc, webdesign
 
 }

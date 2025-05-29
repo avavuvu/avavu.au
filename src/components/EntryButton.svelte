@@ -29,10 +29,10 @@
             border-b border-y-transparent hover:border-b-black group-[.selected-entry]:border-b-black">
         
         <div class="           
-            grid-cols-[5rem_3fr_auto]
+            grid-cols-[6rem_3fr_auto]
             grid lg:grid-cols-[10rem_3fr_auto]">
             <span>
-                {data.date.getFullYear()}/{data.date.getMonth() + 1}/{data.date.getDate()}
+                {data.date.getFullYear()}/{(data.date.getMonth() + 1).toString().padStart(2, "0")}/{data.date.getDate().toString().padStart(2,"0")}
             </span>
 
             <span class="group-[.selected-entry]:font-bold">
