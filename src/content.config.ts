@@ -57,7 +57,8 @@ const ephemera = defineCollection({
         ...baseSchema,
         description: z.string().optional(),
         links: z.object({
-            url: z.string().url(),
+            url: z.string().url().optional(),
+            instagram: z.string().url().optional(),
         }).optional(),
       })
 });
