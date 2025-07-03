@@ -3,12 +3,6 @@
     import mosaicData from "../assets/mosaic/data.json"
     import { sineInOut } from "svelte/easing";
 
-    console.log(JSON.stringify({
-        width: mosaicData.width,
-        height: mosaicData.height,
-        data: mosaicData.data.map(bool => bool ? 1 : 0)
-    }))
-
     let posterSection!: HTMLElement;
     let posterList!: HTMLUListElement
     let progress = $state(0);

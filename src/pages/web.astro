@@ -4,7 +4,6 @@ import WebComponent from "../components/WebComponent.svelte"
 import { getCollection } from "astro:content";
 
 const projects = await getCollection("webdesign")
-console.log(projects)
 const projectText: {[key: string]: string} = {}
 
 

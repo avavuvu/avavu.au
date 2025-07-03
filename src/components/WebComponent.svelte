@@ -127,7 +127,6 @@
     )
 
     const setActive = (index: number, display: BoxDisplay) => {
-
         active = index
         
         if(display.type === "url") {

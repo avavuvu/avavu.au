@@ -1,24 +1,41 @@
 <script lang="ts">
     import { onMount, type Snippet } from "svelte";
-    import { currentEntry } from "../lib/projectStore"
+    import { currentCategory, currentEntry } from "../lib/projectStore"
+    import type { Project } from "../lib/types";
+    import convertToUrl from "../lib/util/convertToUrl";
 
     const { collection, children, data, id }: { 
         children: Snippet
         collection: string, 
-        data: any,
+        data: Project,
         id: string
     } = $props()
 
-    onMount(() => console.log(data.title))
+    let buttonDiv!: HTMLDivElement
+
+    onMount(() => {
+        const [_,hashCollection] = window.location.hash.split("&&")
+
+        if(hashCollection === convertToUrl(data.title)) {
+            currentEntry.set(id)
+        }
+
+        if(id === $currentEntry) {
+            buttonDiv.scrollIntoView()
+        }
+    })
 
     const selectEntry = () => {
         currentEntry.set(id)
+        window.location.hash = `${convertToUrl(currentCategory.value)}&&${convertToUrl(data.title)}`
     }
+
 
 </script>
 
 
 <div 
+    bind:this={buttonDiv}
     class:selected-entry={id === $currentEntry}
     class="px-2 pb-8 group entry">
     <button

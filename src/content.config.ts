@@ -47,6 +47,7 @@ const interactive = defineCollection({
         description: z.string().optional(),
         links: z.object({
             url: z.string().url(),
+            instagram: z.string().url().optional(),
         }).optional(),
       })
 });

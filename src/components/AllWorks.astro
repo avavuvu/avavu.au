@@ -33,9 +33,6 @@ const getRelevantData = (data: Project) => {
 }
 ---
 
-<script>
-
-</script>
 
 <div class="border-2 font-bold overflow-hidden">
     <a 
@@ -72,7 +69,7 @@ const getRelevantData = (data: Project) => {
 
 {
     Object.entries(allProjects).sort(sort).map(([year, entries]) => (
-            <CategoryButton category={year} client:only="svelte">
+            <CategoryButton category={year} client:idle>
                 <div class="projects grid-cols-1 lg:grid-cols-2 grid h-[75vh] lg:h-[90vh] overflow-scroll">
                     <div>
                         {
