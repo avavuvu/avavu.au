@@ -1,18 +1,17 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
-import { collections } from "../../content.config";
 import type { CollectionKey, DataEntryMap, InferEntrySchema } from "astro:content";
-import AllWork from "../../components/AllWork.svelte"
 import AllWorks from "../../components/AllWorks.astro";
 import type { ProjectData, ProjectSort } from "../../lib/types";
+import { projectCollections } from "../../projects.config";
 
-const data = await Promise.all(Object.keys(collections).flatMap(name => getCollection(name as CollectionKey)))
+const data = await Promise.all(
+    Object.keys(projectCollections).flatMap(name => getCollection(name as CollectionKey))
+)
 
 const allProjects: ProjectData[] = data
     .flat()
-    .filter(({data, collection}) => 
-        collection !== "webdesign")
     .toSorted(({data: dataA}, {data: dataB}) => {
         return dataA.date.getTime() - dataB.date.getTime()})
     .map(({data, collection}, index) => ({
@@ -37,8 +36,6 @@ const groupProjects = (projects: ProjectData[], sortKey: SortKey) => {
             ? groupers.year
             : groupers[sortKey]);
 };
-
-
 
 const yearSort: ProjectSort = ([keyA, valueA], [keyB, valueB]) => {
     return Number(keyB) - Number(keyA)
@@ -80,7 +77,6 @@ const projects  = groupProjects(allProjects, sortKey)
 
 <Layout title="Projects">
     <main class="">
-        <!-- <AllWork allProjects={projects} {path} client:load></AllWork> -->
         <AllWorks  
             sort={sortOrderMap[sortKey]} 
             allProjects={projects} 

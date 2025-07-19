@@ -1,0 +1,136 @@
+---
+import { getEntry } from "astro:content"
+import { getCollection } from "astro:content"
+import { getEntries, render } from "astro:content"
+import Layout from "../../layouts/Layout.astro"
+import EmailLayout from "../../layouts/EmailLayout.astro"
+
+
+
+export async function getStaticPaths() {
+    const newsletter = await getCollection("newsletter")
+    
+    return newsletter.map(({id}) => ({
+        params: { id }
+    }))
+}
+
+const { id } = Astro.params
+
+const entry = await getEntry("newsletter", id)
+
+if(!entry) {
+    return new Response(404)
+}
+
+
+const { data } = entry
+const { Content } = await render(entry);
+
+---
+
+<EmailLayout>
+    <header class="max-w-[600px] mx-auto text-center">
+        <span class="text-7xl lg:text-9xl md:text-9xl ">
+            AVAVU.AU
+        </span>
+
+        <div class="border-y border-black inline-flex gap-2 w-full justify-center">
+            <a class="link" href="https://avavu.au">
+                website
+            </a>
+            <span>
+                <span class="border-r border-black">
+                </span>
+            </span>
+            <span>
+                newsletter
+            </span>
+            <span>
+                <span class="border-r border-black">
+                </span>
+            </span>
+            <a class="link">
+                unsubscribe
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-[600px] mx-auto pb-24 pt-12 text-sm px-8">
+        <div class="markdown">
+            <Content/>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-4">
+            {data.crosswords && (
+                <div>
+                    <h2 class="font-bold">CROSSWORDS</h2>
+                    <ul class="grid gap-4">
+                        {(data.crosswords || []).map(crossword => (
+                            <li class="">
+                                <h3>
+                                    <a href={crossword.link}>
+                                    {crossword.date.toLocaleDateString("en", {
+                                        "month": "long", 
+                                        "day": "2-digit",
+                                    })}
+                                    </a> – <span class="text-right">For {crossword.vendor}</span>
+                                </h3>
+                                
+                                <p class="">{crossword.info}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+            <div>
+                <h2 class="font-bold">MUSIC</h2>
+                <ul class="grid gap-4">
+                    {(data.music || []).map(({title, link, info}) => (
+                        <li class="">
+                            <h3>
+                                <a href={link}>
+                                {title}
+                                </a>
+                            </h3>
+                            <p class="">{info}</p>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold">COOL THINGS</h2>
+                <ul class="grid gap-4">
+                    {(data.cool || []).map(({title, links, info}) => (
+                        <li class="">
+                            <h3>
+                                <a href={links[0]}>
+                                    {title}
+                                </a>
+                            </h3>
+                            <p class="">{info}</p>
+
+                            <ul class="ml-4">
+                                {links.map(link => (
+                                    <li class="line-clamp-1">
+                                        <a href={link}>
+                                            {link.replace("https://", "").replace("www.", "")}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+
+
+
+        
+
+    </main>
+
+
+</EmailLayout>
+

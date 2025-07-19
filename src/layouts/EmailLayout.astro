@@ -1,0 +1,25 @@
+---
+import Layout from "./Layout.astro";
+---
+
+<Layout>
+    <slot/>
+</Layout>
+
+<style is:global>
+    a {
+        color: blue
+    }
+
+    .markdown p {
+        margin: 1rem 0rem;
+    }
+
+    .markdown h1 {
+        font-size: large;
+    }
+
+    .markdown h1, .markdown h2 {
+        font-weight: bold;
+    }
+</style>
