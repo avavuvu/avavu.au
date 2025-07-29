@@ -23,96 +23,169 @@ if(!entry) {
     return new Response(404)
 }
 
-
 const { data } = entry
 const { Content } = await render(entry);
 
 ---
 
 <EmailLayout>
-    <header class="max-w-[600px] mx-auto text-center">
-        <span class="text-7xl lg:text-9xl md:text-9xl ">
+    <style is:global>
+        main {
+            text-align: left;
+        }
+        .email-header {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+        
+        .header-nav {
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            gap: 0.5rem;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .header-nav span.separator {
+            border-right: 1px solid black;
+            height: 1em;
+        }
+        
+        /* Main content styles */
+        .email-main {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 6rem;
+            padding-top: 3rem;
+            font-size: 0.875rem;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+        
+        /* Grid layout */
+        .grid-container {
+
+        }
+        
+        @media (min-width: 1024px) {
+            .grid-container {
+            }
+        }
+        
+        /* Section styles */
+        .section-title {
+            font-weight: bold;
+            margin-top: 2rem;
+        }
+        
+        .section-list {
+
+        }
+        
+        .link-list {
+            margin-left: 1rem;
+        }
+        
+        .link-list li {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+
+        .astro-code {
+            min-width: none;
+            overflow: scroll;
+            width: 100%;
+            width: min-content;
+            max-width: 500px;
+        }
+        
+        .astro-code > {
+            min-width: none;
+        }
+    </style>
+
+    <header class="email-header">
+        <span class="logo">
             AVAVU.AU
         </span>
 
-        <div class="border-y border-black inline-flex gap-2 w-full justify-center">
-            <a class="link" href="https://avavu.au">
-                website
-            </a>
-            <span>
-                <span class="border-r border-black">
-                </span>
-            </span>
-            <span>
-                newsletter
-            </span>
-            <span>
-                <span class="border-r border-black">
-                </span>
-            </span>
-            <a class="link">
-                unsubscribe
-            </a>
-        </div>
+        <table class="header-nav" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td align="center" style="padding: 0; font-family: Helvetica, Arial, sans-serif;">
+                    <a href="https://avavu.au" style="color: #0000EE; text-decoration: underline;">website</a>
+                </td>
+                
+                <td align="center" style="padding: 0; font-family: Helvetica, Arial, sans-serif;">
+                    newsletter
+                </td>
+                
+            </tr>
+        </table>
     </header>
 
-    <main class="max-w-[600px] mx-auto pb-24 pt-12 text-sm px-8">
+    <main class="email-main">
         <div class="markdown">
             <Content/>
         </div>
 
-        <div class="grid lg:grid-cols-3 gap-4">
+        <div class="grid-container">
             {data.crosswords && (
                 <div>
-                    <h2 class="font-bold">CROSSWORDS</h2>
-                    <ul class="grid gap-4">
+                    <h2 class="section-title">CROSSWORDS</h2>
+                    <ul class="section-list">
                         {(data.crosswords || []).map(crossword => (
-                            <li class="">
+                            <li>
                                 <h3>
                                     <a href={crossword.link}>
                                     {crossword.date.toLocaleDateString("en", {
                                         "month": "long", 
                                         "day": "2-digit",
                                     })}
-                                    </a> – <span class="text-right">For {crossword.vendor}</span>
+                                    </a> – <span style="text-align: right">For {crossword.vendor}</span>
                                 </h3>
                                 
-                                <p class="">{crossword.info}</p>
+                                <p>{crossword.info}</p>
                             </li>
                         ))}
                     </ul>
                 </div>
             )}
             <div>
-                <h2 class="font-bold">MUSIC</h2>
-                <ul class="grid gap-4">
+                <h2 class="section-title">MUSIC</h2>
+                <ul class="section-list">
                     {(data.music || []).map(({title, link, info}) => (
-                        <li class="">
+                        <li>
                             <h3>
                                 <a href={link}>
                                 {title}
                                 </a>
                             </h3>
-                            <p class="">{info}</p>
+                            <p>{info}</p>
                         </li>
                     ))}
                 </ul>
             </div>
             <div>
-                <h2 class="font-bold">COOL THINGS</h2>
-                <ul class="grid gap-4">
+                <h2 class="section-title">COOL THINGS</h2>
+                <ul class="section-list">
                     {(data.cool || []).map(({title, links, info}) => (
-                        <li class="">
+                        <li>
                             <h3>
                                 <a href={links[0]}>
                                     {title}
                                 </a>
                             </h3>
-                            <p class="">{info}</p>
+                            <p>{info}</p>
 
-                            <ul class="ml-4">
+                            <ul class="link-list">
                                 {links.map(link => (
-                                    <li class="line-clamp-1">
+                                    <li>
                                         <a href={link}>
                                             {link.replace("https://", "").replace("www.", "")}
                                         </a>
@@ -124,13 +197,5 @@ const { Content } = await render(entry);
                 </ul>
             </div>
         </div>
-
-
-
-        
-
     </main>
-
-
 </EmailLayout>
-
