@@ -37,7 +37,7 @@ const newsletter = defineCollection({
                 info: z.string(),
                 link: z.string().url()
             })
-        )
+        ).optional()
     })
 })
 
