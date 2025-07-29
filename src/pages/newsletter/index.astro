@@ -45,7 +45,7 @@ const generateHashLinks = (data: CollectionEntry<"newsletter">["data"], rendered
                     <li class="pb-24 p-8 m-2">
                         <span class="inline-flex justify-between w-full">
                             <h2>
-                                <a class="link" href={`newsletter/${id}`}>
+                                <a class="link" href={`${id}`}>
                                     {data.subject}
                                 </a>
                             </h2>
@@ -66,7 +66,7 @@ const generateHashLinks = (data: CollectionEntry<"newsletter">["data"], rendered
                                             ) 
                                             rotate(${12 - Math.random() * 24}deg)
                                         `}}>
-                                            <a class="link" href={`newsletter/${id}#${key}`}>
+                                            <a class="link" href={`${id}#${key}`}>
                                             {`★${key}`}
                                             </a>
                                     </li>)
