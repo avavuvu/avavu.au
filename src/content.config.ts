@@ -14,6 +14,7 @@ const newsletter = defineCollection({
     loader: glob({ pattern: "**/*.md", base: "./src/collections/newsletter" }),
     schema: z.object({
         subject: z.string(),
+        preheader: z.string(),
         date: z.date(),
         crosswords: z.array(
             z.object({

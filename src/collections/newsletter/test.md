@@ -1,6 +1,7 @@
 ---
 subject: "Is this thing on?"
 date: 2025-07-19
+preheader: "Thank you for being an early adopter"
 
 music: []
 ---

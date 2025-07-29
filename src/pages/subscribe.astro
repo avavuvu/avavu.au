@@ -28,12 +28,20 @@ import SubscribeForm from "../components/newsletter/Subscribe.svelte"
             </span>
         </div>
     </header>
-    <main class="max-w-[600px] mx-auto pb-24 pt-12 text-sm px-8">
-        <p class="text-center pb-12">
+    <main class="max-w-[600px] text-center  mx-auto pb-24 pt-12 text-sm px-8">
+        <p class="pb-12">
             Subscribe for the monthly Ava newsletter.
         </p>
 
         <SubscribeForm client:idle></SubscribeForm>
+
+        <p class="pt-12">
+            Already subscribed?
+        </p>
+
+        <p>
+            <a class="link" href="/newsletter">View the archive</a>
+        </p>
         
     </main>
 </Layout>

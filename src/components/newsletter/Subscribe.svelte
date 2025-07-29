@@ -19,13 +19,13 @@
 
 <form onsubmit={submit} class="flex gap-2 flex-col justify-center ">
     <input 
-        class="max-w-36 border mx-auto"
+        class="max-w-48 border mx-auto"
         bind:value={emailInput}
         placeholder="Email"
         type="email" required>
 
     <input 
-        class="max-w-36 border mx-auto"
+        class="max-w-48 border mx-auto"
         bind:value={nameInput}
         placeholder="Name"
         type="text" 

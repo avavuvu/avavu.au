@@ -1,0 +1,82 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import type { CollectionEntry } from "astro:content";
+
+const newsletters = await getCollection("newsletter");
+
+const generateHashLinks = (data: CollectionEntry<"newsletter">["data"], rendered: CollectionEntry<"newsletter">["rendered"]) => {
+    let hashes: string[] = Object.entries(data)
+        .filter(([_, value]) => value && Array.isArray(value) && value.length > 0)
+        .map(([key]) => key)
+
+
+    if(rendered) {
+        if(rendered.html.includes("the-news")) {
+            hashes.push("the-news")
+        }
+
+        if(rendered.html.includes("spotlight")) {
+            hashes.push("spotlight")
+        }
+    }
+
+    return hashes
+}
+---
+
+<Layout>
+    <main class="max-w-[600px] mx-auto">
+        <header class="w-full text-center">
+        <span class="w-full text-7xl md:text-8xl lg:text-8xl "> 
+            AVAVU.AU 
+        </span>
+
+        <nav class="border-y inline-flex gap-2 w-full justify-center">
+            <a class="link" href="https://avavu.au">website</a>
+            <span> newsletter archive </span>
+            <a class="link" href="https://avavu.au/subscribe">subscribe</a>
+        </nav>
+        </header>
+        
+        <ul class="p-12">
+            {newsletters.map(({data, id, rendered}) => {
+                return (
+                    <li class="pb-24 p-8 m-2">
+                        <span class="inline-flex justify-between w-full">
+                            <h2>
+                                <a class="link" href={`newsletter/${id}`}>
+                                    {data.subject}
+                                </a>
+                            </h2>
+                            <span>
+                                {data.date.toLocaleString('default', { month: 'long', year: "numeric" })}
+                            </span>
+                        </span>
+                        <p class="italic">{data.preheader}</p>
+                        <ul class="uppercase flex flex-wrap gap-8 w-full justify-end">
+                            {
+                                generateHashLinks(data, rendered)
+                                    .map((key) => 
+                                    <li class="block" 
+                                        style={{"transform": `
+                                            translate(
+                                                ${12 - Math.random() * 24}px, 
+                                                ${6 - Math.random() * 12}px
+                                            ) 
+                                            rotate(${12 - Math.random() * 24}deg)
+                                        `}}>
+                                            <a class="link" href={`newsletter/${id}#${key}`}>
+                                            {`★${key}`}
+                                            </a>
+                                    </li>)
+                            }
+
+                        </ul>
+                    </li>
+                )
+            })}
+        </ul>
+    </main>
+
+</Layout>

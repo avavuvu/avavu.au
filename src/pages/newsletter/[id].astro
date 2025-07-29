@@ -45,7 +45,7 @@ const { Content } = await render(entry);
     </div>
 
     <div>
-        <h2 class="section-title">COOL THINGS</h2>
+        <h2 class="section-title" id="cool">COOL THINGS</h2>
         <ul class="section-list">
           {
             (data.cool || []).map(({ title, links, info }) => (
@@ -76,7 +76,7 @@ const { Content } = await render(entry);
       {
         data.crosswords && (
           <div>
-            <h2 class="section-title">CROSSWORDS</h2>
+            <h2 class="section-title" id="crosswords">CROSSWORDS</h2>
             <ul class="section-list">
               {(data.crosswords || []).map((crossword) => (
                 <li>
@@ -101,7 +101,7 @@ const { Content } = await render(entry);
         )
       }
       <div>
-        <h2 class="section-title">MUSIC</h2>
+        <h2 class="section-title" id="music">MUSIC</h2>
         <ul class="section-list">
           {
             (data.music || []).map(({ title, link, info }) => (
