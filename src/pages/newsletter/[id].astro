@@ -1,201 +1,177 @@
 ---
-import { getEntry } from "astro:content"
-import { getCollection } from "astro:content"
-import { getEntries, render } from "astro:content"
-import Layout from "../../layouts/Layout.astro"
-import EmailLayout from "../../layouts/EmailLayout.astro"
-
-
+import { getEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import { getEntries, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import EmailLayout from "../../layouts/EmailLayout.astro";
 
 export async function getStaticPaths() {
-    const newsletter = await getCollection("newsletter")
-    
-    return newsletter.map(({id}) => ({
-        params: { id }
-    }))
+  const newsletter = await getCollection("newsletter");
+
+  return newsletter.map(({ id }) => ({
+    params: { id },
+  }));
 }
 
-const { id } = Astro.params
+const { id } = Astro.params;
 
-const entry = await getEntry("newsletter", id)
+const entry = await getEntry("newsletter", id);
 
-if(!entry) {
-    return new Response(404)
+if (!entry) {
+  return new Response(404);
 }
 
-const { data } = entry
+const { data } = entry;
 const { Content } = await render(entry);
-
 ---
 
-<EmailLayout>
-    <style is:global>
-        main {
-            text-align: left;
-        }
-        .email-header {
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-        
-        .header-nav {
-            border-top: 1px solid black;
-            border-bottom: 1px solid black;
-            gap: 0.5rem;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .header-nav span.separator {
-            border-right: 1px solid black;
-            height: 1em;
-        }
-        
-        /* Main content styles */
-        .email-main {
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            padding-bottom: 6rem;
-            padding-top: 3rem;
-            font-size: 0.875rem;
-            padding-left: 2rem;
-            padding-right: 2rem;
-        }
-        
-        /* Grid layout */
-        .grid-container {
+<Layout>
+  <main class="email-main">
+    <header class="w-full text-center">
+      <span class="w-full text-7xl md:text-8xl lg:text-8xl "> 
+        AVAVU.AU 
+    </span>
 
-        }
-        
-        @media (min-width: 1024px) {
-            .grid-container {
-            }
-        }
-        
-        /* Section styles */
-        .section-title {
-            font-weight: bold;
-            margin-top: 2rem;
-        }
-        
-        .section-list {
-
-        }
-        
-        .link-list {
-            margin-left: 1rem;
-        }
-        
-        .link-list li {
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-        }
-
-        .astro-code {
-            min-width: none;
-            overflow: scroll;
-            width: 100%;
-            width: min-content;
-            max-width: 500px;
-        }
-        
-        .astro-code > {
-            min-width: none;
-        }
-    </style>
-
-    <header class="email-header">
-        <span class="logo">
-            AVAVU.AU
+      <nav>
+        <a class="link" href="https://avavu.au"> website </a>
+        <span>
+          <span class="border-r border-black"> </span>
         </span>
-
-        <table class="header-nav" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
-            <tr>
-                <td align="center" style="padding: 0; font-family: Helvetica, Arial, sans-serif;">
-                    <a href="https://avavu.au" style="color: #0000EE; text-decoration: underline;">website</a>
-                </td>
-                
-                <td align="center" style="padding: 0; font-family: Helvetica, Arial, sans-serif;">
-                    newsletter
-                </td>
-                
-            </tr>
-        </table>
+        <span> newsletter </span>
+      </nav>
     </header>
+    <div class="markdown">
+      <Content />
+    </div>
 
-    <main class="email-main">
-        <div class="markdown">
-            <Content/>
-        </div>
+    <div>
+        <h2 class="section-title">COOL THINGS</h2>
+        <ul class="section-list">
+          {
+            (data.cool || []).map(({ title, links, info }) => (
+              <li>
+                <h3>
+                  <a href={links[0]}>{title}</a>
+                </h3>
+                <p>{info}</p>
 
-        <div class="grid-container">
-            {data.crosswords && (
-                <div>
-                    <h2 class="section-title">CROSSWORDS</h2>
-                    <ul class="section-list">
-                        {(data.crosswords || []).map(crossword => (
-                            <li>
-                                <h3>
-                                    <a href={crossword.link}>
-                                    {crossword.date.toLocaleDateString("en", {
-                                        "month": "long", 
-                                        "day": "2-digit",
-                                    })}
-                                    </a> – <span style="text-align: right">For {crossword.vendor}</span>
-                                </h3>
-                                
-                                <p>{crossword.info}</p>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-            <div>
-                <h2 class="section-title">MUSIC</h2>
-                <ul class="section-list">
-                    {(data.music || []).map(({title, link, info}) => (
+                {links.length > 1 &&
+                    (<ul class="link-list">
+                    {links.map((link) => (
                         <li>
-                            <h3>
-                                <a href={link}>
-                                {title}
-                                </a>
-                            </h3>
-                            <p>{info}</p>
+                        <a href={link}>
+                            {link.replace("https://", "").replace("www.", "")}
+                        </a>
                         </li>
                     ))}
-                </ul>
-            </div>
-            <div>
-                <h2 class="section-title">COOL THINGS</h2>
-                <ul class="section-list">
-                    {(data.cool || []).map(({title, links, info}) => (
-                        <li>
-                            <h3>
-                                <a href={links[0]}>
-                                    {title}
-                                </a>
-                            </h3>
-                            <p>{info}</p>
+                    </ul>)
+                }
+              </li>
+            ))
+          }
+        </ul>
+      </div>
 
-                            <ul class="link-list">
-                                {links.map(link => (
-                                    <li>
-                                        <a href={link}>
-                                            {link.replace("https://", "").replace("www.", "")}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </div>
-    </main>
-</EmailLayout>
+    <div>
+      {
+        data.crosswords && (
+          <div>
+            <h2 class="section-title">CROSSWORDS</h2>
+            <ul class="section-list">
+              {(data.crosswords || []).map((crossword) => (
+                <li>
+                  <h3>
+                    <a href={crossword.link}>
+                      {crossword.date.toLocaleDateString("en", {
+                        month: "long",
+                        day: "2-digit",
+                      })}
+                    </a>{" "}
+                    –{" "}
+                    <span style="text-align: right">
+                      For {crossword.vendor}
+                    </span>
+                  </h3>
+
+                  <p>{crossword.info}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      <div>
+        <h2 class="section-title">MUSIC</h2>
+        <ul class="section-list">
+          {
+            (data.music || []).map(({ title, link, info }) => (
+              <li>
+                <h3>
+                  <a href={link}>{title}</a>
+                </h3>
+                <p>{info}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      
+    </div>
+  </main>
+</Layout>
+
+<style is:global>
+
+    a {
+        color: blue;
+
+    }
+
+    ul {
+        margin-left: 2rem;
+    }
+
+    h1, h2, h4{
+        font-weight: bold;
+    }
+
+    p {
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+  main {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px black solid;
+    padding: 2rem 1rem;
+  }
+
+
+  nav {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .link {
+    color: blue;
+    text-decoration: underline;
+  }
+
+  * {
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  .markdown {
+    padding: 3rem 0rem;
+  }
+  img {
+    max-width: 100%;
+  }
+</style>
