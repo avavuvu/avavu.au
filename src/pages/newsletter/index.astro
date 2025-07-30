@@ -3,7 +3,11 @@ import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import type { CollectionEntry } from "astro:content";
 
-const newsletters = await getCollection("newsletter");
+const allNewsletters = await getCollection("newsletter");
+
+const validNewsletters = allNewsletters.filter((newsletter) => {
+    return newsletter.data.date < new Date()
+})
 
 const generateHashLinks = (data: CollectionEntry<"newsletter">["data"], rendered: CollectionEntry<"newsletter">["rendered"]) => {
     let hashes: string[] = Object.entries(data)
@@ -40,7 +44,7 @@ const generateHashLinks = (data: CollectionEntry<"newsletter">["data"], rendered
         </header>
         
         <ul class="p-12">
-            {newsletters.map(({data, id, rendered}) => {
+            {validNewsletters.map(({data, id, rendered}) => {
                 return (
                     <li class="pb-24 p-8 m-2">
                         <span class="inline-flex justify-between w-full">
