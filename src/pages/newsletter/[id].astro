@@ -4,6 +4,8 @@ import { getCollection } from "astro:content";
 import { getEntries, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import EmailLayout from "../../layouts/EmailLayout.astro";
+import Handlebars from "handlebars"
+import {marked} from "marked"
 
 export async function getStaticPaths() {
   const newsletter = await getCollection("newsletter");
@@ -21,16 +23,21 @@ if (!entry) {
   return new Response(404);
 }
 
+const template = Handlebars.compile(entry.body!)
+const templatedMarkdown = template({
+  name: "Web Surfer"
+})
+
+const markdown = await marked.parse(templatedMarkdown);
+
 const { data } = entry;
-const { Content } = await render(entry);
+
 ---
 
 <Layout>
   <main class="email-main">
     <header class="w-full text-center">
-      <span class="w-full text-7xl md:text-8xl lg:text-8xl "> 
-        AVAVU.AU 
-    </span>
+      <span class="w-full text-7xl md:text-8xl lg:text-8xl"> AVAVU.AU </span>
 
       <nav>
         <a class="link" href="https://avavu.au"> website </a>
@@ -40,43 +47,51 @@ const { Content } = await render(entry);
         <span> newsletter </span>
       </nav>
     </header>
-    <div class="markdown">
-      <Content />
+    <div class="markdown" set:html={markdown}>
+      
     </div>
 
     <div>
-        <h2 class="section-title" id="cool">COOL THINGS</h2>
-        <ul class="section-list">
-          {
-            (data.cool || []).map(({ title, links, info }) => (
-              <li>
-                <h3>
-                  <a href={links[0]}>{title}</a>
-                </h3>
-                <p>{info}</p>
+      {
+        data.cool && (<div>
+            {
+            <h2 class="section-title" id="cool">COOL THINGS</h2>
+            <ul class="section-list">
+              {
+              (data.cool || []).map(({ title, links, info }) => (
+                <li>
+                  <h3>
+                    <a href={links[0]}>{title}</a>
+                  </h3>
+                  <p>{info}</p>
 
-                {links.length > 1 &&
-                    (<ul class="link-list">
-                    {links.map((link) => (
+                  {links.length > 1 && (
+                    <ul class="link-list">
+                      {links.map((link) => (
                         <li>
-                        <a href={link}>
+                          <a href={link}>
                             {link.replace("https://", "").replace("www.", "")}
-                        </a>
+                          </a>
                         </li>
-                    ))}
-                    </ul>)
-                }
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))
+              }
+            </ul>
+            }
+          </div>)
+        }
+    </div>
 
     <div>
       {
         data.crosswords && (
           <div>
-            <h2 class="section-title" id="crosswords">CROSSWORDS</h2>
+            <h2 class="section-title" id="crosswords">
+              CROSSWORDS
+            </h2>
             <ul class="section-list">
               {(data.crosswords || []).map((crossword) => (
                 <li>
@@ -100,45 +115,48 @@ const { Content } = await render(entry);
           </div>
         )
       }
-      <div>
-        <h2 class="section-title" id="music">MUSIC</h2>
-        <ul class="section-list">
-          {
-            (data.music || []).map(({ title, link, info }) => (
-              <li>
-                <h3>
-                  <a href={link}>{title}</a>
-                </h3>
-                <p>{info}</p>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-      
+      {
+        data.music && (
+          <div>
+            <h2 class="section-title" id="music">
+              MUSIC
+            </h2>
+            <ul class="section-list">
+              {(data.music || []).map(({ title, link, info }) => (
+                <li>
+                  <h3>
+                    <a href={link}>{title}</a>
+                  </h3>
+                  <p>{info}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
     </div>
   </main>
 </Layout>
 
 <style is:global>
+  a {
+    color: blue;
+  }
 
-    a {
-        color: blue;
+  ul {
+    margin-left: 2rem;
+  }
 
-    }
+  h1,
+  h2,
+  h4 {
+    font-weight: bold;
+  }
 
-    ul {
-        margin-left: 2rem;
-    }
-
-    h1, h2, h4{
-        font-weight: bold;
-    }
-
-    p {
-        margin-bottom: 1rem;
-        line-height: 1.2;
-    }
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
 
   main {
     max-width: 600px;
@@ -147,7 +165,6 @@ const { Content } = await render(entry);
     border: 1px black solid;
     padding: 2rem 1rem;
   }
-
 
   nav {
     border-top: 1px solid black;
