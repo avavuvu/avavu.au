@@ -1,0 +1,151 @@
+---
+export const prerender = false
+
+import type { GetStaticPaths } from "astro";
+import { getCollection, type CollectionKey } from "astro:content";
+import Layout from "../../layouts/Layout.astro"
+import { getEntries } from "astro:content";
+import { projectCollections } from "../../projects.config";
+import type { ProjectMetadata, ProjectSort } from "@t/lib/types";
+import type { CollectionEntry } from "astro:content";
+import convertToUrl from "../../lib/util/convertToUrl";
+import ProjectArchive from "../../components/projects/ProjectArchive.svelte"
+import type { SortKey } from "../api/projects/[sort]";
+
+type Projects = [string, ProjectMetadata[]][]
+
+const yearOperation = (projects: Projects) => 
+    projects.sort(([keyA,], [keyB,]) =>
+    Number(keyB) - Number(keyA))
+
+const ratingOperation = (projects: Projects): Projects => 
+    projects.sort(([keyA,], [keyB,]) => {
+        if(keyB === "other") { 
+            return -1
+        }
+
+        return keyA.length - keyB.length
+    })
+    .map(([key,value]) => {
+        if(!isNaN(Number(key))) {
+            return ['★'.repeat(Number(key)), value]
+        }
+
+        return [key, value]
+    })
+
+
+const url = Astro.url
+const sort = url.searchParams.get("sort")
+
+let sortKey = null
+if(sort && ["year", "rating", "type"].includes(sort)) {
+    sortKey = sort
+}
+
+const response = await fetch(url.origin + `/api/projects/${sortKey || "year"}`);
+const data: {
+    data: Record<string, ProjectMetadata[]>
+} = await response.json()
+
+const operationMap: Record<SortKey | "", ((project: Projects) => Projects) | undefined>  = {
+    "": yearOperation,
+    year: yearOperation,
+    rating: ratingOperation,
+    type: undefined
+}
+
+const operationKey: SortKey | "" = (sortKey ?? "") as SortKey 
+const operateOnProjects = operationMap[operationKey]
+
+const projects = operateOnProjects 
+    ? operateOnProjects(Object.entries(data.data))
+    : Object.entries(data.data)
+
+---
+
+<Layout>
+
+<div class="border-2 font-bold overflow-hidden">
+        <a 
+            href="/"
+            class="block text-center" >
+            RETURN HOME
+        </a>
+    </div>
+    <div class="border-2 font-bold">
+        <div
+            class="w-full scale-x-[100%] text-center flex justify-center gap-2 p-2">
+            <span>SORT BY:</span>
+            <a 
+                class="[.path]:border-b [.path]:border-black"
+                class:list={{path: !sortKey || sortKey === "year"}}
+                href="/projects?sort=year"
+                >
+                YEAR
+            </a>
+            <a 
+                class="[.path]:border-b [.path]:border-black"
+                class:list={{path: sortKey === "type"}}
+                href="/projects?sort=type">
+                TYPE
+            </a>
+            <a
+                class="[.path]:border-b [.path]:border-black"
+                class:list={{path: sortKey === "rating"}}
+                href="/projects?sort=rating">
+                HOW MUCH I LIKE IT
+            </a>
+        </div>
+    </div>
+    <ProjectArchive 
+        sort={sortKey}
+        projects={projects} 
+        client:only="svelte"/>
+
+</Layout>
+
+
+<style is:inline>
+    button {
+        cursor: pointer;
+    }
+
+    .selected text {
+        transform: scaleX(300%);
+        transition-duration: 1000ms;
+    }
+
+    .projects {
+        max-height: 0px;
+        transition: max-height 0.5s ease-in-out;
+        opacity: 0;
+    }
+
+    .selected .projects {
+        max-height: 80vh;
+        opacity: 100%;
+    }
+
+    .entry {
+        display: grid;
+        grid-template-rows: auto 0fr;
+        transition: grid-template-rows 0.3s ease-in-out;
+    }
+
+    .entry-content {
+        overflow: hidden;
+        min-height: 0;
+        opacity: 0;
+    }
+
+    .selected-entry .entry-content {
+        opacity: 100%;
+    }
+
+    .selected-entry.entry {
+        grid-template-rows: auto 1fr;
+    }
+
+
+</style>

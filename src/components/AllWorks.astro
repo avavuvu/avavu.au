@@ -2,7 +2,7 @@
 import type { InferEntrySchema, DataEntryMap } from "astro:content";
 import CategoryButton from "./CategoryButton.svelte"
 import EntryButton from "./EntryButton.svelte"
-import StaticDisplay from "./StaticDisplay.svelte"
+import ProjectDisplay from "./projects/ProjectDisplay.svelte"
 import DyanmicDisplay from "./DynamicDisplay.svelte"
 import type { ProjectData, ProjectSort } from "../lib/types";
 
@@ -79,63 +79,7 @@ const getRelevantData = (data: Project) => {
                                 {data} {collection} {id}
                                 client:visible>
  
-                                <div class="overflow-scroll
-                                        lg:ml-[10rem] grid-cols-[5rem_1fr] lg:grid-cols-[auto_1fr] gap-x-4 grid">
-                                    {
-                                        getRelevantData(data).map(([key, value]) => 
-                                            <>
-                                                <span>{key}</span>
-                                                <span>{value}</span>
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        hasLinks(data)
-                                        ?
-                                            <>
-                                                <span>links</span>
-                                                <div>
-                                                    {Object.entries(data.links).map(([link, href]) => (
-                                                        <a class="block underline text-blue" {href}>
-                                                            {link}
-                                                        </a>  
-                                                    ))}
-                                                </div>
-                                            </>
-                                        : ""
-                                    }
-                                    {
-                                        hasCollaborators(data)
-                                        ?
-                                            <>
-                                                <span>collaborators</span>
-                                                <div>
-                                                    {
-                                                        Object.entries(data.collaborators).map(([, href]) => {
-                                                            if (href.url) {
-                                                                return (
-                                                                <a class:list={{link: href.url}}
-                                                                    class="block" href={href.url ?? ""}>
-                                                                    {href.name}
-
-                                                                </a>)
-                                                            }
-
-                                                            return (
-                                                                <div>
-                                                                    {href.name}
-                                                                </div>
-                                                            )
-                                                        })
-                                                    }
-                                                </div>
-                                            </>
-                                        : ""
-                                    }
-                                    <div class="block lg:hidden col-span-2">
-                                        <StaticDisplay project={data}></StaticDisplay>
-                                    </div>
-                                </div>
+                                
                             </EntryButton>
                             ))
                         }

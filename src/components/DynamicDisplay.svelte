@@ -1,5 +1,5 @@
 <script lang="ts">
-    import StaticDisplay from "./StaticDisplay.svelte";
+    import StaticDisplay from "./projects/ProjectDisplay.svelte";
     import { currentCategory, currentEntry } from "../lib/projectStore";
 
     const { allProjects } = $props()
