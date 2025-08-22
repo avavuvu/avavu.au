@@ -1,0 +1,86 @@
+---
+import { getCollection, getEntry } from "astro:content"
+import Layout from "../../layouts/Layout.astro"
+import { marked, Renderer, Tokenizer, walkTokens, type TokenizerObject, type Tokens } from "marked"
+import Article from "../../components/writing/Article.svelte"
+import WritingLayout from "../../layouts/WritingLayout.astro";
+import convertToUrl from "../../lib/util/convertToUrl";
+
+export async function getStaticPaths() {
+  const writing = await getCollection("writing");
+
+  return writing.map(({data}) => ({
+    params: { id: convertToUrl(data.title) },
+  }));
+}
+
+const { id } = Astro.params
+
+if(!id) {
+    return Astro.response(404)
+}
+
+const writing = await getCollection("writing")
+const entry = writing.find((({data}) => convertToUrl(data.title) === id))
+
+if(!entry) {
+    return Astro.response(404)
+}
+
+const renderer = {
+    image({ href, title, text, tokens }) {
+        return `<img class="markdown-img" alt="${text}" src="${href}">`
+    },
+    blockquote({ tokens }) {
+        const blockquote: string[] = []
+        const other: string[] = []
+        for(const token of tokens) {
+            if(token.type === "list") {
+                other.push(token.raw)
+            } else {
+                blockquote.push(token.raw)
+            }
+        }
+
+        let output = ""
+
+        if(blockquote.length > 0) {
+            output += `<blockquote>
+                    ${marked.parse(blockquote.join("\n"))}
+                </blockquote>`
+        }
+
+        if(other) {
+            output += `<div class="attribution">${marked.parse(other.join("\n"))}</div>`
+        }
+
+        return output
+    },
+    heading({ tokens, depth }) {
+        const text = tokens.map(token => token.raw).join("")
+
+        return `<h${depth} id=${convertToUrl(text)}>${text}</h${depth}>`
+    },
+} as Renderer
+
+marked.use({
+    renderer
+})
+
+const markdown = await marked.parse(entry.body!);
+const description = await marked.parse(entry.data.description);
+
+---
+
+<WritingLayout>
+
+    <main>
+        <Article 
+            client:only="svelte"
+            data={entry.data} 
+            bodyMarkdown={markdown}
+            descriptionMarkdown={description}>
+        </Article>
+    </main>
+
+</WritingLayout>

@@ -11,15 +11,14 @@ import netlify from '@astrojs/netlify';
 export default defineConfig({
   integrations: [svelte()],
 
-  experimental: {
-    session: true,
-  },
-
   vite: {
     // @ts-ignore
     plugins: [tailwindcss()]
   },
-
+  
+  experimental: {
+    session: true,
+  },
   adapter: netlify({
     cacheOnDemandPages: true,
     

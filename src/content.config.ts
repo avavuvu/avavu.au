@@ -6,9 +6,21 @@ const webdesign = defineCollection({
     loader: glob({ pattern: "**/*.md", base: "./src/collections/webdesign" }),
     schema: z.object({
         title: z.string(),
-        date: z.date(),
+        date: z.date()
       })
 });
+
+const writing = defineCollection({
+    loader: glob({ pattern: "**/*.md", base: "./src/collections/writing" }),
+    schema: z.object({
+        title: z.string(),
+        date: z.date(),
+        author: z.string().default("Ava Vu"),
+        heroImageSrc: z.string(),
+        heroImageAlt: z.string(),
+        description: z.string()
+    })
+})
 
 const newsletter = defineCollection({
     loader: glob({ pattern: "**/*.md", base: "./src/collections/newsletter" }),
@@ -44,5 +56,6 @@ const newsletter = defineCollection({
 export const collections = { 
     ...projectCollections,
     newsletter,
-    webdesign
+    webdesign,
+    writing
 }

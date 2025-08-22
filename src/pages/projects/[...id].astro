@@ -1,14 +1,7 @@
 ---
 export const prerender = false
-
-import type { GetStaticPaths } from "astro";
-import { getCollection, type CollectionKey } from "astro:content";
 import Layout from "../../layouts/Layout.astro"
-import { getEntries } from "astro:content";
-import { projectCollections } from "../../projects.config";
 import type { ProjectMetadata, ProjectSort } from "@t/lib/types";
-import type { CollectionEntry } from "astro:content";
-import convertToUrl from "../../lib/util/convertToUrl";
 import ProjectArchive from "../../components/projects/ProjectArchive.svelte"
 import type { SortKey } from "../api/projects/[sort]";
 

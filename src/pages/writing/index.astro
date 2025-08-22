@@ -1,0 +1,12 @@
+---
+import { getCollection } from "astro:content";
+import WritingLayout from "../../layouts/WritingLayout.astro";
+import WritingArchive from "../../components/writing/WritingArchive.svelte"
+
+const pieces  = await getCollection("writing")
+---
+
+<WritingLayout>
+    <WritingArchive pieces={pieces}/>
+
+</WritingLayout>

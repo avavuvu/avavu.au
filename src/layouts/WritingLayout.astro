@@ -1,0 +1,55 @@
+---
+import Layout from "./Layout.astro";
+
+const isHome = Astro.url.pathname === "/writing" || Astro.url.pathname === "/writing/";
+const shareUrl = Astro.url.href
+---
+
+<script>
+  const button = document.querySelector("button");
+
+  button?.addEventListener("click", () => {
+    if (navigator.share) {
+      navigator.share({
+        text: "a",
+      });
+    } else {
+        const url = button.getAttribute("data-share-url")
+      navigator.clipboard.writeText(`${url}`);
+      button.querySelector("span")!.innerHTML = "copied to clipboard";
+    }
+  });
+</script>
+
+<Layout>
+  <nav class="top-0 sticky z-100">
+    <a href="/" class="bg-blue block text-white h-12">
+      <span
+        class="text-center scale-x-75 block text-4xl scale-y-[2] translate-y-0.5 font-serif"
+      >
+        avavu
+      </span>
+    </a>
+
+    <div class="bg-blue text-white w-fit scale-x-75 origin-left absolute font-serif">
+      {
+        !isHome && (
+          <a href="/writing" class=" h-12  block ">
+            <span class=" origin-left block text-4xl scale-y-[2] translate-y-0.5 font-serif">
+              more
+            </span>
+          </a>
+        )
+      }
+
+      <button data-share-url={shareUrl} class="cursor-pointer text-white h-12 block -translate-y-0.5">
+        <span class="origin-left block text-4xl scale-y-[2] translate-y-0.5 font-serif">
+          share
+        </span>
+      </button>
+    </div>
+  </nav>
+  <main class="font-serif">
+    <slot />
+  </main>
+</Layout>
