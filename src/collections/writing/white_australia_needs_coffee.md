@@ -2,7 +2,7 @@
 title: White Australia Needs Coffee
 date: 2025-08-22
 description: How Starbucks' market blunder has become Australia's new founding myth
-heroImageSrc: /images/writing/coffee/hero.png
+heroImageSrc: /images/writing/coffee/hero.svg
 heroImageAlt: Starbucks logo on a green version of the Australian flag
 ---
 
@@ -21,16 +21,16 @@ To tell the story quickly: Australia is very white for a very long time, only le
 
 This was pretty different to the story of coffee in the US. My outsider's understanding is that coffee there is like tea is here: cheap and readily available in office kitchens. I'm picturing those big glass jugs that drip coffee collects in. Starbucks' big innovation was bringing European cafe culture to the US. When I look at the original Starbucks location in Seattle, Washington, it's remarkable how unremarkable it looks. There's about 100 cafes just like that in the Inner North of Melbourne. Starbucks did this while adapting the product to the US palette, "[Not so much coffee, as hot coffee-based smoothies.](https://www.abc.net.au/news/2008-08-07/32188)" For the record, there's nothing wrong with a coffee-based smoothie. In fact that sounds delicious. But by the time the first Starbucks opened in Australia in 2000, European cafe culture had already been picked up by mainstream Australia, and strong sugar-syrup-less coffee was preferred.
 
-![Storefront of original Starbucks location](/images/writing/coffee/starbucks.jpg)
-> - [Image credit John Anderson](https://commons.wikimedia.org/wiki/File:Starbucks_street_musician.jpg)
+![Storefront of original Starbucks location](/images/writing/coffee/starbucks.webp)
+> - The original Starbucks store in Seattle [Image credit John Anderson](https://commons.wikimedia.org/wiki/File:Starbucks_street_musician.jpg)
 
 There was a lane for Starbucks. People here love sweet bubble tea, and fellow American multinational McDonalds do amazingly well with McCafé. But both of them trade on a different niche to your local cafe: sweet treats and convenience respectively. Starbucks were explicitly competing with hole in the wall cafes. You don't need an MBA to figure out why Starbucks failed, but their arrogance was amazing. One of their first stores was opened in Melbourne, in Carlton, on Lygon Street.
 
-For the uninitiated, Lygon Street has been the heartland of Italian Australian culture. By 2001, when the flagship store opened, Lygon Street had long since been gentrified, but it was still a place of historical significance. This was  where coffee jumped from Italian migrants, to "trendies", to mainstream Australians. Its insertion into Lygon Street "was seen by many as cheeky, if not insulting," to quote the book *Trendyville.*
+For the uninitiated, Lygon Street has been the heartland of Italian Australian culture in Melbourne. By 2001, when the flagship store opened, Lygon Street had long since been gentrified, but it was still a place of historical significance. This was where coffee jumped from Italian migrants, to "trendies", to mainstream Australians. Its insertion into Lygon Street "was seen by many as cheeky, if not insulting," to quote the book *Trendyville.*
 
 And they were strong-arming into the Australian market without actually attempting to accomodate the product for the Australian market. While this worked in China and the UK, tea is the hot beverage of choice there. They were selling a product that wasn't given a reason to exist, and doing so by rapidly expanding into the Australian market, without letting the consumer grow a liking for it. Once the initial hype and curiosity wore off, Starbucks' profit margins were slipping. They tried to introduce loyalty programs, but It was too little too late. The closure of most of their stores was mourned by few.
 ### Legacy
-There's a YouTube video from American news channel MSNBC telling this story with over nine million views. In the comment section, there are thousands of Australians proud of expelling Starbucks in Australia. In Trendyville, this pride is explained as inner city yuppies holding on to their 'terrain.' I would agree, but I would go further. This is myth-making. The international uniqueness of Australian coffee, and the story of how it came to be, quells two of the great anxieties within Australian culture. 
+There's a YouTube video from American news channel MSNBC telling this story with over nine million views. In the comment section, there are thousands of Australians proud of expelling Starbucks in Australia. In *Trendyville*, this pride is explained as inner city yuppies holding on to their 'terrain.' I would agree, but I would go further. This is myth-making. The international uniqueness of Australian coffee, and the story of how it came to be, quells two of the great anxieties within Australian culture. 
 
 > Starbucks:
 >
@@ -69,4 +69,4 @@ I can only truly claim Australian culture as my own, which is something I have i
 
 Apparently thick, unsliced sushi is not a thing in other countries. [There is a shop selling this "Australian-style" sushi in New York](https://www.smh.com.au/goodfood/eating-out/yes-australian-sushi-exists-get-over-it-argues-adam-liaw-20231123-p5em7w.html), which did lead to Alex Mark, the shop's owner, getting called a coloniser and accused of cultural appropration. I don't want to overstate this, because it does seem like it was just a bit of Murdoch media culture war nonsense, but this kind of cultural appropriation is probably okay. It's okay to let go of authenticity, to let ourselves create a culture of our.  There have been "Australian-style" cafe's popping up globally, selling ["Australian-style" breakfast](https://www.nytimes.com/2018/07/24/dining/australian-breakfast.html); combining British, Mediterranean, Asian foodstuffs. It would be a worthwhile exercise in cultural richness to willingly invent a new Australian culture. And I think we should start with the breakfast menu.
 ### One more thing
-Also, it should be noted that Starbucks' failure was just as much about the 2008 financial crisis as it was about the Australian palette. It also wouldn't really be completely accurate to say they failed in Australia. They did incur huge losses, but there are now 89 stores here which is more than there were in 2008. They've changed tack, opening seven stores in Melbourne's CBD, including two on Elizabeth Street. They also have lots of stores scattered around suburban shopping centres, but a conspicuous lack of them in the inner suburbs. Despite their success, Starbucks are yet to reopen on Lygon Street. 
+It should be noted that Starbucks' failure was just as much about the 2008 financial crisis as it was about the Australian palette. It also wouldn't really be completely accurate to say they failed in Australia. They did incur huge losses, but there are now 89 stores here which is more than there were in 2008. They've changed tack, opening seven stores in Melbourne's CBD, including two on Elizabeth Street. They also have lots of stores scattered around suburban shopping centres, but a conspicuous lack of them in the inner suburbs. Despite their success, Starbucks are yet to reopen on Lygon Street. 
