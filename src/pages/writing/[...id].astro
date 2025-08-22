@@ -2,9 +2,11 @@
 import { getCollection, getEntry } from "astro:content"
 import Layout from "../../layouts/Layout.astro"
 import { marked, Renderer, Tokenizer, walkTokens, type TokenizerObject, type Tokens } from "marked"
+import markedPlaintify from "marked-plaintify"
 import Article from "../../components/writing/Article.svelte"
 import WritingLayout from "../../layouts/WritingLayout.astro";
 import convertToUrl from "../../lib/util/convertToUrl";
+import { data } from "motion/react-client";
 
 export async function getStaticPaths() {
   const writing = await getCollection("writing");
@@ -70,9 +72,22 @@ marked.use({
 const markdown = await marked.parse(entry.body!);
 const description = await marked.parse(entry.data.description);
 
+marked.use(markedPlaintify())
+
+const plainDescription = await marked.parse(entry.data.description)
+
+const hero = typeof entry.data.heroImageSrc === "string"
+    ? entry.data.heroImageSrc
+    : entry.data.heroImageSrc.find(src => src.endsWith(".png") || src.endsWith(".jpg"))!
+
 ---
 
-<WritingLayout>
+<WritingLayout 
+    title={entry.data.title} 
+    image={hero}
+    description={plainDescription}
+    author={entry.data.author}
+    tags={[]}>
 
     <main>
         <Article 

@@ -6,7 +6,7 @@ import WritingArchive from "../../components/writing/WritingArchive.svelte"
 const pieces  = await getCollection("writing")
 ---
 
-<WritingLayout>
+<WritingLayout title="Ava Vu Archive" image="/favicon.svg" author="Ava Vu" tags={[]}>
     <WritingArchive pieces={pieces}/>
 
 </WritingLayout>

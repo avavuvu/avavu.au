@@ -14,6 +14,16 @@
 
     const { date, author, title, heroImageSrc, heroImageAlt } = data
 
+    const heroImagePrimary = typeof heroImageSrc === "string"
+        ? heroImageSrc
+        : heroImageSrc[0]
+
+    const heroImageSecondary = typeof heroImageSrc !== "string"
+        ? heroImageSrc
+        : []
+
+    const heroImageCompat = heroImageSecondary.find(src => src.endsWith(".png") || src.endsWith(".jpg"))
+
     const formattedDate = date.toLocaleDateString("EN-AU", {
         year: "numeric",
         month: "long",
@@ -50,7 +60,13 @@
 
         {#if heroImageSrc}
             <div class="w-full h-full col-start-1 col-end-3 row-start-1 row-end-3 -z-40 relative p-10">
-                <img src={heroImageSrc} alt={heroImageAlt}>
+                <picture>
+                    {#each heroImageSecondary as image}
+                        <source srcset={image}/>
+                    {/each}
+
+                    <img src={heroImagePrimary} alt={heroImageAlt}>
+                </picture>
             </div> 
         {/if}
         

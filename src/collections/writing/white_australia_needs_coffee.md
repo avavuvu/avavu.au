@@ -2,7 +2,7 @@
 title: White Australia Needs Coffee
 date: 2025-08-22
 description: How Starbucks' market blunder has become Australia's new founding myth
-heroImageSrc: /images/writing/coffee/hero.svg
+heroImageSrc: [/images/writing/coffee/hero.svg,/images/writing/coffee/hero.png]
 heroImageAlt: Starbucks logo on a green version of the Australian flag
 ---
 
