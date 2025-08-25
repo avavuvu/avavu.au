@@ -18,7 +18,11 @@ const writing = defineCollection({
         author: z.string().default("Ava Vu"),
         heroImageSrc: z.string().or(z.array(z.string())),
         heroImageAlt: z.string(),
-        description: z.string()
+        description: z.string(),
+        bsky: z.object({
+            did: z.string(),
+            postCid: z.string(),
+        }).optional()
     })
 })
 

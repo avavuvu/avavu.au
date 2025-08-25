@@ -6,7 +6,7 @@ import markedPlaintify from "marked-plaintify"
 import Article from "../../components/writing/Article.svelte"
 import WritingLayout from "../../layouts/WritingLayout.astro";
 import convertToUrl from "../../lib/util/convertToUrl";
-import { data } from "motion/react-client";
+import Comments from "../../components/writing/Comments.svelte"
 
 export async function getStaticPaths() {
   const writing = await getCollection("writing");
@@ -88,6 +88,10 @@ const hero = typeof entry.data.heroImageSrc === "string"
     description={plainDescription}
     author={entry.data.author}
     tags={[]}>
+
+    {entry.data.bsky && (
+        <Comments client:load bsky={entry.data.bsky}></Comments>
+    )}
 
     <main>
         <Article 
