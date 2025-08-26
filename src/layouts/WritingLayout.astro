@@ -1,27 +1,63 @@
 ---
-import Layout from "./Layout.astro";
+import "../styles/global.css"
+
+interface Props {
+  image: string,
+  url?: string,
+  title: string,
+  description?: string
+  author: string,
+  tags: string[]
+}
+
+const { image, 
+    url = Astro.url.href, title, description, author, tags } = Astro.props
 
 const isHome = Astro.url.pathname === "/writing" || Astro.url.pathname === "/writing/";
-const shareUrl = Astro.url.href
 ---
 
 <script>
   const button = document.querySelector("button");
 
   button?.addEventListener("click", () => {
+    const url = window.location.href
+    const title = button.getAttribute("data-share-title")
     if (navigator.share) {
       navigator.share({
-        text: "a",
+        text: title!,
+        url: url!
       });
     } else {
-        const url = button.getAttribute("data-share-url")
-      navigator.clipboard.writeText(`${url}`);
-      button.querySelector("span")!.innerHTML = "copied to clipboard";
+        navigator.clipboard.writeText(`${url}`);
+        button.querySelector("span")!.innerHTML = "copied to clipboard";
     }
   });
 </script>
 
-<Layout>
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} – Ava Vu</title>
+		<meta property="og:locale" content="en_AU" />
+		<meta property="og:title" content={title} />
+		<meta property="og:type" content="article"/>
+		<meta property="og:image" content={image}/>
+		<meta property="twitter:card" content={image}/>
+		<meta property="og:site_name" content="Ava Vu"/>
+		<meta property="og:url" content={url}/>
+    {description && (
+      <meta property="og:description" content={description}/>
+    )}
+		<meta property="article:author" content={author}/>
+    {tags && tags.map(tag => (
+      <meta property="article:tag" content={tag}/>
+    ))}
+	</head>
+	<body>
   <nav class="top-0 sticky z-100">
     <a href="/" class="bg-blue block text-white h-12">
       <span
@@ -42,13 +78,15 @@ const shareUrl = Astro.url.href
         )
       }
 
-      <button data-share-url={shareUrl} class="cursor-pointer text-white h-12 block -translate-y-0.5">
+      <button data-share-title={title} class="cursor-pointer text-white h-12 block -translate-y-0.5">
         <span class="origin-left block text-4xl scale-y-[2] translate-y-0.5 font-serif">
           share
         </span>
       </button>
     </div>
   </nav>
+  <main class="font-serif">
     <slot />
-
-</Layout>
+  </main>
+	</body>
+</html>
