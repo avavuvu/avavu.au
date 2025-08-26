@@ -103,14 +103,6 @@ const description = await unified()
     .use(rehypeStringify)
     .process(entry.data.description)
 
-const plainDescription = await unified()
-    .use(remarkParse)
-    .use(remarkDirective)
-    .use(remarkPlainText)
-    .use(remarkRehype)
-    .use(rehypeStringify)
-    .process(entry.data.description)
-
 const hero = typeof entry.data.heroImageSrc === "string"
     ? entry.data.heroImageSrc
     : entry.data.heroImageSrc.find(src => src.endsWith(".png") || src.endsWith(".jpg"))!
@@ -120,7 +112,7 @@ const hero = typeof entry.data.heroImageSrc === "string"
 <WritingLayout 
     title={entry.data.title} 
     image={hero}
-    description={plainDescription.toString()}
+    description={entry.data.description}
     author={entry.data.author}
     tags={entry.data.tags || []}>
 
