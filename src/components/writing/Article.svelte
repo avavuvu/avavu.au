@@ -12,7 +12,7 @@
 
     } = $props();
 
-    const { date, author, title, heroImageSrc, heroImageAlt } = data
+    const { date, author, title, heroImageSrc, heroImageAlt, links } = data
 
     const formattedDate = date.toLocaleDateString("EN-AU", {
         year: "numeric",
@@ -75,7 +75,27 @@
         <div></div>
     </div>
 
-    <div class="border-b border-black max-w-main mx-auto my-2"></div>
+    <div class="grid
+        grid-cols-[1rem_auto_1rem]
+        lg:grid-cols-[1fr_620px_1fr]">
+        <div></div>
+        <div>
+            <h2>Links</h2>
+            <ul>
+                {#each links || [] as {title, pub, url}}
+                    <li class="grid grid-cols-[64%_auto] pb-2">
+                        <a href={url} class=" text-blue underline">
+                            <h3>{title}</h3>
+                        </a>
+                        <span class="text-right">{pub}</span>
+                    </li>
+                {/each}
+            </ul>
+        </div>
+        <div></div>
+    </div>
+
+        <div class="border-b border-black max-w-main mx-auto my-2"></div>
 
 
     <div class="max-w-[600px] mx-auto grid grid-cols-2 gap-4 px-4">
@@ -104,14 +124,18 @@
     <div class="border-b border-black max-w-main mx-auto my-2"></div>
 </section>
 
-<section class="font-system">
-    <div class="max-w-main mx-auto">
-        <h2 class="text-4xl scale-x-75 text-center">Not Enough Ava?</h2>
+<section class="font-system grid pb-48
+        grid-cols-[1rem_auto_1rem]
+        lg:grid-cols-[1fr_620px_1fr]">
+    <div></div>    
+    
+    <div class="">
+        <h2 class="">Not Enough Ava?</h2>
         <p class="text-center py-12">Subscribe to my newsletter!</p>
         <Subscribe></Subscribe>
     </div>
 
-    <div class="pb-48">
+    <div class="">
         
     </div>
 
@@ -136,7 +160,7 @@
         margin: 0rem 1rem 2rem 2.5rem;
     }
 
-    :global(.markdown h1, .markdown h2, .markdown h3) {
+    :global(.markdown h1, .markdown h2, .markdown h3), h2 {
         padding: .7rem 0rem;
         font-size: xx-large;
         font-weight: bold;
