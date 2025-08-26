@@ -49,7 +49,9 @@ To tell the story quickly: Australia is very white for a very long time, only al
 This was pretty different to the story of coffee in the US. My outsider's understanding is that coffee there is like tea here: cheap and readily available in office kitchens. I'm picturing those big glass jugs that drip coffee collects in. Starbucks' big innovation was bringing European cafe culture to the US. When I look at the original Starbucks location in Seattle, Washington, it's remarkable how unremarkable it looks. There's about 100 cafes just like it in the Inner North of Melbourne. Starbucks did this while adapting the product to the US palette: "[Not so much coffee, as hot coffee-based smoothies](https://www.abc.net.au/news/2008-08-07/32188)". For the record, there's nothing wrong with a coffee-based smoothie. In fact that sounds delicious. But by the time the first Starbucks opened in Australia in 2000, European cafe culture had already been picked up by mainstream Australia, and strong sugar-syrup-less coffee was preferred.
 
 ![Storefront of original Starbucks location](/images/writing/coffee/starbucks.webp)
->- Image credit John Anderson: https://commons.wikimedia.org/wiki/File:Starbucks_street_musician.jpg
+:::attribution
+[Image credit John Anderson](https://commons.wikimedia.org/wiki/File:Starbucks_street_musician.jpg)
+:::
 
 There was a lane for Starbucks. People here love sweet bubble tea, and fellow American multinational McDonalds do amazingly well with McCafé. But both of them trade on a different niche to your local cafe: sweet treats and convenience respectively. Starbucks was explicitly competing with hole in the wall cafes. You don't need an MBA to figure out why Starbucks failed, but their arrogance was amazing. One of their first stores was opened on Lygon Street, Carlton.
 
@@ -63,7 +65,9 @@ There's a YouTube video from American news channel MSNBC telling this story with
 > Starbucks:
 >
 > Australia (cheerfully): fuck off, cunt
-> - [u/Status_Task6345](https://www.reddit.com/r/todayilearned/comments/17mvlel/til_that_starbucks_incurred_massive_losses_and/k7oi5qw/) 
+:::attribution
+[u/Status_Task6345](https://www.reddit.com/r/todayilearned/comments/17mvlel/til_that_starbucks_incurred_massive_losses_and/k7oi5qw/) 
+:::
 
 The recency of multicultural Australia is obvious. '*Multiculturalism*' was first used by the government in 1973, only three years *after* my dad arrived from Vietnam. You only need to spend a few seconds in the comment sections of TikToks of archival footage of Australia to see that not everyone has bought in to multicultural Australia. It is genuinely hard to tell who is nostalgic for a time before smart phones, and who is nostalgic for a time before Muslims. Only [63% of Australians agree that Australia is a successful multicultural society](https://link.springer.com/article/10.1007/s12134-020-00784-z), which is a slightly terrifying number. 
 
@@ -72,12 +76,16 @@ This percentage would be higher if it wasn't so easy for them to point to failur
 Positive counter examples are slightly harder to come by. They exist, of course, but they are usually a lot less tangible. There's a really interesting paper from 2011 called *Cosmopolitan nationalism: ordinary people making sense of diversity* with interviews from ordinary Australians making sense of diversity. When asked about the benefits of diversity, some interviewees pointed to the hard work done by migrants. Some older respondents said "it mixes up the breeding". Most people, however, said that diversity enabled them to learn from other cultures.
 
 >I think we’re lucky here that we have all the world right in our lap. We can experience the feelings of the people by talking to them, seeing what they wear, and what they eat, and all that. Can go into a restaurant with music and almost feel as if you’re over there ... I don’t go to restaurants much, can’t afford it, but I love talking to people.
->- 46 year old Italian interviewee
+:::attribution
+46 year old Italian interviewee
+:::
 
 No matter how hard you try, you simply cannot poke "learning from other cultures" with a stick. So it's not surprising to me that food was explicitly mentioned by many of the respondents, as the next closest physical stand-in. This is true for coffee, but also for sushi and the banh mi. Even if they've been modified for the Australian palette, and in the case of sushi, quite significantly, sharing food is how people bond. "Breaking bread" is used as a metaphor for building community for a reason.
 
 >\[S\]haring food is a central form of cultural exchange and reciprocity. Even if this is in restaurants or at market stalls, it embeds the benefits of immigration in people’s everyday life like little else.
->- Judith Brett and Anothony Moran, in *Cosmopolitan nationalism: ordinary people making sense of diversity*
+:::attribution
+Judith Brett and Anothony Moran, in *Cosmopolitan nationalism: ordinary people making sense of diversity*
+:::
 
 It's always funny talking to older Australians about the food options they grew up with. Sometimes it feels like they are talking about the Middle Ages. But the love of exotic food does reveal the other insecurity that has persisted in Australian society since the First Fleet: the so-called 'cultural cringe'. It makes some sense that a nation that was founded by criminals, that so throughly rejected the cultures of its indigenous peoples, feels some uncertainty about its cultural identity. When someone asks what Australia's national dish is, there's that awful instinctual wince I do when I have to wheel out the chicken parma or the meat pie. Not that I don't like the taste of meat pies, but there's this longstanding belief that Australian culture, and the food therein, is inherently inferior to the rest of the world's. This perception isn't helped by the so much of what is uniquely Australian being low culture. Just look at our public holidays: we have one dedicated to footy (Grand Final Day), one dedicated to gambling (Melbourne Cup), and another dedicated to drinking (Australia day).
 
