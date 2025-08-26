@@ -83,11 +83,13 @@
 
     </div>
 
-    <div class="markdown grid 
+    <div class=" grid 
         grid-cols-[1rem_auto_1rem]
         lg:grid-cols-[1fr_620px_1fr] max-w-fit mx-auto">
         <div></div>
-        {@html bodyMarkdown}
+        <div class="markdown">
+            {@html bodyMarkdown}
+        </div>
         <div></div>
     </div>
 

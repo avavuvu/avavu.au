@@ -1,12 +1,17 @@
 ---
-import { getCollection, getEntry } from "astro:content"
-import Layout from "../../layouts/Layout.astro"
-import { marked, Renderer, Tokenizer, walkTokens, type TokenizerObject, type Tokens } from "marked"
-import markedPlaintify from "marked-plaintify"
+import { getCollection } from "astro:content"
 import Article from "../../components/writing/Article.svelte"
 import WritingLayout from "../../layouts/WritingLayout.astro";
 import convertToUrl from "../../lib/util/convertToUrl";
-import { data } from "motion/react-client";
+import { remark } from "remark"
+import { visit } from "unist-util-visit"
+import { h } from "hastscript"
+import type { Root } from "mdast"
+import remarkDirective from "remark-directive";
+import remarkRehype from 'remark-rehype'
+import rehypeStringify from 'rehype-stringify'
+import remarkParse from 'remark-parse'
+import { unified } from "unified";
 
 export async function getStaticPaths() {
   const writing = await getCollection("writing");
@@ -29,52 +34,82 @@ if(!entry) {
     return Astro.response(404)
 }
 
-const renderer = {
-    image({ href, title, text, tokens }) {
-        return `<img class="markdown-img" alt="${text}" src="${href}">`
-    },
-    blockquote({ tokens }) {
-        const blockquote: string[] = []
-        const other: string[] = []
-        for(const token of tokens) {
-            if(token.type === "list") {
-                other.push(token.raw)
-            } else {
-                blockquote.push(token.raw)
-            }
+const attribution = () => {
+    return (tree: Root) => {
+    visit(tree, (node) => {
+      if (
+        node.type === 'containerDirective' ||
+        node.type === 'leafDirective' ||
+        node.type === 'textDirective'
+      ) {
+        if (node.name !== 'attribution') return
+
+        const data = node.data || (node.data = {})
+        const tagName = "div"
+
+        data.hName = tagName
+        data.hProperties = {
+            ...h(tagName, node.attributes || {}).properties,
+            className: "attribution"
+        }
+      }
+    })
+  }
+}
+
+const headingId = () => {
+  return (tree: Root) => {
+    visit(tree, 'heading', (node) => {
+
+        const data = node.data || (node.data = {})
+        const tagName = `h${node.depth}`
+
+        const text = node.children.find(child => child.type === "text")
+
+        const id = convertToUrl(text?.value || "")
+
+        data.hName = tagName
+        data.hProperties = {
+            ...h(tagName).properties,
+            id
         }
 
-        let output = ""
+    })
+  }
+}
 
-        if(blockquote.length > 0) {
-            output += `<blockquote>
-                    ${marked.parse(blockquote.join("\n"))}
-                </blockquote>`
-        }
+const remarkPlainText = () => {
+  return (tree: Root) => {
+    let text = ''
+    visit(tree, 'text', (node) => {
+      text += node.value + ' '
+    })
+  }
+}
 
-        if(other) {
-            output += `<div class="attribution">${marked.parse(other.join("\n"))}</div>`
-        }
+const markdown = await unified()
+    .use(remarkParse)
+    .use(remarkDirective)
+    .use(attribution)
+    .use(headingId)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .process(entry.body!)
 
-        return output
-    },
-    heading({ tokens, depth }) {
-        const text = tokens.map(token => token.raw).join("")
+const description = await unified()
+    .use(remarkParse)
+    .use(remarkDirective)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .process(entry.data.description)
 
-        return `<h${depth} id=${convertToUrl(text)}>${text}</h${depth}>`
-    },
-} as Renderer
-
-marked.use({
-    renderer
-})
-
-const markdown = await marked.parse(entry.body!);
-const description = await marked.parse(entry.data.description);
-
-marked.use(markedPlaintify())
-
-const plainDescription = await marked.parse(entry.data.description)
+const plainDescription = await unified()
+    .use(remarkParse)
+    .use(remarkDirective)
+    .use(remarkPlainText)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .process(entry.data.description)
 
 const hero = typeof entry.data.heroImageSrc === "string"
     ? entry.data.heroImageSrc
@@ -85,16 +120,16 @@ const hero = typeof entry.data.heroImageSrc === "string"
 <WritingLayout 
     title={entry.data.title} 
     image={hero}
-    description={plainDescription}
+    description={plainDescription.toString()}
     author={entry.data.author}
-    tags={[]}>
+    tags={entry.data.tags || []}>
 
     <main>
         <Article 
             client:only="svelte"
             data={entry.data} 
-            bodyMarkdown={markdown}
-            descriptionMarkdown={description}>
+            bodyMarkdown={markdown.toString()}
+            descriptionMarkdown={description.toString()}>
         </Article>
     </main>
 
