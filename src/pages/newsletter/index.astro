@@ -5,9 +5,9 @@ import type { CollectionEntry } from "astro:content";
 
 const allNewsletters = await getCollection("newsletter");
 
-const validNewsletters = allNewsletters.filter((newsletter) => {
-    return newsletter.data.date < new Date()
-})
+const validNewsletters = allNewsletters
+    .filter((newsletter) => newsletter.data.date < new Date())
+    .sort((newsletterA, newsletterB) => new Date(newsletterB.data.date).getTime() - new Date(newsletterA.data.date).getTime())
 
 const generateHashLinks = (data: CollectionEntry<"newsletter">["data"], rendered: CollectionEntry<"newsletter">["rendered"]) => {
     let hashes: string[] = Object.entries(data)
@@ -29,7 +29,7 @@ const generateHashLinks = (data: CollectionEntry<"newsletter">["data"], rendered
 }
 ---
 
-<Layout>
+<Layout title="Newsletter – Ava Vu">
     <main class="max-w-[600px] mx-auto">
         <header class="w-full text-center">
         <span class="w-full text-7xl md:text-8xl lg:text-8xl "> 
@@ -49,7 +49,7 @@ const generateHashLinks = (data: CollectionEntry<"newsletter">["data"], rendered
                     <li class="pb-24 p-8 m-2">
                         <span class="inline-flex justify-between w-full">
                             <h2>
-                                <a class="link" href={`${id}`}>
+                                <a class="link" href={`/newsletter/${id}`}>
                                     {data.subject}
                                 </a>
                             </h2>
@@ -70,7 +70,7 @@ const generateHashLinks = (data: CollectionEntry<"newsletter">["data"], rendered
                                             ) 
                                             rotate(${12 - Math.random() * 24}deg)
                                         `}}>
-                                            <a class="link" href={`${id}#${key}`}>
+                                            <a class="link" href={`/newsletter/${id}#${key}`}>
                                             {`★${key}`}
                                             </a>
                                     </li>)

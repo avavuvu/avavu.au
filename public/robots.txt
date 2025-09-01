@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://avavu.au/sitemap-index.xml

@@ -1,0 +1,225 @@
+---
+export const prerender = true;
+
+import type { GetStaticPaths, GetStaticPathsResult } from "astro";
+import Layout from "../../../layouts/Layout.astro";
+import { allProjects } from "../../../lib/projectCollection";
+import convertToUrl from "../../../lib/util/convertToUrl";
+import type { ProjectMetadata } from "../../../lib/types"
+import ProjectArchive from "../../../components/projects/ProjectArchive.svelte"
+import type { SortKey } from "../../api/projects/[sort]";
+import { a } from "motion/react-client";
+
+export const getStaticPaths = (() => {
+    const projectPaths = allProjects.flatMap((project) => {
+      const rating = project.data.rating ? `rating-${project.data.rating}` : 'other'
+      const year = `year-${project.data.date.getFullYear()}`
+  
+      return [project.collection, year, rating].map(category => ({
+          params: {
+              category: category,
+              id: convertToUrl(project.data.title),
+          },
+      }))
+    }) as GetStaticPathsResult
+    
+    const allCategorysMap: Map<string, SortKey> = new Map([])
+
+    allProjects.forEach(project => {
+        const rating = project.data.rating ? `rating-${project.data.rating}` : 'other'
+        const year = `year-${project.data.date.getFullYear()}`
+
+        allCategorysMap.set(year, "year")
+        allCategorysMap.set(rating, "rating")
+        allCategorysMap.set(String(project.collection), "type")
+    })
+
+    const allCategorys = allCategorysMap.entries().toArray().map(([category,]) => ({
+        params: {
+            category,
+            id: undefined
+        } 
+    })) as GetStaticPathsResult
+
+    return projectPaths.concat(allCategorys)
+}
+) satisfies GetStaticPaths;
+
+const {category, id} = Astro.params;
+
+type Projects = [string, ProjectMetadata[]][]
+
+const yearOperation = (projects: Projects) => 
+    projects.sort(([keyA,], [keyB,]) =>
+    Number(keyB) - Number(keyA))
+
+const ratingOperation = (projects: Projects): Projects => 
+    projects.sort(([keyA,], [keyB,]) => {
+        if(keyB === "other") { 
+            return -1
+        }
+
+        return keyA.length - keyB.length
+    })
+    .map(([key,value]) => {
+        if(!isNaN(Number(key))) {
+            return ['★'.repeat(Number(key)), value]
+        }
+
+        return [key, value]
+    })
+
+
+const url = Astro.url
+
+const allCategorysMap: Map<string, SortKey> = new Map([])
+
+allProjects.forEach(project => {
+    const rating = project.data.rating ? `rating-${project.data.rating}` : 'other'
+    const year = `year-${project.data.date.getFullYear()}`
+
+    allCategorysMap.set(year, "year")
+    allCategorysMap.set(rating, "rating")
+    allCategorysMap.set(String(project.collection), "type")
+})
+
+let sortKey: SortKey | null = null
+if (typeof category === "string" && allCategorysMap.has(category)) {
+    sortKey = allCategorysMap.get(category) ?? null
+}
+const response = await fetch(url.origin + `/api/projects/${sortKey || "year"}`);
+const data: {
+    data: Record<string, ProjectMetadata[]>
+} = await response.json()
+
+const operationMap: Record<SortKey | "", ((project: Projects) => Projects) | undefined>  = {
+    "": yearOperation,
+    year: yearOperation,
+    rating: ratingOperation,
+    type: undefined
+}
+
+// TODO: Move this to generic
+
+const operationKey: SortKey | "" = (sortKey ?? "") as SortKey 
+const operateOnProjects = operationMap[operationKey]
+
+const projects = operateOnProjects 
+    ? operateOnProjects(Object.entries(data.data))
+    : Object.entries(data.data)
+
+let pageTitle = `Projects – Ava Vu`
+let pageDescription = "Everyone made by Ava Vu"
+let pageImage: string | undefined = undefined;
+
+if(id) {
+    const entry = allProjects.find((project) => convertToUrl(project.data.title) === id)
+
+    if(entry) {
+        const { title, description, imageSrc } = entry.data
+
+        pageTitle = `${title} – Ava Vu`
+
+        if(description) {
+            pageDescription = description
+        }
+
+        if(imageSrc) {
+            if(typeof imageSrc === "string") {
+                pageImage = imageSrc
+            } else {
+                pageImage = imageSrc[0]
+            }
+        }
+    }
+}
+---
+
+<Layout title={pageTitle} description={pageDescription} image={pageImage} >
+
+<div class="border-2 font-bold overflow-hidden">
+        <a 
+            href="/"
+            class="block text-center" >
+            RETURN HOME
+        </a>
+    </div>
+    <div class="border-2 font-bold">
+        <div
+            class="w-full scale-x-[100%] text-center flex justify-center gap-2 p-2">
+            <span>SORT BY:</span>
+            <a 
+                class="[.path]:border-b [.path]:border-black"
+                class:list={{path: !sortKey || sortKey === "year"}}
+                href="/projects?sort=year"
+                >
+                YEAR
+            </a>
+            <a 
+                class="[.path]:border-b [.path]:border-black"
+                class:list={{path: sortKey === "type"}}
+                href="/projects?sort=type">
+                TYPE
+            </a>
+            <a
+                class="[.path]:border-b [.path]:border-black"
+                class:list={{path: sortKey === "rating"}}
+                href="/projects?sort=rating">
+                HOW MUCH I LIKE IT
+            </a>
+        </div>
+    </div>
+    <ProjectArchive 
+        prerendered={{
+            category: category!,
+            year: id!
+        }}
+        sort={sortKey}
+        projects={projects} 
+        client:load
+      />
+
+</Layout>
+
+
+<style is:inline>
+    button {
+        cursor: pointer;
+    }
+
+    .selected text {
+        transform: scaleX(300%);
+        transition-duration: 1000ms;
+    }
+
+    .projects {
+        max-height: 0px;
+        transition: max-height 0.5s ease-in-out;
+        opacity: 0;
+    }
+
+    .selected .projects {
+        max-height: 80vh;
+        opacity: 100%;
+    }
+
+    .entry {
+        display: grid;
+        grid-template-rows: auto 0fr;
+        transition: grid-template-rows 0.3s ease-in-out;
+    }
+
+    .entry-content {
+        overflow: hidden;
+        min-height: 0;
+        opacity: 0;
+    }
+
+    .selected-entry .entry-content {
+        opacity: 100%;
+    }
+
+    .selected-entry.entry {
+        grid-template-rows: auto 1fr;
+    }
+</style>

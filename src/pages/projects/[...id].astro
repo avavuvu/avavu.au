@@ -1,7 +1,7 @@
 ---
 export const prerender = false
 import Layout from "../../layouts/Layout.astro"
-import type { ProjectMetadata, ProjectSort } from "@t/lib/types";
+import type { ProjectMetadata } from "@t/lib/types";
 import ProjectArchive from "../../components/projects/ProjectArchive.svelte"
 import type { SortKey } from "../api/projects/[sort]";
 
@@ -40,6 +40,7 @@ const response = await fetch(url.origin + `/api/projects/${sortKey || "year"}`);
 const data: {
     data: Record<string, ProjectMetadata[]>
 } = await response.json()
+
 
 const operationMap: Record<SortKey | "", ((project: Projects) => Projects) | undefined>  = {
     "": yearOperation,
@@ -139,6 +140,4 @@ const projects = operateOnProjects
     .selected-entry.entry {
         grid-template-rows: auto 1fr;
     }
-
-
 </style>
