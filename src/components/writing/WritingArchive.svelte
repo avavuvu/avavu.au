@@ -1,17 +1,12 @@
 <script lang="ts">
-  import type { CollectionEntry } from "astro:content";
-  import { marked } from "marked";
-  import convertToUrl from "../../lib/util/convertToUrl";
+    import type { CollectionEntry } from "astro:content";
+    import convertToUrl from "src/lib/util/convertToUrl";
 
     const { pieces }: {
         pieces: CollectionEntry<"writing">[]
     } = $props()
 
     const formatDate = (date: Date) => `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
-
-    const parseMarkdown = (markdown: string) => {
-        return marked(markdown);
-    }
 
 </script>
 
@@ -33,3 +28,7 @@
     
     </ul>
 </div>
+
+<style>
+
+</style>

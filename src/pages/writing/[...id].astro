@@ -1,17 +1,12 @@
 ---
-import { getCollection } from "astro:content"
+import { getCollection, render } from "astro:content"
 import Article from "../../components/writing/Article.svelte"
 import WritingLayout from "../../layouts/WritingLayout.astro";
 import convertToUrl from "../../lib/util/convertToUrl";
-import { remark } from "remark"
-import { visit } from "unist-util-visit"
-import { h } from "hastscript"
-import type { Root } from "mdast"
-import remarkDirective from "remark-directive";
-import remarkRehype from 'remark-rehype'
-import rehypeStringify from 'rehype-stringify'
-import remarkParse from 'remark-parse'
-import { unified } from "unified";
+import Markdoc, { type Node } from "@markdoc/markdoc"
+import { standardMarkdocConfig } from "markdoc.config";
+import { content } from "src/lib/sidenote";
+import Subscribe from "@/newsletter/Subscribe.svelte"
 
 export async function getStaticPaths() {
   const writing = await getCollection("writing");
@@ -34,78 +29,70 @@ if(!entry) {
     return Astro.response(404)
 }
 
-const attribution = () => {
-    return (tree: Root) => {
-    visit(tree, (node) => {
-      if (
-        node.type === 'containerDirective' ||
-        node.type === 'leafDirective' ||
-        node.type === 'textDirective'
-      ) {
-        if (node.name !== 'attribution') return
-
-        const data = node.data || (node.data = {})
-        const tagName = "div"
-
-        data.hName = tagName
-        data.hProperties = {
-            ...h(tagName, node.attributes || {}).properties,
-            className: "attribution"
-        }
-      }
-    })
-  }
-}
-
-const headingId = () => {
-  return (tree: Root) => {
-    visit(tree, 'heading', (node) => {
-
-        const data = node.data || (node.data = {})
-        const tagName = `h${node.depth}`
-
-        const text = node.children.find(child => child.type === "text")
-
-        const id = convertToUrl(text?.value || "")
-
-        data.hName = tagName
-        data.hProperties = {
-            ...h(tagName).properties,
-            id
-        }
-
-    })
-  }
-}
-
-const remarkPlainText = () => {
-  return (tree: Root) => {
-    let text = ''
-    visit(tree, 'text', (node) => {
-      text += node.value + ' '
-    })
-  }
-}
-
-const markdown = await unified()
-    .use(remarkParse)
-    .use(remarkDirective)
-    .use(attribution)
-    .use(headingId)
-    .use(remarkRehype)
-    .use(rehypeStringify)
-    .process(entry.body!)
-
-const description = await unified()
-    .use(remarkParse)
-    .use(remarkDirective)
-    .use(remarkRehype)
-    .use(rehypeStringify)
-    .process(entry.data.description)
-
 const hero = typeof entry.data.heroImageSrc === "string"
     ? entry.data.heroImageSrc
     : entry.data.heroImageSrc.find(src => src.endsWith(".png") || src.endsWith(".jpg"))!
+
+
+const ast = Markdoc.parse(entry.body!)
+
+const collectNotes = (node: Node, sections: Record<string,string> = {}) => {
+	if(node.tag) {
+		if(node.tag === "note-content") {
+			const renderableNode = Markdoc.transform(node, {
+				tags: {
+					youtube: standardMarkdocConfig.tags!.youtube,
+					video: standardMarkdocConfig.tags!.video,
+					tiktok: standardMarkdocConfig.tags!.tiktok
+				},
+				nodes: {
+					paragraph: {
+						render: "span"
+					}
+				}
+			})
+
+			const html = Markdoc.renderers.html(renderableNode)
+
+			sections[node.attributes["i"]] = html
+		}
+	}
+
+	if (node.children) {
+		for (const child of node.children) {
+			collectNotes(child, sections);
+		}
+	}
+
+	return sections
+}
+const notes = collectNotes(ast)
+
+for(const [id, html] of Object.entries(notes)) {
+  content[id] = html
+}
+
+const articleContent = await render(entry)
+
+
+const { date, author, title, heroImageSrc, heroImageAlt, links, description } = entry.data
+const descriptionAst = Markdoc.parse(description)
+const descriptionRenderable = Markdoc.transform(descriptionAst)
+const descriptionHtml = Markdoc.renderers.html(descriptionRenderable)
+
+const formattedDate = date.toLocaleDateString("EN-AU", {
+	year: "numeric",
+	month: "long",
+	day: "numeric"
+})
+
+const heroImagePrimary = typeof heroImageSrc === "string"
+	? heroImageSrc
+	: heroImageSrc[0]
+
+const heroImageSecondary = typeof heroImageSrc !== "string"
+	? heroImageSrc
+	: []
 
 ---
 
@@ -116,13 +103,83 @@ const hero = typeof entry.data.heroImageSrc === "string"
     author={entry.data.author}
     tags={entry.data.tags || []}>
 
-    <main>
-        <Article 
-            client:only="svelte"
-            data={entry.data} 
-            bodyMarkdown={markdown.toString()}
-            descriptionMarkdown={description.toString()}>
-        </Article>
-    </main>
+	<div class="text-center py-4">
+		<h1 class="text-7xl lg:px-24 scale-x-75">{title}</h1>
+		<p>{formattedDate}</p>
+		<p>{author}</p>
+	</div>
 
+	<div class="px-4">
+		<picture >
+			{ heroImageSecondary.map(image => (
+				<source srcset={image}/>
+	
+			))}
+	
+			<img src={heroImagePrimary} alt={heroImageAlt}>
+		</picture>
+
+	</div>
+
+	<section set:html={descriptionHtml} class="text-2xl lg:text-4xl py-4 px-4 lg:px-24">
+	</section>
+    
+	<div class="markdown-container pb-36">
+		<articleContent.Content/>
+	</div>
+
+	<section class="article-grid">
+		{ links && (
+			<>
+			<h2 id="links">Links</h2>
+			{
+			links.map(({url, pub, title}) => (
+				<li class="grid grid-cols-[64%_auto] pb-2">
+					<a href={url} class=" text-blue underline">
+						<span>{title}</span>
+					</a>
+					<span class="text-right">{pub}</span>
+				</li>
+			))
+			}
+			</>
+		)}
+	</section>
+
+    <div class="border-b border-black max-w-main mx-auto my-2"></div>
+
+	<section class="article-grid">
+		<div class="max-w-[600px] mx-auto grid grid-cols-2 gap-4 px-4">
+			<a 
+				class="bg-main" 
+				aria-label="Author"
+				href="/about">
+				<div>
+					<img class="w-full h-full" src="/assets/me.webp" alt="">
+				</div>
+			</a>
+			<div>
+				<a href="/about" class="font-bold underline">
+					Ava Vu
+				</a> 
+				<p class="">
+					i'm a web designer, graphic designer, and game maker. i like art and other people. 
+				</p>
+			</div>
+		</div>
+	</section>
+
+    <div class="border-b border-black max-w-main mx-auto my-2"></div>
+
+	<section class="article-grid">
+		<div class="">
+			<h2 class="">Not Enough Ava?</h2>
+			<p class="text-center py-12">Subscribe to my newsletter!</p>
+			<Subscribe client:load></Subscribe>
+		</div>
+
+		<div class="pb-36">
+		</div>
+
+	</section>
 </WritingLayout>

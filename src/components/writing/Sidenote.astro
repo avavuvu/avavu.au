@@ -1,0 +1,14 @@
+---
+import { content } from "src/lib/sidenote"
+
+interface Props {
+  i: string;
+}
+const { i } = Astro.props;
+---
+
+<label for={i} class="sidenote-number"></label>
+<input type="checkbox" id={i} class="margin-toggle">
+<span class="sidenote" set:html={content[i]}>
+    
+</span>

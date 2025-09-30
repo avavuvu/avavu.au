@@ -16,6 +16,10 @@
     --font-serif: "Times", "Times New Roman", "serif";
     --color-blue: blue;
     --color-hot: #ff1493;
+
+    --color-article: rgb(85, 85, 85);
+    --color-article-bg: #fefefe;
+
 }
 
 .link {
