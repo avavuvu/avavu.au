@@ -7,7 +7,7 @@ export const GET: APIRoute = async (context) => {
     const writing = await getCollection("writing");
     
     return rss({
-        title: "Ava's writing",
+        title: "Ava's Writing",
         description: "The things I think about",
         site: context.site!,
         items: writing.map((post) => {
@@ -22,6 +22,5 @@ export const GET: APIRoute = async (context) => {
                 content: htmlString
             }
         }),
-        stylesheet: '/pretty-feed-v3.xsl',
     })
 }
