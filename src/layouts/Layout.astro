@@ -30,6 +30,12 @@ const { title = "Ava Vu", image, description } = Astro.props
 			<meta property="og:description" content={description}/>
 		)}
 		<meta property="og:site_name" content="Ava Vu"/>
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title="Ava Vu's Writing"
+			href={new URL("rss.xml", Astro.site)}
+		/>
 	</head>
 	<body>
 		<slot />

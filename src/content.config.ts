@@ -1,6 +1,7 @@
 import { glob } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
 import { projectCollections } from './projects.config';
+import convertToUrl from './lib/util/convertToUrl';
 
 const webdesign = defineCollection({
     loader: glob({ pattern: "**/*.md", base: "./src/collections/webdesign" }),
@@ -11,7 +12,15 @@ const webdesign = defineCollection({
 });
 
 const writing = defineCollection({
-    loader: glob({ pattern: "**/*.mdoc", base: "./src/collections/writing" }),
+    loader: glob({ 
+        pattern: "**/*.mdoc", 
+        base: "./src/collections/writing",
+        generateId: (options) => {
+            return convertToUrl(
+                (options.data as any).title
+            )
+        }
+     }),
     schema: z.object({
         title: z.string(),
         date: z.date(),
@@ -24,7 +33,7 @@ const writing = defineCollection({
             url: z.string().url(),
             pub: z.string()
         })).optional(),
-        tags: z.array(z.string()).optional()
+        tags: z.array(z.string()).optional(),
     })
 })
 

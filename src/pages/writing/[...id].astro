@@ -1,6 +1,5 @@
 ---
 import { getCollection, render } from "astro:content"
-import Article from "../../components/writing/Article.svelte"
 import WritingLayout from "../../layouts/WritingLayout.astro";
 import convertToUrl from "../../lib/util/convertToUrl";
 import Markdoc, { type Node } from "@markdoc/markdoc"
@@ -32,7 +31,6 @@ if(!entry) {
 const hero = typeof entry.data.heroImageSrc === "string"
     ? entry.data.heroImageSrc
     : entry.data.heroImageSrc.find(src => src.endsWith(".png") || src.endsWith(".jpg"))!
-
 
 const ast = Markdoc.parse(entry.body!)
 
@@ -66,6 +64,7 @@ const collectNotes = (node: Node, sections: Record<string,string> = {}) => {
 
 	return sections
 }
+
 const notes = collectNotes(ast)
 
 for(const [id, html] of Object.entries(notes)) {
@@ -73,7 +72,6 @@ for(const [id, html] of Object.entries(notes)) {
 }
 
 const articleContent = await render(entry)
-
 
 const { date, author, title, heroImageSrc, heroImageAlt, links, description } = entry.data
 const descriptionAst = Markdoc.parse(description)
