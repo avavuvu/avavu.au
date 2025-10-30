@@ -117,16 +117,6 @@ h5 {
   margin: 0 0 16px;
 }
 
-
-
-
-
-
-.sidenote {
-    display: flex;
-    gap: .2rem;
-}
-
 .sidenote,
 .marginnote {
     display: block;
@@ -187,12 +177,6 @@ h5 {
     text-decoration: underline;
 }
 
-blockquote .sidenote,
-blockquote .marginnote {
-    margin-right: -82%;
-    min-width: 59%;
-    text-align: left;
-}
 
 input.margin-toggle {
     display: none;
