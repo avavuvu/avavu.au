@@ -15,21 +15,17 @@ export const GET: APIRoute = async ({site, params}) => {
     const { id } = params
     const post = await getEntry("writing", id!)!;
 
-    let hero = ""
+    let heroImage = ""
     if(post.data.heroImageSrc) {
         if(typeof post.data.heroImageSrc === "string") {
-            hero = `![${post.data.heroImageAlt}](${post.data.heroImageSrc})`
+            heroImage = `![${post.data.heroImageAlt}](${post.data.heroImageSrc})`
         } else {
-            hero = `![${post.data.heroImageAlt}](${post.data.heroImageSrc[0]})`
+            heroImage = `![${post.data.heroImageAlt}](${post.data.heroImageSrc[0]})`
         }
     }
 
     const note = `*This is a mirror. This article was first published and is better read at [avavu.au](https://avavu.au/writing/${post.id})*`
-    const article = `${hero}
-    
-    ${note}
-
-    ${post.body!}`
+    const article = `${heroImage}\n\n${note}\n\n${post.body!}`
     
     const ast = Markdoc.parse(article)
 
@@ -71,7 +67,6 @@ export const GET: APIRoute = async ({site, params}) => {
         link: `/writing/${post.id}/`,
         content: htmlString,
         categories: post.data.tags,
-        
     }
     
     return rss({

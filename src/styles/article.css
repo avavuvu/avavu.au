@@ -1,10 +1,20 @@
 
 
 body {
-  font-family: "EB Garamond Variable", "Times New Roman", Times, serif;
+  /* font-family: "EB Garamond Variable", "Times New Roman", Times, serif; */
+  font-family: 'Sorts Mill Goudy', serif;
   color: var(--color-article);
   background-color: var(--color-article-bg);
   font-size: larger;
+}
+
+.markdown-container > article > *:first-child::first-letter, article h2 + p::first-letter {
+  float: left;
+  font-size: 6rem;
+  line-height: 60px;
+  padding-top: 4px;
+  padding-right: 4px;
+  padding-left: 1px;
 }
 
 .article-grid a, article a {
@@ -49,7 +59,7 @@ article .most,
   clear: right;
 }
 
-@media (width >= 44rem /* 768px */) {
+@media (width >= 48rem/* 768px */) {
   .article-grid > *,
   .markdown-container > article > * {
 
@@ -67,7 +77,7 @@ article .most,
 
 }
 
-@media (width >= 64rem) {
+@media (width >= 48rem) {
   .article-grid > *,
   .markdown-container > article > * {
 
@@ -132,6 +142,23 @@ h5 {
     position: relative;
 }
 
+@media (max-width: 1200px) {
+  .sidenote,
+  .marginnote {
+      display: block;
+      float: right;
+      clear: right;
+      margin-right: -30%;
+      width: 30%;
+      margin-top: 0.3rem;
+      margin-bottom: 0;
+      font-size: 1.1rem;
+      line-height: 1.3;
+      vertical-align: baseline;
+      position: relative;
+  }
+}
+
 
 .sidenote-number {
     counter-increment: sidenote-counter;
@@ -173,15 +200,14 @@ input.margin-toggle {
 
 label.sidenote-number {
     display: inline-block;
-    max-height: 2rem; /* should be less than or equal to paragraph line-height */
+    max-height: 2rem;
 }
 
 label.margin-toggle:not(.sidenote-number) {
     display: none;
 }
 
-/* Mobile styles for sidenotes and margin notes */
-@media (max-width: 760px) {
+@media (max-width: 1024px) {
 
     label.margin-toggle:not(.sidenote-number) {
         display: inline;
