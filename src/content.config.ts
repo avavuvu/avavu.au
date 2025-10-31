@@ -34,6 +34,10 @@ const writing = defineCollection({
             pub: z.string()
         })).optional(),
         tags: z.array(z.string()).optional(),
+        bsky: z.object({
+            did: z.string(),
+            postCid: z.string(),
+        }).optional()
     })
 })
 

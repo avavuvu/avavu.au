@@ -6,6 +6,7 @@ import Markdoc, { type Node } from "@markdoc/markdoc"
 import { standardMarkdocConfig } from "markdoc.config";
 import { content } from "src/lib/sidenote";
 import Subscribe from "@/newsletter/Subscribe.svelte"
+import Comments from "../../components/writing/Comments.svelte"
 
 export async function getStaticPaths() {
   const writing = await getCollection("writing");
@@ -32,7 +33,11 @@ const hero = typeof entry.data.heroImageSrc === "string"
     ? entry.data.heroImageSrc
     : entry.data.heroImageSrc.find(src => src.endsWith(".png") || src.endsWith(".jpg"))!
 
-const ast = Markdoc.parse(entry.body!)
+
+const tokenizer = new Markdoc.Tokenizer({
+  typographer: true,
+});
+const ast = Markdoc.parse(tokenizer.tokenize(entry.body!))
 
 const collectNotes = (node: Node, sections: Record<string,string> = {}) => {
 	if(node.tag) {
@@ -101,14 +106,8 @@ const heroImageSecondary = typeof heroImageSrc !== "string"
     author={entry.data.author}
     tags={entry.data.tags || []}>
 
-	<div class="text-center py-4">
-		<h1 class="text-7xl lg:px-24 scale-x-75">{title}</h1>
-		<p>{formattedDate}</p>
-		<p>{author}</p>
-	</div>
-
-	<div class="px-4">
-		<picture >
+	<div class="lg:grid md:grid hidden px-24 pt-12 grid-cols-1 grid-rows-5">
+		<picture class="row-start-1 row-end-6 col-start-1 col-end-2" >
 			{ heroImageSecondary.map(image => (
 				<source srcset={image}/>
 	
@@ -117,19 +116,56 @@ const heroImageSecondary = typeof heroImageSrc !== "string"
 			<img src={heroImagePrimary} alt={heroImageAlt}>
 		</picture>
 
+		<div class="row-start-5 col-start-1 col-end-3 text-left"> 
+			<div class=" origin-left px-4">
+				<h1 class="bg-article-bg w-fit text-7xl">{title}</h1>
+			</div>
+
+		</div>
 	</div>
 
-	<section set:html={descriptionHtml} class="text-2xl lg:text-4xl py-4 px-4 lg:px-24">
+	<div class="block md:hidden lg:hidden" >
+		<picture >
+			{ heroImageSecondary.map(image => (
+				<source srcset={image}/>
+	
+			))}
+	
+			<img src={heroImagePrimary} alt={heroImageAlt}>
+		</picture>
+	
+		<div class=""> 
+			<div class="scale-x-75 origin-left px-4">
+				<h1 class="bg-article-bg w-fit text-7xl">{title}</h1>
+			</div>
+		</div>
+	</div>
+
+	<div class="text-right lg:text-left px-4 lg:px-24 py-4">
+		<p>{formattedDate}</p>
+		<p>{author}</p>
+	</div>
+
+	<section set:html={descriptionHtml} class="description text-2xl lg:text-4xl py-4 px-4 lg:px-24">
 	</section>
     
 	<div class="markdown-container pb-36">
 		<articleContent.Content/>
 	</div>
 
+	{entry.data.bsky && (
+    	<div class="border-b border-black max-w-main mx-auto my-2"></div>
+
+	
+        <Comments client:visible bsky={entry.data.bsky}></Comments>
+
+    	<div class="border-b border-black max-w-main mx-auto my-2"></div>
+    )}
+
 	<section class="article-grid">
 		{ links && (
 			<>
-			<h2 id="links">Links</h2>
+			<h2 id="links">See Also</h2>
 			{
 			links.map(({url, pub, title}) => (
 				<li class="grid grid-cols-[64%_auto] pb-2">
@@ -145,29 +181,7 @@ const heroImageSecondary = typeof heroImageSrc !== "string"
 	</section>
 
     <div class="border-b border-black max-w-main mx-auto my-2"></div>
-
-	<section class="article-grid">
-		<div class="max-w-[600px] mx-auto grid grid-cols-2 gap-4 px-4">
-			<a 
-				class="bg-main" 
-				aria-label="Author"
-				href="/about">
-				<div>
-					<img class="w-full h-full" src="/assets/me.webp" alt="">
-				</div>
-			</a>
-			<div>
-				<a href="/about" class="font-bold underline">
-					Ava Vu
-				</a> 
-				<p class="">
-					i'm a web designer, graphic designer, and game maker. i like art and other people. 
-				</p>
-			</div>
-		</div>
-	</section>
-
-    <div class="border-b border-black max-w-main mx-auto my-2"></div>
+	
 
 	<section class="article-grid">
 		<div class="">

@@ -59,7 +59,7 @@
         </div>
 
         {#if heroImageSrc}
-            <div class="w-full h-full col-start-1 col-end-3 row-start-1 row-end-3 -z-40 relative p-10">
+            <div class="w-full h-full col-start-1 col-end-3 row-start-1 row-end-3 -z-40 relative py-10 lg:pl-10">
                 <picture>
                     {#each heroImageSecondary as image}
                         <source srcset={image}/>
@@ -91,6 +91,10 @@
             {@html bodyMarkdown}
         </div>
         <div></div>
+        <div>
+            {@html bodyMarkdown}
+        </div>
+
     </div>
 
     <div class="grid
