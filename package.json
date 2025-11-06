@@ -22,18 +22,16 @@
     "handlebars": "^4.7.8",
     "history": "^5.3.0",
     "lite-youtube-embed": "^0.3.3",
+    "marked": "^16.4.1",
     "motion": "^12.23.12",
     "svelte": "^5.39.6"
   },
-  "overrides": {
-    "vite": "npm:rolldown-vite@latest"
-  },
   "devDependencies": {
-    "@types/sanitize-html": "^2.16.0",
-    "lodash": "^4.17.21",
-        "@types/hast": "^3.0.4",
+    "@types/hast": "^3.0.4",
+    "@types/history": "^5.0.0",
     "@types/lodash": "^4.17.20",
-        "hastscript": "^9.0.1"
-
+    "@types/sanitize-html": "^2.16.0",
+    "hastscript": "^9.0.1",
+    "lodash": "^4.17.21"
   }
 }

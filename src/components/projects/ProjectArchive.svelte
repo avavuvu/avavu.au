@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { ProjectCollectionData, ProjectData, ProjectMetadata } from "@t/*";
     import  { createBrowserHistory}  from "history";
   import convertToUrl from "../../lib/util/convertToUrl";
   import { SvelteMap } from "svelte/reactivity";
@@ -8,6 +7,7 @@
   import EntryButton from "../EntryButton.svelte";
   import { onMount } from "svelte";
   import type { SortKey } from "../../pages/api/projects/[sort]";
+  import type { ProjectMetadata } from "../../lib/types";
 
     const { projects, sort, prerendered }: {
         projects: [string, ProjectMetadata[]][],

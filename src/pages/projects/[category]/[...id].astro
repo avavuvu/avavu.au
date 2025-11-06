@@ -8,7 +8,6 @@ import convertToUrl from "../../../lib/util/convertToUrl";
 import type { ProjectMetadata } from "../../../lib/types"
 import ProjectArchive from "../../../components/projects/ProjectArchive.svelte"
 import type { SortKey } from "../../api/projects/[sort]";
-import { a } from "motion/react-client";
 
 export const getStaticPaths = (() => {
     const projectPaths = allProjects.flatMap((project) => {

@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { onMount, type Snippet } from "svelte";
-    import convertToUrl from "../lib/util/convertToUrl";
+    import { type Snippet } from "svelte";
 
     const { children, category, categoryDisplay, currentCategory }: { 
         children: Snippet,

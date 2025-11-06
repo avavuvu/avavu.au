@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { CollectionEntry } from "astro:content";
-    import convertToUrl from "src/lib/util/convertToUrl";
+  import convertToUrl from "../../lib/util/convertToUrl";
 
     const { pieces }: {
         pieces: CollectionEntry<"writing">[]
