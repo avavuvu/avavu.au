@@ -6,7 +6,7 @@ import Markdoc, { type Node } from "@markdoc/markdoc"
 import { standardMarkdocConfig } from "markdoc.config";
 import { content } from "src/lib/sidenote";
 import Subscribe from "@/newsletter/Subscribe.svelte"
-import Comments from "../../components/writing/Comments.svelte"
+import Comentario from "@/writing/Comentario.astro";
 
 export async function getStaticPaths() {
   const writing = await getCollection("writing");
@@ -153,14 +153,18 @@ const heroImageSecondary = typeof heroImageSrc !== "string"
 		<articleContent.Content/>
 	</div>
 
-	{entry.data.bsky && (
-    	<div class="border-b border-black max-w-main mx-auto my-2"></div>
+	<div class="border-b border-black max-w-main mx-auto my-2"></div>
 
-	
-        <Comments client:visible bsky={entry.data.bsky}></Comments>
+	<section class="article-grid">
+		
+		<div>
+			<Comentario client:visible />
+		</div>
 
-    	<div class="border-b border-black max-w-main mx-auto my-2"></div>
-    )}
+	</section>
+
+	<div class="border-b border-black max-w-main mx-auto my-2"></div>
+
 
 	<section class="article-grid">
 		{ links && (
