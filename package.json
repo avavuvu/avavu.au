@@ -25,6 +25,9 @@
     "motion": "^12.23.12",
     "svelte": "^5.39.6"
   },
+  "overrides": {
+    "vite": "npm:rolldown-vite@latest"
+  },
   "devDependencies": {
     "@types/sanitize-html": "^2.16.0",
     "lodash": "^4.17.21",
