@@ -8,7 +8,9 @@ import markdoc from '@astrojs/markdoc';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [svelte(), sitemap(), markdoc({
+  integrations: [svelte(), sitemap({
+    filter: (page) => !page.includes("dev")
+  }), markdoc({
     typographer: true
   })],
   site: "https://avavu.au",
@@ -17,6 +19,7 @@ export default defineConfig({
     // @ts-ignore
     plugins: [tailwindcss()]
   },
+
   adapter: netlify({
     cacheOnDemandPages: true,
     

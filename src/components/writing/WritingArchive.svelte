@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { CollectionEntry } from "astro:content";
   import convertToUrl from "../../lib/util/convertToUrl";
+  import { formatDate } from "src/lib/util/date";
 
     const { pieces }: {
         pieces: CollectionEntry<"writing">[]
@@ -10,7 +11,6 @@
         return b.data.date.getTime() - a.data.date.getTime()
     })
 
-    const formatDate = (date: Date) => `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
 
 </script>
 

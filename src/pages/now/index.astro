@@ -1,0 +1,37 @@
+---
+import Layout from "src/layouts/Layout.astro";
+import { DateTime } from "luxon"
+import wordYaml from "@assets/words/words.yaml?raw"
+import stopWords from "@assets/words/stop_words.json"
+import yaml from "yaml"
+import { marked } from "marked";
+import { allProjects } from "src/lib/projectCollection";
+import { getCollection } from "astro:content";
+import convertToUrl from "src/lib/util/convertToUrl";
+import { formatDate } from "src/lib/util/date";
+import Now from "@/now/Now.astro";
+
+const now = (await getCollection("now")).map(({data}) => data)
+---
+
+<Layout>
+
+    <div class="text-center flex flex-col">
+        <span><a href="https://nownownow.com/about">this is a now page</a>, <a href="https://nownownow.com/">find more</a></span>
+        <a href="/">return home</a>
+    </div>
+
+    {now.map(instance => (
+        <>
+            <Now instance={instance}/>
+            <hr class="my-12 border-black border"/>
+        </>
+    ))}
+    
+</Layout>
+
+<style>
+    a {
+        text-decoration: underline;
+    }
+</style>

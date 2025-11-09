@@ -72,9 +72,48 @@ const newsletter = defineCollection({
     })
 })
 
+const now = defineCollection({
+    loader: glob({ pattern: "**/*.yaml", base: "./src/collections/now" }),
+    schema: z.object({
+        now: z.string(),
+        message: z.string(),
+        song: z.string().optional(),
+        word: z.object({
+            word: z.string(),
+            part: z.string(),
+            desc: z.string(),
+            link: z.string().url(),
+            toMe: z.string(),
+            markdown: z.string(),
+        }),
+        newsletter: z.object({
+            random: z.array(z.string()),
+            link: z.string(),
+            title: z.string(),
+        }),
+        essay: z.object({
+            image: z.string(),
+            link: z.string(),
+            title: z.string(),
+        }),
+        project: z.object({
+            image: z.string(),
+            link: z.string(),
+            date: z.date(),
+            title: z.string(),
+        }),
+        age: z.object({
+            years: z.string(),
+            seconds: z.string(),
+            })
+        }),
+    })
+
+
 export const collections = { 
     ...projectCollections,
     newsletter,
     webdesign,
-    writing
+    writing,
+    now
 }

@@ -1,0 +1,151 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate } from "src/lib/util/date";
+import seedrandom from "seedrandom"
+
+// this shuffle jsx is so weird
+// i dont know if i would have written it if i didn't have a negroni tonight :P
+
+function shuffle(array: any[], seed: string) {
+  const rng = seedrandom(seed);
+  const shuffled = [...array]; 
+  
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  
+  return shuffled;
+}
+
+interface Props {
+    instance: CollectionEntry<"now">["data"]
+}
+
+const { instance } = Astro.props 
+const { word, age, newsletter, essay, project, now, message, song } = instance
+
+
+---
+
+<div class="now grid gap-2 mx-auto w-min">
+    <section class="bg-blue ">
+        <div class="flex justify-center items-center starter">
+            <!-- <svg class="starter select-none pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="261.75" height="248.94" viewBox="0 0 261.75 248.94"><defs><style>.cls-1{fill:#ffffff;stroke-width:0px;}</style></defs><polygon class="cls-1" points="130.88 0 161.77 95.09 261.75 95.09 180.87 153.85 211.76 248.94 130.88 190.17 49.99 248.94 80.89 153.85 0 95.09 99.98 95.09 130.88 0"/></svg> -->
+        </div>
+        <div class="starter flex flex-col justify-between ">
+            <div>
+                <p>{age.years}</p>
+                <p>{age.seconds}</p>
+
+            </div>
+
+            <span>
+                <p>{message}<span class="text-white">⏺</span></p>
+                {song && (
+                    <p><span class="text-white">♫</span> {song}</p>
+                )}
+            </span>
+            
+        </div>
+        
+        
+    </section>
+    
+    {
+        shuffle([
+        (<section class="bg-[yellow]">
+            <div class="">
+                <a class="font-bold underline" href={word.link}>
+                    {word.word}
+                </a>
+                <p>{word.part} – {word.desc}</p>
+                <span class="[&>p_a]:underline" set:html={word.markdown}></span>
+            </div>
+            <h2 class="bg-[lime] w-fit">word of the day</h2>
+        </section>),
+
+        (<section class="bg-[#ec3dff]">
+            <img class="w-full h-full object-scale-down starter" src={essay.image}/>
+
+            <a class="[writing-mode:vertical-rl] starter underline w-fit h-fit bg-[red]" href={essay.link}>
+                {essay.title}
+            </a>
+            <h2 class="bg-[orange]  w-fit"><a href={essay.link}>last thing i wrote</a></h2>
+        </section>),
+
+        (<section class="bg-[#ee325d]">
+            <h2 class="bg-[purple] w-fit text-white"><a href={project.link}>last thing i made</a></h2>
+            <img class="w-full h-full object-scale-down starter" src={project.image}/>
+            <div class="starter flex flex-col ">
+                <a 
+                    class=" h-min w-fit bg-[yellow]  underline"
+                    href={project.link}>
+                    {project.title}
+                </a>
+
+                <span class="bg-blue text-white w-fit h-min">{formatDate(project.date)}</span>
+            </div>
+        </section>),
+
+        (<section class="bg-[lime]">
+            <a class="underline font-bold block starter w-min" href={newsletter.link}> 
+                {newsletter.title}
+            </a>
+
+            <div class="starter ">
+
+                <div class="max-w-56 flex float-right starter flex-col   h-full">
+                    <div>
+                        <p>here's 24 random words from the newsletter:</p>
+                        <div class="flex flex-wrap gap-2">
+            
+                            {newsletter.random.map(word => (<span class="bg-white">
+                                {word}
+                            </span>))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h2 class="bg-[yellow] w-fit h-min"><a href={newsletter.link}>last newsletter i posted</a></h2>
+        </section>),
+        ], word.word)
+    }
+
+    <section class="bg-blue">
+        {now.split("-").map((date) => (
+            <span class="font-bold text-white text-4xl">{date}</span>
+        ))}
+    </section>
+</div>
+
+
+<style>
+
+    .now {
+        display: grid;
+        grid-auto-rows: 24rem;
+        grid-template-columns: 24rem 24rem;
+    }
+
+    @media only screen and (max-width: 52rem) {
+        .now {
+                grid-template-columns: min(calc(100vw - 2rem), 24rem);
+                grid-auto-rows: min(calc(100vw - 2rem), 24rem);
+            }
+    }
+
+    
+
+    .starter {
+        @apply col-start-1 row-start-1;
+    }
+
+    section {
+        border: 2px solid black;
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        grid-template-rows: repeat(1, minmax(0, 1fr));
+    }
+</style>

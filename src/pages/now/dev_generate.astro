@@ -1,0 +1,127 @@
+---
+import yaml from "yaml"
+import wordYaml from "@assets/words/words.yaml?raw"
+import { marked } from "marked";
+import { DateTime } from "luxon"
+import { allProjects } from "src/lib/projectCollection";
+import convertToUrl from "src/lib/util/convertToUrl";
+import stopWords from "@assets/words/stop_words.json"
+import fs from "node:fs/promises"
+import { formatDate } from "src/lib/util/date";
+import { getCollection } from "astro:content";
+
+async function generateNow() {
+    const { words }: {
+        words: {
+            word: string,
+            part: string,
+            desc: string,
+            link: string,
+            toMe: string
+        }[]
+    } = yaml.parse(wordYaml)
+
+    const lastWord = words[0];
+    const wordMarkdown = await marked.parse(lastWord.toMe)
+
+    // age
+    const now = DateTime.now();
+
+    const birthTime = DateTime.fromISO("2003-01-28T15:30:48+11:00")
+
+    const age = now.diff(birthTime)
+    const ageAsYears = age.as("years")
+
+    const ageMonths = (ageAsYears % 1)*12
+    const ageDays = (ageMonths % 1)*31
+
+    const ageSeconds = age.as("seconds")
+
+    // works
+    function sortWork<T extends { data: { date: Date }}>(a: T, b: T) {
+        return a.data.date.getTime() - b.data.date.getTime()
+    }
+    const projects = allProjects.toSorted(sortWork)
+    const lastProject = projects.at(-2)!
+    const projectImage = typeof lastProject.data.imageSrc === "string"
+        ? lastProject.data.imageSrc
+        : (lastProject.data.imageSrc ?? [])[0]
+    const projectLink = `/projects/year-${lastProject.data.date.getFullYear()}/${convertToUrl(lastProject.data.title)}`
+
+    const writing = await getCollection("writing")
+    const lastEssay = writing.toSorted(sortWork).at(-1)!
+    const essayImage = typeof lastEssay.data.heroImageSrc === "string"
+        ? lastEssay.data.heroImageSrc
+        : (lastEssay.data.heroImageSrc ?? [])[0]
+    const essayLink = `/writing/${lastEssay.id}`
+
+    const newsletter = await getCollection("newsletter")
+    const lastNewsletter = newsletter.toSorted(sortWork).at(-1)!
+    const newsLetterLink = `newsletter/${lastNewsletter.id}`
+
+    const allWords = lastNewsletter.body!.split(/[^\w]/)
+    const s = new Set<string>();
+    while(s.size < 24) {
+        const word = allWords[Math.floor(Math.random() * allWords.length)]
+
+        const match = word.replaceAll(/[^\w]*/g, "")
+
+        if(stopWords.includes(match.toLowerCase())) {
+            continue
+        }
+
+        if(!match) {
+            continue
+        }
+
+        s.add(word.toLowerCase())
+    }
+
+    const randomNewsletterWords = [...s];
+
+    // write
+    
+    const data = yaml.stringify({
+        now: now.toFormat('yyyy-LLLL-dd-t'),
+        age: {
+            years: `at time of publication, ava is ${Math.floor(ageAsYears)} years, ${Math.floor(ageMonths)} months, and ${Math.floor(ageDays)} days old`,
+            seconds: `which is ${Math.floor(ageSeconds).toLocaleString()} seconds old`
+        },
+        word: {
+            ...lastWord,
+            markdown: wordMarkdown
+        },
+        newsletter: {
+            random: randomNewsletterWords,
+            link: newsLetterLink,
+            title: lastNewsletter.data.subject
+        },
+        essay: {
+            image: essayImage,
+            link: essayLink,
+            title: lastEssay.data.title 
+        },
+        project: {
+            image: projectImage,
+            link: projectImage,
+            date: formatDate(lastProject.data.date),
+            title: lastProject.data.title
+        }
+    })
+
+    const datePath = formatDate(new Date())
+
+    await fs.writeFile(`src/collections/now/${datePath}.yaml`, data)
+}
+
+if(import.meta.env.DEV) {
+    await generateNow();
+} 
+---
+
+<h1>hi</h1>
+<p>visiting this address in dev mode will cause a /now for the current date to generate</p>
+<p>it only exists as a page and not a node script because you can't run getCollections from node</p>
+<p>and i cbs reading the files myself</p>
+<br>
+<p>no one should ever read this message</p>
