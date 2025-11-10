@@ -13,6 +13,7 @@ export default defineConfig({
   }), markdoc({
     typographer: true
   })],
+
   site: "https://avavu.au",
 
   vite: {
@@ -20,6 +21,5 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  adapter: netlify({
-  })
+  adapter: netlify({})
 });
