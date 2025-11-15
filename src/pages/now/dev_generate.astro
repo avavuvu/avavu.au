@@ -21,7 +21,7 @@ async function generateNow() {
         }[]
     } = yaml.parse(wordYaml)
 
-    const lastWord = words[0];
+    const lastWord = words.at(-1)!;
     const wordMarkdown = await marked.parse(lastWord.toMe)
 
     // age
@@ -42,7 +42,7 @@ async function generateNow() {
         return a.data.date.getTime() - b.data.date.getTime()
     }
     const projects = allProjects.toSorted(sortWork)
-    const lastProject = projects.at(-2)!
+    const lastProject = projects.at(-1)!
     const projectImage = typeof lastProject.data.imageSrc === "string"
         ? lastProject.data.imageSrc
         : (lastProject.data.imageSrc ?? [])[0]

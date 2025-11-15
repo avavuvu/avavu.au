@@ -76,7 +76,7 @@ const now = defineCollection({
     loader: glob({ pattern: "**/*.yaml", base: "./src/collections/now" }),
     schema: z.object({
         now: z.string(),
-        message: z.string(),
+        message: z.string().optional(),
         song: z.string().optional(),
         word: z.object({
             word: z.string(),
@@ -86,22 +86,25 @@ const now = defineCollection({
             toMe: z.string(),
             markdown: z.string(),
         }),
+        image: z.array(
+            z.string()
+        ).optional(),
         newsletter: z.object({
             random: z.array(z.string()),
             link: z.string(),
             title: z.string(),
-        }),
+        }).optional(),
         essay: z.object({
             image: z.string(),
             link: z.string(),
             title: z.string(),
-        }),
+        }).optional(),
         project: z.object({
             image: z.string(),
             link: z.string(),
             date: z.date(),
             title: z.string(),
-        }),
+        }).optional(),
         age: z.object({
             years: z.string(),
             seconds: z.string(),

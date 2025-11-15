@@ -11,7 +11,9 @@ import convertToUrl from "src/lib/util/convertToUrl";
 import { formatDate } from "src/lib/util/date";
 import Now from "@/now/Now.astro";
 
-const now = (await getCollection("now")).map(({data}) => data)
+const now = (await getCollection("now"))
+    .sort((a,b) => new Date(b.id).getTime() - new Date(a.id).getTime())
+    .map(({data}) => data)
 ---
 
 <Layout>

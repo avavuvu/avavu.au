@@ -23,7 +23,7 @@ interface Props {
 }
 
 const { instance } = Astro.props 
-const { word, age, newsletter, essay, project, now, message, song } = instance
+const { word, age, newsletter, image, essay, project, now, message, song } = instance
 
 
 ---
@@ -41,7 +41,7 @@ const { word, age, newsletter, essay, project, now, message, song } = instance
             </div>
 
             <span>
-                <p>{message}<span class="text-white">⏺</span></p>
+                <p>{message}<span class="text-white">●</span></p>
                 {song && (
                     <p><span class="text-white">♫</span> {song}</p>
                 )}
@@ -54,6 +54,18 @@ const { word, age, newsletter, essay, project, now, message, song } = instance
     
     {
         shuffle([
+        (image && <section class="bg-[hotpink]">
+            <div class="flex flex-wrap gap-2 justify-center ">
+                {image.map(src => (
+                    <img 
+                        class="flex-1 min-w-0 max-h-full object-contain"
+                        src={src}/>
+                ))}
+            </div>
+            <h2 class="bg-[yellow] w-fit">an image</h2>
+
+        </section>),
+
         (<section class="bg-[yellow]">
             <div class="">
                 <a class="font-bold underline" href={word.link}>
@@ -65,7 +77,7 @@ const { word, age, newsletter, essay, project, now, message, song } = instance
             <h2 class="bg-[lime] w-fit">word of the day</h2>
         </section>),
 
-        (<section class="bg-[#ec3dff]">
+        (essay && <section class="bg-[#ec3dff]">
             <img class="w-full h-full object-scale-down starter" src={essay.image}/>
 
             <a class="[writing-mode:vertical-rl] starter underline w-fit h-fit bg-[red]" href={essay.link}>
@@ -74,7 +86,7 @@ const { word, age, newsletter, essay, project, now, message, song } = instance
             <h2 class="bg-[orange]  w-fit"><a href={essay.link}>last thing i wrote</a></h2>
         </section>),
 
-        (<section class="bg-[#ee325d]">
+        (project && <section class="bg-[#ee325d]">
             <h2 class="bg-[purple] w-fit text-white"><a href={project.link}>last thing i made</a></h2>
             <img class="w-full h-full object-scale-down starter" src={project.image}/>
             <div class="starter flex flex-col ">
@@ -88,7 +100,7 @@ const { word, age, newsletter, essay, project, now, message, song } = instance
             </div>
         </section>),
 
-        (<section class="bg-[lime]">
+        (newsletter && <section class="bg-[lime]">
             <a class="underline font-bold block starter w-min" href={newsletter.link}> 
                 {newsletter.title}
             </a>
