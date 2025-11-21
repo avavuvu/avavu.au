@@ -1,0 +1,188 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Markdoc from "@markdoc/markdoc"
+import Layout from 'src/layouts/Layout.astro';
+import { standardMarkdocConfig } from "markdoc.config";
+import "src/styles/global.css"
+
+export const getStaticPaths = async () => {
+    const writing = await getCollection("writing");
+
+    return writing.map(({id}) => ({
+        params: { id },
+    }));
+}
+
+const { id } = Astro.params;
+const post = await getEntry("writing", id!)!;
+
+let heroImage = ""
+if(post.data.heroImageSrc) {
+    if(typeof post.data.heroImageSrc === "string") {
+        heroImage = post.data.heroImageSrc
+    } else {
+        heroImage = post.data.heroImageSrc[0]
+    }
+}
+
+const ast = Markdoc.parse(post.body!)
+
+const tree = Markdoc.transform(ast, {
+    nodes: {
+        ...Markdoc.nodes,
+        image: {
+            transform(node, config) {
+                const children = node.transformChildren(config);
+
+                const src = node.attributes["src"]
+                const staticSource = new URL(src, "https://avavu.au/" ).toString()
+
+                return new Markdoc.Tag(
+                    "img",
+                    {
+                        src: staticSource
+                    },
+                    children
+                )
+            },
+        }
+    },
+    tags: {
+        "note-content": {
+            transform() {
+                return new Markdoc.Tag()
+            }
+        },
+        ...standardMarkdocConfig.tags,
+    },
+})
+
+const htmlString = Markdoc.renderers.html(tree)
+
+const title =  post.data.title,
+    content = htmlString;
+
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main class="">
+        <header>
+            <h1>{title}</h1>
+            <button class="text-blue no-print  underline text-2xl" onclick="window.print()">Click here to print!</button>
+            <img src={heroImage}>
+        </header>
+        <div set:html={content}></div>
+    </main>
+</body>
+</html>
+
+
+    
+
+<style is:global>
+blockquote {
+    padding-left: 40px;
+}
+
+
+figcaption {
+    width: 50%;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-content: center;
+    width: 100%;
+    align-items: center;
+}
+
+p {
+    padding-bottom: 8px;
+}
+
+h1, h2, h3, h4 {
+    font-weight: bold;
+    font-size: larger;
+    padding-top: 24px;
+}
+
+img {
+    padding: 24px 12px;
+    max-width: 400px;
+}
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+* {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+div:has(article) {
+    display: grid;
+    grid-template-columns: 1fr 75ch 1fr;
+}
+
+article {
+    grid-column-start: 2;
+}
+
+a {
+    text-decoration: underline;
+}
+
+@media print {
+    div:has(article) {
+        display: block !important;
+        grid-template-columns: none !important;
+    }
+    
+    article {
+        grid-column-start: unset;
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    main {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+    }
+
+    
+    .no-print {
+        display: none !important;
+    }
+    
+    img {
+        page-break-inside: avoid;
+    }
+    
+    h1, h2, h3, h4 {
+        page-break-after: avoid;
+    }
+    
+    blockquote, figure {
+        page-break-inside: avoid;
+    }
+    
+    /* Ensure content flows properly */
+    body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+}
+</style>

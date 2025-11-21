@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "src/layouts/Layout.astro";
+import convertToUrl from "src/lib/util/convertToUrl";
+
+const pieces  = await getCollection("writing")
+
+---
+
+<Layout>
+    <main class="max-w-[600px] mx-auto p-24 pt-24">
+        <h1>hi ling!</h1>
+    
+        <p>here are print friendly versions of the articles.</p>
+    
+        <div class="flex gap-4 flex-col underline">
+            {pieces.map(piece => (
+                <a href={`${convertToUrl(piece.data.title)}/print`}>
+                    {piece.data.title}
+                </a>
+            ))}
+    
+        </div>
+
+    </main>
+
+
+</Layout>
+
+<style>
+    * {
+        font-family: 'Times New Roman', Times, serif;
+    }
+</style>
