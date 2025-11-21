@@ -15,7 +15,7 @@ const pieces  = await getCollection("writing")
     
         <div class="flex gap-4 flex-col underline">
             {pieces.map(piece => (
-                <a href={`${convertToUrl(piece.data.title)}/print`}>
+                <a href={`/writing/${convertToUrl(piece.data.title)}/print`}>
                     {piece.data.title}
                 </a>
             ))}
