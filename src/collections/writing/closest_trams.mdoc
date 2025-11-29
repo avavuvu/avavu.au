@@ -262,21 +262,19 @@ Here's the full bottom 15. **Berkeley Street** to **Kooyongkoot Road**, my local
 
 
 ## Technical
-If you're a nerd, you're probably wondering how I made this. This project was partly inspired by me learning about the closest pairs problem, a common textbook problem that is useful for teaching algorithmic complexity. *How do you find the closest two pairs of points in a list of points?* The naïve solution is just comparing every point to every other point, which means doing `(Number of points)²` calculations. 
+If you're a nerd, you're probably wondering how I made this. This project was partly inspired by me learning about the closest pairs problem, a common textbook problem for teaching algorithmic complexity. *How do you find the closest two pairs of points in a list of points?* The naïve solution is just comparing every point to every other point, which means doing `(Number of points)²` calculations. 
 
-
-
-Melbourne has around 1700 tram stops, which means `1700²`, which is `2,890,000` calculations. There is a canonical improvement to the closest pair problem that splits up the points into smaller sections to make do less comparisons. That solves the problem in `(Number of points) * log(Number of points)` which is (roughly) `18,200` comparisons. 
+Melbourne has around 1700 tram stops, which means `1700²`, which is `2,890,000` calculations. There is a canonical improvement to the closest pair problem that splits up the points into smaller sections. That solves the problem in `(Number of points) * log(Number of points)` which is (roughly) `18,200` comparisons. 
 
 Two million is a large number, and I was worried about how long it would take, but my burning desire to know which two tram stops are the closest together was too strong, and I decided to just implement the naïve solution and wait out however long it would take. But here's the thing—the code finished instantly. Two million operations – while an order of magnitude larger than 18,200 – is tiny for a computer. 
 
-But the answer returned by my code returned another issue. The answer returned were two stops on the Chapel Street-Commercial Road intersection. This seemed strange to me, and after writing a quick script to visualise them I realised the issue. My code was matching stops on different tram routes. Obviously, tram stops on different routes are close together, that's the whole point of an intersection. 
+The answer returned by my code returned another issue. The answer returned were two stops on the Chapel Street-Commercial Road intersection. This seemed strange to me, and after writing a quick script to visualise them I realised the issue. My code was matching stops on different tram routes. Obviously, tram stops on different routes are close together, that's the whole point of an intersection. 
 
 ![screenshot of Chapel Street map](/images/writing/tram/intersection-fail.webp)
 
-The data I was using was a big list from Victorian Government, but it didn't list the route associated with each stop. But it did list the stop number, ie. Melbourne University, *Stop #1*. My solution then was a slightly ugly one, I just checked that every stop's number was only one more or one less than the stop it was being compared to. This worked! Kind of. 
+The data I was using was a big list from Victorian Government, but it didn't list the route associated with each stop. But it did list the stop number, ie. Melbourne University, *Stop #1*. My solution then was a slightly ugly one. I checked that every stop's number was only one more or one less than the stop it was being compared to. This worked! Kind of. 
 
-I was still getting back edge cases of stops that happened to have the same number, but were on different routes. This was usually cases like Camberwell Junction, were the 70 and 75 split off, continuing to increase their stop numbers just in different directions. My solution was to write some code to manually go through and verify these were accurate.
+I was still getting back edge cases of stops that happened to have the same number, but were on different routes. This was usually cases like Camberwell Junction, were the 70 and 75 split off, continuing to increase their stop numbers in different directions. My solution was to write some code to help me manually go through and verify these were accurate.
 
 ![screenshot of Camberwell Junction map](/images/writing/tram/split-fail.webp)
 
