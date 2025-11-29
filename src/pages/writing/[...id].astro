@@ -118,7 +118,7 @@ const heroImageSecondary = typeof heroImageSrc !== "string"
 
 		<div class="row-start-5 col-start-1 col-end-3 text-left"> 
 			<div class=" origin-left px-4">
-				<h1 class="bg-article-bg w-fit text-7xl">{title}</h1>
+				<h1 class="bg-blue text-white scale-x-75 origin-left font-bold w-[125%] text-7xl">{title}</h1>
 			</div>
 
 		</div>
@@ -134,9 +134,9 @@ const heroImageSecondary = typeof heroImageSrc !== "string"
 			<img src={heroImagePrimary} alt={heroImageAlt}>
 		</picture>
 	
-		<div class=""> 
+		<div class="bg-blue text-white font-bold"> 
 			<div class="scale-x-75 origin-left px-4">
-				<h1 class="bg-article-bg w-fit text-7xl">{title}</h1>
+				<h1 class="w-[125%] text-5xl">{title}</h1>
 			</div>
 		</div>
 	</div>
@@ -165,10 +165,8 @@ const heroImageSecondary = typeof heroImageSrc !== "string"
 
 	<div class="border-b border-black max-w-main mx-auto my-2"></div>
 
-
-	<section class="article-grid">
-		{ links && (
-			<>
+	{ links && links.length > 0 && (
+		<section class="article-grid">
 			<h2 id="links">See Also</h2>
 			{
 			links.map(({url, pub, title}) => (
@@ -180,11 +178,10 @@ const heroImageSecondary = typeof heroImageSrc !== "string"
 				</li>
 			))
 			}
-			</>
-		)}
-	</section>
+		</section>
+    	<div class="border-b border-black max-w-main mx-auto my-2"></div>
 
-    <div class="border-b border-black max-w-main mx-auto my-2"></div>
+	)}
 	
 
 	<section class="article-grid">

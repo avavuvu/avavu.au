@@ -40,6 +40,8 @@ const isHome = Astro.url.pathname === "/writing" || Astro.url.pathname === "/wri
 <!doctype html>
 <html lang="en">
 	<head>
+    <meta http-equiv="Content-Security-Policy" 
+      content="frame-src 'self' https://www.google.com https://maps.google.com https://maps.googleapis.com;">
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />

@@ -16,6 +16,39 @@ body {
   padding-left: 1px;
 }
 
+pre {
+  border: 1px solid black;
+  overflow-x: scroll;
+  margin-bottom: 2rem;
+}
+
+code {
+  font-family: monospace;
+}
+
+blockquote:has(.pull-quote) {
+  border: 0px solid transparent;
+}
+
+.pull-quote {
+  padding: 2rem 1rem;
+  
+}
+
+.street-view-image {
+  width: 100%;
+  padding: 1rem 2rem 3rem;
+}
+
+thead {
+  text-align: left;
+}
+
+td.rank {
+  text-align: right;
+  padding: 0 .5rem;
+}
+
 .article-grid a, article a {
   text-decoration: underline;
 }
@@ -59,6 +92,8 @@ article .most,
 }
 
 @media (width >= 48rem/* 768px */) {
+  
+
   .article-grid > *,
   .markdown-container > article > * {
 
@@ -190,8 +225,13 @@ label.margin-toggle:not(.sidenote-number) {
     display: none;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
+    table {
+      font-size: small;
+    }
+}
 
+@media (max-width: 1024px) {
     label.margin-toggle:not(.sidenote-number) {
         display: inline;
     }

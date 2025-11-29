@@ -51,6 +51,25 @@ const astroMarkdocConfig: AstroMarkdocConfig = {
           )
       },
     },
+    "street-view": {
+      attributes: {
+        lat: { type: String },
+        long: { type: String },
+        name: { type: String },
+      },
+      transform(node, config) {
+          const attributes = node.transformAttributes(config);
+          const lat: string = attributes["lat"]
+          const long: string = attributes["long"]
+          const name: string = attributes["name"]
+
+          return new Markdoc.Tag('img', {
+            src: `/images/writing/tram/${name}.jpg`,
+            loading: "lazy",
+            class: "street-view-image"
+        });
+      },
+    },
     youtube: {
       attributes: {
         watch: { type: String },
