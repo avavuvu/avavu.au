@@ -266,7 +266,7 @@ If you're a nerd, you're probably wondering how I made this. This project was pa
 
 
 
-Melbourne has around 1700 tram stops, which means $1700^2$, which is 2,890,000 calculations. There is a canonical improvement to the closest pair problem that splits up the points into smaller sections to make do less comparisons. That solves the problem in `(Number of points) * log(Number of points)` which is (roughly) 18,200 comparisons. 
+Melbourne has around 1700 tram stops, which means `1700²`, which is `2,890,000` calculations. There is a canonical improvement to the closest pair problem that splits up the points into smaller sections to make do less comparisons. That solves the problem in `(Number of points) * log(Number of points)` which is (roughly) `18,200` comparisons. 
 
 Two million is a large number, and I was worried about how long it would take, but my burning desire to know which two tram stops are the closest together was too strong, and I decided to just implement the naïve solution and wait out however long it would take. But here's the thing—the code finished instantly. Two million operations – while an order of magnitude larger than 18,200 – is tiny for a computer. 
 
