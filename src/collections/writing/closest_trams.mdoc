@@ -274,9 +274,14 @@ The answer returned by my code returned another issue. The answer returned were 
 
 The data I was using was a big list from Victorian Government, but it didn't list the route associated with each stop. But it did list the stop number, ie. Melbourne University, *Stop #1*. My solution then was a slightly ugly one. I checked that every stop's number was only one more or one less than the stop it was being compared to. This worked! Kind of. 
 
+![screenshot of Camberwell Junction map](/images/writing/tram/split-fail.webp)
+
 I was still getting back edge cases of stops that happened to have the same number, but were on different routes. This was usually cases like Camberwell Junction, were the 70 and 75 split off, continuing to increase their stop numbers in different directions. My solution was to write some code to help me manually go through and verify these were accurate.
 
-![screenshot of Camberwell Junction map](/images/writing/tram/split-fail.webp)
+{% most %}
+![](/images/writing/tram/tui.webp)
+{% /most %}
+
 
 After that I got my answer: Caulfield Station to Derby Road. Astute readers might notice that this is different to the answer listed above. At the time, I was really unsatisfied with that answer, because I couldn't with any confidence know that this was *the* closest stop. My code was just too ugly and unspecific. Looking closer at my data, I realised I was matching tram stops that were on different sides of the road as well. 
 
