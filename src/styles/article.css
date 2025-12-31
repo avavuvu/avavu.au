@@ -7,6 +7,15 @@ body {
   font-size: larger;
 }
 
+li {
+  list-style-type: disc;
+}
+
+ul, ol {
+  padding-left: 2rem;
+  padding-bottom: 1rem;
+}
+
 .markdown-container > article > *:first-child::first-letter, article h2 + p::first-letter {
   float: left;
   font-size: 6rem;
@@ -149,6 +158,15 @@ h4,
 h5 {
   font-size: xx-large;
   margin: 0 0 16px;
+  font-weight: bold;
+}
+
+h2 em,
+h3 em,
+h4 em,
+h5 em {
+  font-weight: normal;
+  font-style: normal;
 }
 
 .sidenote,

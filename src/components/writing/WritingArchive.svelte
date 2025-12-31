@@ -17,9 +17,9 @@
 <div class="mx-auto max-w-[400px] px-4 my-16 ">
     <h1 class=" scale-x-75 text-4xl text-center">Writing Archive</h1>
 
-    <ul class="">
+    <div class="">
         {#each sorted as {id, data}}
-            <li class="py-2 ">
+            <div class="py-2 ">
                 <a class=" w-full" href="/writing/{convertToUrl(data.title)}">
                     <div class="flex justify-between align-middle items-center">
                         <h1 class="underline">{data.title}</h1>
@@ -27,10 +27,10 @@
 
                     </div>
                 </a>
-            </li>
+            </div>
         {/each}
     
-    </ul>
+    </div>
 </div>
 
 <style>
