@@ -37,7 +37,8 @@ const writing = defineCollection({
         bsky: z.object({
             did: z.string(),
             postCid: z.string(),
-        }).optional()
+        }).optional(),
+        color: z.string()
     })
 })
 

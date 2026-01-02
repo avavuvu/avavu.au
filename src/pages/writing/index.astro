@@ -1,12 +1,164 @@
 ---
 import { getCollection } from "astro:content";
 import WritingLayout from "../../layouts/WritingLayout.astro";
-import WritingArchive from "../../components/writing/WritingArchive.svelte"
+import WritingArchive from "../../components/writing/WritingArchive.svelte";
+import type { CollectionEntry } from "astro:content";
+import convertToUrl from "../../lib/util/convertToUrl";
+import { formatDate } from "src/lib/util/date";
+import {colord} from "colord"
+import Markdoc, { type Node } from "@markdoc/markdoc";
+import Subscribe from "@/newsletter/Subscribe.svelte"
+import { sub } from "motion/react-client";
 
-const pieces  = await getCollection("writing")
+
+interface Props {
+	pieces: CollectionEntry<"writing">[];
+}
+
+const pieces = await getCollection("writing");
+
+const tokenizer = new Markdoc.Tokenizer({
+	typographer: true,
+});
+
+const plainTextify = (ast: Node) => {
+	const text = recurse(ast);
+	return text.map((a) => a.join(" ")).slice(1);
+};
+
+const recurse = (node: Node, output: string[][] = [[]]): string[][] => {
+	if ("content" in node.attributes) {
+		output[output.length - 1].push(node.attributes["content"]);
+	}
+	if (node.type === "paragraph") {
+		output.push([]);
+	}
+	if (node.children) {
+		for (const child of node.children) {
+			recurse(child, output);
+		}
+	}
+	return output;
+};
+
+interface PiecePreview {
+	text: string[];
+	image: string;
+	title: string;
+	date: Date;
+}
+
+type Tile = 
+  | { type: 'header', color: string }
+  | { type: 'piece', color: string, content: PiecePreview }
+  | { type: 'about', color: string }
+  | { type: 'newsletter', color: string }
+  | { type: 'filler', color: string }
+
+const tiles: Tile[] = pieces
+	.sort((a, b) => {
+		return b.data.date.getTime() - a.data.date.getTime();
+	})
+	.map((piece) => {
+		const ast = Markdoc.parse(tokenizer.tokenize(piece.body!));
+		const text = plainTextify(ast);
+		const heroImage =
+			typeof piece.data.heroImageSrc === "string"
+				? piece.data.heroImageSrc
+				: piece.data.heroImageSrc[0];
+		return {
+			type: "piece",
+			color: piece.data.color,
+			content: {
+				title: piece.data.title,
+				image: heroImage,
+				text: text.slice(0, 2),
+				date: piece.data.date,
+			}
+		};
+	}
+);
+
+tiles.splice(0, 0, { type: 'header', color: '#E8BFB6'});
+tiles.splice(2, 0, { type: 'about', color: '#346BA0' });
+tiles.push({ type: 'newsletter', color: '#B96647' });
+
+let subArray: Tile[][] = [[], [], [], []];
+for (let index = 0; index < tiles.length; index++) {
+	subArray[index % 4].push(tiles[index]);
+}
+
+
 ---
 
-<WritingLayout title="Ava Vu Archive" image="/favicon.svg" author="Ava Vu" tags={[]}>
-    <WritingArchive pieces={pieces}/>
+<WritingLayout
+	title="Ava Vu Archive"
+	image="/favicon.svg"
+	author="Ava Vu"
+	tags={[]}
+>
+	<div class="">
+		<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4">
+			{
+				subArray.map((column) => (
+					<div
+						class="flex flex-col ">
+						{column.map((piece, index) => (
+							<div class="" style={`background-color: ${piece.color}; color: var(${
+								colord(piece.color).isLight() ? "--color-article" : "--color-article-bg"
+								});
+								height: ${index === column.length - 1 ? "100%" : "unset"};
+								`}>
+								{piece.type === "piece" && (
+									<img src={piece.content.image} alt="" />
+									<a
+										class="w-full"
+										href={`/writing/${convertToUrl(piece.content.title)}`}
+									>
+										<h1 class="text-2xl">{piece.content.title}</h1>
+									</a>
+									<p class="text-right">{formatDate(piece.content.date)}</p>
+									<div class="px-2 line-clamp-8 md:line-clamp-none lg:line-clamp-none" >
+										<Fragment set:html={piece.content.text.join("<br><br>")} />
 
+									</div>
+								)}
+
+								{piece.type === "header" && (
+									<div class="h-48 pt-12">
+										<h1 class="scale-x-75 text-4xl text-center">Writing Archive</h1>
+									</div>
+								)}
+
+								{piece.type === "about" && (
+									<div class="flex justify-center flex-col h-128 px-2">
+										<p class="">
+											As of August 2025, I've committed to writing one essay a month. The topics vary from politics, to programming, to music and culture. If you'd like to be updated when I release a new one, you can subscribe to my <a class=" underline" href="https://avavu.au/subscribe">newsletter</a>.
+										</p>
+
+									</div>
+								)}
+
+								{piece.type === "newsletter" && (
+									<div class="h-96 pt-24">
+										<h1 class="text-center">Subscribe to my newsletter!</h1>
+										<Subscribe client:only="svelte"/>
+
+									</div>
+								)}
+							</div>
+
+						))}
+					</div>
+				))
+			}
+		</div>
+	</div>
 </WritingLayout>
+
+<style is:global>
+	body {
+		background-color: blue;
+	}
+
+</style>
