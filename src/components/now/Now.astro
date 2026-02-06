@@ -67,11 +67,12 @@ const { word, age, newsletter, image, essay, project, now, message, song } = ins
         </section>),
 
         (<section class="bg-[yellow]">
-            <div class="">
+            <div class="overflow-y-scroll">
                 <a class="font-bold underline" href={word.link}>
                     {word.word}
                 </a>
-                <p>{word.part} – {word.desc}</p>
+                <p>{word.part} – <span class="italic">{word.desc}</span></p>
+                <br/>
                 <span class="[&>p_a]:underline" set:html={word.markdown}></span>
             </div>
             <h2 class="bg-[lime] w-fit">word of the day</h2>
@@ -101,7 +102,7 @@ const { word, age, newsletter, image, essay, project, now, message, song } = ins
         </section>),
 
         (newsletter && <section class="bg-[lime]">
-            <a class="underline font-bold block starter w-min" href={newsletter.link}> 
+            <a class="underline font-bold block starter z-10 w-min" href={newsletter.link}> 
                 {newsletter.title}
             </a>
 
