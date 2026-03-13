@@ -9,7 +9,6 @@ import {colord} from "colord"
 import Markdoc, { type Node } from "@markdoc/markdoc";
 import Subscribe from "@/newsletter/Subscribe.svelte"
 
-
 interface Props {
 	pieces: CollectionEntry<"writing">[];
 }
@@ -43,6 +42,7 @@ const recurse = (node: Node, output: string[][] = [[]]): string[][] => {
 interface PiecePreview {
 	text: string[];
 	image: string;
+	alt: string;
 	title: string;
 	date: Date;
 }
@@ -71,6 +71,7 @@ const tiles: Tile[] = pieces
 			content: {
 				title: piece.data.title,
 				image: heroImage,
+				alt: piece.data.heroImageAlt,
 				text: text.slice(0, 2),
 				date: piece.data.date,
 			}
@@ -103,13 +104,15 @@ for (let index = 0; index < tiles.length; index++) {
 					<div
 						class="flex flex-col ">
 						{column.map((piece, index) => (
-							<div class="" style={`background-color: ${piece.color}; color: var(${
+							<div class="pb-12" style={`background-color: ${piece.color}; color: var(${
 								colord(piece.color).isLight() ? "--color-article" : "--color-article-bg"
 								});
 								height: ${index === column.length - 1 ? "100%" : "unset"};
 								`}>
 								{piece.type === "piece" && (
-									<img src={piece.content.image} alt="" />
+									<a href={`/writing/${convertToUrl(piece.content.title)}`}>
+										<img src={piece.content.image} alt={piece.content.alt} />
+									</a>
 									<a
 										class="w-full"
 										href={`/writing/${convertToUrl(piece.content.title)}`}
@@ -120,7 +123,18 @@ for (let index = 0; index < tiles.length; index++) {
 									<div class="px-2 line-clamp-8 md:line-clamp-none lg:line-clamp-none" >
 										<Fragment set:html={piece.content.text.join("<br><br>")} />
 
+			
 									</div>
+
+									<p class="px-2 text-right">
+										<a 
+										class="underline" 
+										href={`/writing/${convertToUrl(piece.content.title)}`}>
+											Read more...
+										</a>
+									</p>
+
+									
 								)}
 
 								{piece.type === "header" && (
