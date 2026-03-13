@@ -151,7 +151,7 @@
 <div class="border-2 font-bold overflow-clip">
     <a 
         href="/"
-        class="block scale-x-[500%] text-center">
+        class="block text-center">
         RETURN HOME
     </a>
 </div>
@@ -232,7 +232,7 @@
                                 </div>
                                 <div class="article-content bg-white max-w-[min(90vw,100%)] lg:max-w-[min(60vw,100%)] mx-auto min-h-[200px] flex flex-col justify-center place-items-center ">
                                     <p class="px-4  text-left max-w-[65ch] mx-auto">
-                                        I am able open to making websites, portfolios, e-commerce sites, posters, and more. Send me a message at <a class="link" href="mailto:avadinhvu@gmailcom">my email</a> or <a class="link" href="https://instagram.com/avavu.au">my instagram</a>
+                                        I am able open to making websites, portfolios, e-commerce sites, posters, and more. Send me a message at <a class="link" href="mailto:avadinhvu@gmailcom">my email</a> or <a class="link" href="https://instagram.com/dinhvudinhvudinhvu">my instagram</a>
                                     </p>
                                 </div>
                             </div>
@@ -244,14 +244,12 @@
         </div>
         
     {/each}
-    <!-- <img src="/web/radiofodder1.png">
-    <img src="/web/radiofodder2.png"> -->
 </div>
 
 <style>
     svg {
-    shape-rendering: crispEdges; /* or geometricPrecision */
-    -webkit-transform: translateZ(0); /* Force hardware acceleration */
+    shape-rendering: crispEdges; 
+    -webkit-transform: translateZ(0); /* Force hardware acceleration (there was a wierd transition thing idk if i fixed it) */
     backface-visibility: hidden;
     display: block;
     transform-box: fill-box; 
