@@ -7,7 +7,7 @@ interface Props {
 	description?: string,
 }
 
-const { title = "Ava Vu", image, description } = Astro.props
+const { title = "Ava Dinh-Vu", image, description } = Astro.props
 ---
 
 <!doctype html>
@@ -29,11 +29,11 @@ const { title = "Ava Vu", image, description } = Astro.props
 		{description && (
 			<meta property="og:description" content={description}/>
 		)}
-		<meta property="og:site_name" content="Ava Vu"/>
+		<meta property="og:site_name" content="Ava Dinh-Vu"/>
 		<link
 			rel="alternate"
 			type="application/rss+xml"
-			title="Ava Vu's Writing"
+			title="Ava Dinh-Vu's Writing"
 			href={new URL("rss.xml", Astro.site)}
 		/>
 	</head>

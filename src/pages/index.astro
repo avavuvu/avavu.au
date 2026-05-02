@@ -1,111 +1,40 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from "astro:content"
+import Layout from "../layouts/Layout.astro"
+
+const newsletters = (await getCollection("newsletter")).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime()
+)
 ---
 
 <Layout>
-	<div class="box"></div>
+    <main class="font-serif flex justify-end mr-10 my-10 text-sm">
+        <div class="w-[300px]">
+            <h1>Ava Dinh-Vu</h1>
+            <p>I like art and other people</p>
+            <p>You can see my web design work <a>here</a></p>
 
-	<div class="flex justify-between flex-col h-dvh p-4 pb-8">
-		<div>
-			<div class="flex gap-4 flex-wrap justify-center max-w-[60%] mx-auto text-center">
-				<a href="/web" class="text-4xl">
-					web design
-				</a>
-				<a href="/projects" class="text-4xl">
-					other projects
-				</a>
-                <a href="/subscribe" class="text-4xl">
-					newsletter
-				</a>
-		
-			</div>
-		</div>
+            <hr />
 
-        <h1 class="text-center text-4xl md:text-5xl lg:text-7xl text-white font-extralight
-            mix-blend-difference
-            flex justify-center pt-20 pb-2 tracking-tighter">
-            <a class="main-link" href="/now">now</a>
-        </h1>
+            <button class="block"> my newsletter </button>
+            <!-- {
+                newsletters.map(({ data }) => {
+                    return (
+                        <div>
+                            <button class="text-left">{data.subject}</button>
+                        </div>
+                    )
+                })
+            } -->
 
-		<div class="text-4xl flex justify-center flex-col items-center">
-			<a href="https://www.instagram.com/dinhvudinhvudinhvu">instagram</a>
-			<a href="/about">about</a>
-			<a href="/writing">writing</a>
-		</div>
-	</div>
+            <button class="block"> my games</button>
 
+            <button class="block"> my archive</button>
+        </div>
+    </main>
 </Layout>
 
 <style scoped>
-    body, html {
-        margin: 0;
-        overflow: hidden; 
-        position: relative;
-        height: 100vh;
-        width: 100vw;
-    }
-
-    body::before, .box::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 1000vh; /* 10x viewport height for seamless looping */
-        background: repeating-linear-gradient(
-            to bottom,
-            rgb(116, 116, 116),
-            rgb(178, 178, 178) 50%,
-            rgb(116, 116, 116) 100%
-        );
-        background-size: 100% 20vh; /* One "segment" = 20% of 1000vh */
-        animation: scrollBackground 20s linear infinite;
-        z-index: -1;
-    }
-
-    @media (prefers-reduced-motion) {
-        :global(body::before, .box::before) {
-            animation: none;
-        }
-    }
-
-
-    .box::before {
-        animation: scrollBackground 20s linear infinite reverse;
-    }
-
-    @keyframes scrollBackground {
-        from {
-            transform: translateY(0);
-        }
-        to {
-            transform: translateY(-80vh); /* Moves up by 80% of viewport */
-        }
-    }
-
-    .box {
-        position: absolute;
-        width:100vw;
-        height:100vh;
-        -webkit-mask:url("/assets/star.svg") center;
-                mask:url("/assets/star.svg") center;
-            
-    }
-
-    a:not(.main-link) {
-        text-decoration-line: underline;
-        cursor: pointer;
-    }
-
-    a:hover, a:active {
-        background-color: rgb(194, 124, 229);
-    }
-
-    div > * {
-        mix-blend-mode: difference;
-        transform: translate3d(0,0,0);
-        color: white;
-        letter-spacing: -.1rem;
+    body {
     }
 </style>
-

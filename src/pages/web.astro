@@ -1,33 +1,30 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import WebComponent from "../components/WebComponent.svelte"
+import WebComponent from "../components/WebComponent.svelte";
 import { getCollection } from "astro:content";
 
-const projects = await getCollection("webdesign")
-const projectText: {[key: string]: string} = {}
+const projects = await getCollection("webdesign");
+const projectText: { [key: string]: string } = {};
 
-
-projects.forEach(project => {
-    projectText[project.id] = project.rendered!.html
-})
-
+projects.forEach((project) => {
+  projectText[project.id] = project.rendered!.html;
+});
 ---
 
 <Layout title="Web Design">
-    <WebComponent
-        projects={projectText}
-        client:only="svlete"/>
+  <WebComponent projects={projectText} client:only="svlete" />
 </Layout>
 
 <style>
-    body, html {
-        scroll-behavior: smooth;
-        scroll-snap-type: y mandatory;
-    }
+  body,
+  html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
 
-    * {
-        -webkit-transform:translate3d(0,0,0);
-        -webkit-transform-style: preserve-3d;
-        -webkit-backface-visibility: hidden;
-    }
+  * {
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+  }
 </style>
