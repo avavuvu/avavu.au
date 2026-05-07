@@ -1,0 +1,10 @@
+---
+title: Tram and Train Map Redesign
+date: '2024-08-07'
+type: misc
+
+---
+
+![](/images/misc/trammap-redesign.webp)
+
+A redesign of Melbourne's tram map to include trains as well, to better show interconnectivity in the network.
