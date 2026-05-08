@@ -12,11 +12,15 @@
 	{/snippet}
 
     <p>
-        When you ask someone from Melbourne, "where are you from?" and you haven't heard of it, what do you say to them? I've always found myself asking which train line it's on, or where it's near.
+        When someone tells you where they're from, and you don't know, it's natural to ask where it is in relation to a river, or a harbour, or the mountains.
     </p>
 
     <p>
-        Suburble is gamifying that conversational nit. Everyday, there's a new Melbourne suburb that you must deduce from a set of clues.
+        But Melbourne is mostly flat, with a river that isn’t a great dividing force. Instead, I hear people ask about their train line.
+    </p>
+
+    <p>
+        Suburble is that conversational nit turned into a game. Everyday, there's a new Melbourne suburb that you must deduce from a set of clues.
     </p>
 
     <p>

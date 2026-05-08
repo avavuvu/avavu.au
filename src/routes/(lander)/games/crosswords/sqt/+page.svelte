@@ -21,4 +21,27 @@
 	</p>
 
 	<p>Here are some of my puzzles</p>
+	<ul>
+		<li>
+			<a href="https://www.saturdayquiztime.com.au/editions/298/crossword/">
+				March 7th, 2026
+			</a>
+		</li>
+		<li>
+			<a href="https://www.saturdayquiztime.com.au/editions/296/crossword/">
+				February 21, 2026
+			</a>
+		</li>
+		<li>
+			<a href="https://www.saturdayquiztime.com.au/editions/284/crossword/">
+				November 11, 2025
+			</a>
+		</li>
+		<li>
+			<a href="https://www.saturdayquiztime.com.au/editions/260/crossword/">
+				July 14, 2025
+			</a>
+		</li>
+		
+	</ul>
 </Block>

@@ -59,6 +59,9 @@ export const getMarkdocContent = () => {
 			title: string
 			date: string
 			description: string
+			tags: string[]
+			heroImageSrc: string
+			heroImageAlt: string
 		} = ast.attributes.frontmatter ? yaml.load(ast.attributes.frontmatter) : ({} as any)
 
 		return {

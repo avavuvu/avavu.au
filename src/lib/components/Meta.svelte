@@ -1,11 +1,22 @@
 <script lang="ts">
-	import { PUBLIC_SITE_URL } from "$env/static/public"
+	import { globalState } from "$lib/lander.svelte"
 
     const { description = "Ava Dinh-Vu's Portfolio", title = "Ava Dinh-Vu", image }: {
         description?: string,
         title?: string,
         image?: string
     } = $props()
+
+    $effect(() => {
+        if(title === "Ava Dinh-Vu") {
+            globalState.setHeader("")
+            return
+        }
+
+        if(title) {
+            globalState.setHeader(title)
+        }
+    })
 </script>
 
 <svelte:head>

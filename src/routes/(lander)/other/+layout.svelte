@@ -14,9 +14,9 @@ import { fade } from 'svelte/transition'
 		<li>
 			<a href="/other/about"> about me </a>
 		</li>
-		<li>
+		<!-- <li>
 			<a href="/other/website"> about this website </a>
-		</li>
+		</li> -->
 		<li>
 			<a href="/other/writing"> essays </a>
 		</li>

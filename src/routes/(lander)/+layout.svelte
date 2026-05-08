@@ -2,8 +2,18 @@
 	import favicon from '$lib/assets/favicon.svg'
 	import "../layout.css"
 	import Block from '$lib/components/lander/Block.svelte'
+	import { globalState } from '$lib/lander.svelte.js'
+	import { fade, type TransitionConfig } from 'svelte/transition'
+	import { onMount } from 'svelte'
 
 	let { children, data } = $props()
+
+	function noopTransition(node: Element): TransitionConfig {
+		return fade(node, { duration: 0 });
+	}
+
+	let transition = $state(noopTransition)
+	onMount(() => { transition = fade })
 </script>
 
 <svelte:head>
@@ -11,7 +21,9 @@
 	<title>Ava Dinh-Vu</title>
 </svelte:head>
 
-<main class="block md:grid h-screen grid-cols-8 gap-1 py-10 pr-10 pl-4 text-sm">
+
+
+<main class="md:grid h-screen grid-cols-8 gap-1 py-10 pr-10 pl-4 text-sm">
 	<Block depth={1} colStart={7}>
 		{#snippet heading()}
 			<a href="/">Ava Dinh-Vu</a>
@@ -43,6 +55,20 @@
 
 </main>
 
+<div 
+	aria-hidden="true" 
+	class="top-0 left-0 h-screen w-screen -z-10 fixed  text-[#fff718] font-sans pointer-events-none">
+	{#key globalState.header}
+	<span class="top-20 lg:-top-20 absolute tracking-tighter break-all
+		text-[15rem] lg:text-[30rem] 
+		leading-48 lg:leading-96 font-light"
+		transition:transition>
+		{globalState.header}
+	</span>
+		
+	{/key}
+</div>
+
 <style>
 	:global {
 		.content {
@@ -63,8 +89,17 @@
 				text-decoration: underline;
 			}
 
+			code {
+				word-break: break-all;
+				font-size: smaller;
+			}
+
 			p, ul {
 				margin-bottom: 1em;
+			}
+
+			hr {
+				margin: 1em 0;
 			}
 		}
 	}

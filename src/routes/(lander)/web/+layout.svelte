@@ -8,7 +8,7 @@ import { fade } from 'svelte/transition'
 
 <Block colStart={5} depth={2}>
 	{#snippet heading()}
-		<a href="/">web design</a>
+		web design
 	{/snippet}
 
 	<ul>

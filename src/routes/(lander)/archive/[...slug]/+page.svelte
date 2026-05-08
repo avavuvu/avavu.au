@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_SITE_URL } from '$env/static/public'
 	import Block from '$lib/components/lander/Block.svelte'
+	import Meta from '$lib/components/Meta.svelte'
 	import { formatDate } from '$lib/utils.js';
 
 	let {
@@ -14,47 +15,34 @@
 	})
 </script>
 
+{#if data.view === "entry"}
+	<Meta
+		title={data.entry.data.metadata.title}
+		description={data.entry.plainText}
+		image={data.entry.firstImage || undefined}
+			/>
+{:else if data.view === "group"}
+	<Meta
+		title={data.subcategory === "rating-5" 
+		? "★★★★★ Archive" 
+		: `${data.subcategory[0].toUpperCase()}${data.subcategory.slice(1)} Archive`}
+		/>
+{:else}
+	<Meta
+		title="Archive"
+		/>
+{/if}
 <svelte:head>
 	{#if data.view === "entry"}
 		{@const metadata = data.entry.data.metadata}
-		{@const canonical = `${PUBLIC_SITE_URL}/type/${metadata.type}/${data.entry.id}`}
-
-		<title>
-			{metadata.title}
-		</title>
+		{@const canonical = `${PUBLIC_SITE_URL}/archive/type/${metadata.type}/${data.entry.id}`}
 
 		<link rel="canonical" href="{canonical}" />
 		<meta property="og:url" content={canonical} />
 
-		<meta property="og:title" content={metadata.title} />
-		<meta name="twitter:title" content={metadata.title} />
-		<meta property="og:description" content={data.entry.plainText} />
-		<meta name="twitter:description" content={data.entry.plainText} />
-		<meta property="og:type" content="website" />
-		
-		{#if data.entry.firstImage}
-			<meta name="twitter:card" content="summary_large_image" />
-			<meta property="og:image" content="{PUBLIC_SITE_URL}{data.entry.firstImage}" />
-			<meta name="twitter:image" content="{PUBLIC_SITE_URL}{data.entry.firstImage}" />
-		{/if}
-	{:else if data.view === "group"}
-		{@const title = data.subcategory === "rating-5" 
-			? "★★★★★ Archive" 
-			: `${data.subcategory[0].toUpperCase()}${data.subcategory.slice(1)} Archive`
-		}
 		<title>
-			{title}
+			{metadata.title}
 		</title>
-
-		<meta property="og:title" content={title} />
-		<meta name="twitter:title" content={title} />
-	{:else}
-		<title>
-			Archive
-		</title>
-
-		<meta property="og:title" content="Archive"/>
-		<meta name="twitter:title" content="Archive" />
 	{/if}
 </svelte:head>
 
@@ -95,13 +83,13 @@
 		<ul>
 			{#each data.works.sort((a,b) => b.data.metadata.date.localeCompare(a.data.metadata.date)) as work}
 				<li class="flex gap-1">
-					<span class="hidden lg:inline">
+					<span class="inline sm:hidden lg:inline w-3">
 						{{
 							"interactive": "☺",
-							'misc': "⏺",
+							'misc': "⌾",
 							'ephemera': "★",
 							'music': "♫",
-							'video':  "▶"
+							'video':  "▸"
 						}[work.data.metadata.type]}
 					</span>
 
@@ -124,7 +112,7 @@
 		{#snippet heading()}
 			{metadata.title}
 		{/snippet}
-		<div class="overflow-y-scroll min-h-[90vh] pr-4">
+		<div class=" pr-4 min-h-48">
 			<p>
 				{formatDate(date)}
 			</p>
