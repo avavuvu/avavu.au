@@ -40,37 +40,37 @@
 
 [[redirects]]
     from = "/projects/year-2025/*"
-    to = "/archive/type/year/2025"
+    to = "/archive/type/year/2025/:splat"
     status = 301
 
 [[redirects]]
     from = "/projects/year-2024/*"
-    to = "/archive/type/year/2024"
+    to = "/archive/type/year/2024/:splat"
     status = 301
 
 [[redirects]]
     from = "/projects/year-2023/*"
-    to = "/archive/type/year/2023"
+    to = "/archive/type/year/2023/:splat"
     status = 301
 
 [[redirects]]
     from = "/projects/year-2022/*"
-    to = "/archive/type/year/2022"
+    to = "/archive/type/year/2022/:splat"
     status = 301
 
 [[redirects]]
     from = "/projects/year-2021/*"
-    to = "/archive/type/year/2021"
+    to = "/archive/type/year/2021/:splat"
     status = 301
 
 [[redirects]]
     from = "/projects/rating-5/*"
-    to = "/archive/rating/5"
+    to = "/archive/rating/5/:splat"
     status = 301
 
 [[redirects]]
     from = "/projects/other/*"
-    to = "/archive/rating/other"
+    to = "/archive/rating/other/:splat"
     status = 301
 
 [[redirects]]
