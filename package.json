@@ -11,7 +11,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"postbuild": "npx svelte-sitemap"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.1",
@@ -38,6 +39,7 @@
 		"js-yaml": "^4.1.1",
 		"lite-youtube-embed": "^0.3.4",
 		"sharp": "^0.34.5",
+		"svelte-sitemap": "^3.1.0",
 		"unist-util-visit": "^5.1.0"
 	}
 }

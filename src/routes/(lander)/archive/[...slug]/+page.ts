@@ -28,7 +28,7 @@ type ArchiveEntry = MarkdownEntry<{
 
 const sortMap: Record<SortKey, (entry: ArchiveEntry) => string> = {
 	year: (entry) => String(new Date(entry.metadata.date).getFullYear()),
-	rating: (entry) => (entry.metadata.rating ? 'rating-5' : 'other'),
+	rating: (entry) => (entry.metadata.rating ? '5' : 'other'),
 	type: (entry) => entry.metadata.type
 }
 

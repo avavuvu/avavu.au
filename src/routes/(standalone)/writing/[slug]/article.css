@@ -1,12 +1,14 @@
-.essay {
-	body {
-		font-family: 'Sorts Mill Goudy', serif;
-		color: var(--color-article);
-		background-color: var(--color-article-bg);
-		font-size: larger;
-		counter-reset: sidenote-counter;
-	}
+body {
+	--color-article: rgb(36, 35, 46);
+	--color-article-bg: #fefefe;
 
+	color: var(--color-article);
+	background-color: var(--color-article-bg);
+	font-size: larger;
+	counter-reset: sidenote-counter;
+}
+
+.essay {
 	li {
 		list-style-type: disc;
 	}
