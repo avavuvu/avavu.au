@@ -41,7 +41,7 @@
 	</a>
 
 	<div class="absolute w-fit origin-left scale-x-75 bg-[blue] font-serif text-white">
-		<a href="/writing" class=" block h-12">
+		<a href="/other/writing" class=" block h-12">
 			<span class=" block origin-left translate-y-0.5 scale-y-[2] font-serif text-4xl">
 				more
 			</span>
