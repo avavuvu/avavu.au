@@ -80,7 +80,7 @@ export const getMarkdownContent = <T extends MarkdownEntry>(
 				data: data as T,
 				plainText: extractPlaintext(raw),
 				firstImage: extractFirstImage(raw),
-				rawMarkdown: raw
+				rawMarkdown: raw.replace(/^---[\s\S]*?---\n?/, '').trim()
 			}
 		})
 		.filter(({ category }) => category === searchCategory)
