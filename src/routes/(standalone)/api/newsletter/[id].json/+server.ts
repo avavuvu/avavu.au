@@ -13,11 +13,14 @@ export function GET({ params }) {
 	const entry = getMarkdownEntry<Newsletter>('newsletter', id)
 
 	if (!entry) {
-		error(404, 'Not found')
+		error(404, 'Newsletter found')
 	}
 
-	return json({
-		markdown: entry.rawMarkdown,
-		data: entry.data.metadata
-	})
+	return new Response(
+		JSON.stringify({
+			markdown: entry.rawMarkdown,
+			data: entry.data.metadata
+		}),
+		{ status: 200 }
+	)
 }
