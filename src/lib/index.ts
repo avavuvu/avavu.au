@@ -3,6 +3,28 @@ import type { Component } from 'svelte'
 export const categoryKeys = ['newsletter', 'games', 'archive', 'web', 'writing'] as const
 export type CategoryKey = (typeof categoryKeys)[number]
 
+export type NewsletterData = {
+	title: string
+	date: string
+	preheader: string
+	crosswords?: Array<{
+		info: string
+		vendor: string
+		link: string
+		date: string
+	}>
+	cool?: Array<{
+		title: string
+		info: string
+		links: string[]
+	}>
+	music?: Array<{
+		title: string
+		info: string
+		link: string
+	}>
+}
+
 export interface MarkdownEntry<M = Record<string, unknown>> {
 	default: Component
 	metadata: M
@@ -42,6 +64,7 @@ export const getMarkdownContent = <T extends MarkdownEntry>(
 	data: T
 	plainText: string
 	firstImage: string | null
+	rawMarkdown: string
 }> => {
 	return Object.entries(content)
 		.map(([path, data]) => {
@@ -56,7 +79,8 @@ export const getMarkdownContent = <T extends MarkdownEntry>(
 				category,
 				data: data as T,
 				plainText: extractPlaintext(raw),
-				firstImage: extractFirstImage(raw)
+				firstImage: extractFirstImage(raw),
+				rawMarkdown: raw
 			}
 		})
 		.filter(({ category }) => category === searchCategory)

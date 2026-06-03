@@ -1,30 +1,7 @@
 import type { RouteParams } from '$app/types'
-import { getMarkdownContent, getMarkdownEntry, type MarkdownEntry } from '$lib'
-import type { Component } from 'svelte'
+import { getMarkdownContent, getMarkdownEntry, type MarkdownEntry, type NewsletterData } from '$lib'
 
 export const prerender = true
-
-type NewsletterData = {
-	title: string
-	date: string
-	preheader: string
-	crosswords?: Array<{
-		info: string
-		vendor: string
-		link: string
-		date: string
-	}>
-	cool?: Array<{
-		title: string
-		info: string
-		links: string[]
-	}>
-	music?: Array<{
-		title: string
-		info: string
-		link: string
-	}>
-}
 
 type Newsletter = MarkdownEntry<NewsletterData>
 
