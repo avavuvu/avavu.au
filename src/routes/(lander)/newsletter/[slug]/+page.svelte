@@ -15,7 +15,7 @@
 	image={data.image || undefined}
 />
 
-<Block colStart={1} colSpan={4} depth={3} scrollTo="top">
+<Block colStart={1} colSpan={4} depth={3} scrollTo="top" background>
 	{#snippet heading()}
 		{data.metadata.title}
 	{/snippet}
@@ -23,8 +23,17 @@
 		{metadata.preheader}
 	</p>
 
-	<div class="mx-6 mb-24 border bg-white px-2 pt-4 text-left lg:mx-10" in:fade>
-		<data.content></data.content>
+	<div in:fade>
+		{#if data.content}
+			<data.content />
+		{:else if data.html}
+			<a
+				class="my-4 block text-[#92ca3a] italic no-underline!"
+				href="https://ava.room.lc/{data.slug}">This newsletter is better read on Showroom</a
+			>
+
+			{@html data.html}
+		{/if}
 
 		{#if metadata.cool}
 			<hr />

@@ -103,7 +103,7 @@
 	{@const date = new Date(data.entry.data.metadata.date)}
 	{@const metadata = data.entry.data.metadata}
 	{#key data.entry}
-		<Block colStart={1} colSpan={3} depth={5}>
+		<Block colStart={1} colSpan={3} depth={5} background>
 			{#snippet heading()}
 				{metadata.title}
 			{/snippet}

@@ -38,6 +38,7 @@
 		"@types/node": "^25.6.0",
 		"js-yaml": "^4.1.1",
 		"lite-youtube-embed": "^0.3.4",
+		"marked": "^18.0.5",
 		"sharp": "^0.34.5",
 		"svelte-sitemap": "^3.1.0",
 		"unist-util-visit": "^5.1.0"

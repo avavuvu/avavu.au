@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Block from '$lib/components/lander/Block.svelte'
 	import Meta from '$lib/components/Meta.svelte'
-import { fade } from 'svelte/transition'
+	import { fade } from 'svelte/transition'
 
 	const { children, data } = $props()
 </script>
@@ -13,7 +13,13 @@ import { fade } from 'svelte/transition'
 
 	<ul>
 		<li>
+			<a href="/web/showroom"> showroom </a>
+		</li>
+		<li>
 			<a href="/web/radiofodder"> radio fodder </a>
+		</li>
+		<li>
+			<a href="/web/naarmlc"> live coders naarm </a>
 		</li>
 	</ul>
 

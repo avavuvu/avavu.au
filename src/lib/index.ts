@@ -92,7 +92,7 @@ export const getMarkdownEntry = <T extends MarkdownEntry>(
 ) => {
 	const content = getMarkdownContent<T>(category)
 
-	const match = content.find(({ id }) => id === searchId)!
+	const match = content.find(({ id }) => id === searchId)
 
 	return match
 }

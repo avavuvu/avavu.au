@@ -12,19 +12,16 @@
 	})
 </script>
 
-<Meta
-	title="Ava Dinh-Vu's Essays"
-/>
+<Meta title="Ava Dinh-Vu's Essays" />
 
-
-<Block colStart={3} depth={3}>
+<Block colStart={3} depth={3} background>
 	{#snippet heading()}
 		essays
 	{/snippet}
 
 	<ul>
 		{#each sorted as writing}
-			<li>
+			<li class="pb-2">
 				<a href="/writing/{writing.id}" data-sveltekit-preload-data="off">
 					{writing.data.metadata.title}
 				</a>

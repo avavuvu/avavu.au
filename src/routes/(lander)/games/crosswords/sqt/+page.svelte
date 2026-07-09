@@ -4,16 +4,16 @@
 	import { fade } from 'svelte/transition'
 </script>
 
-<Meta 
+<Meta
 	title="Saturday Quiz Time Crosswords"
 	description="The crosswords Ava has written for Saturday Quiz Time"
 />
 
-<Block colStart={1} depth={4}>
+<Block colStart={1} depth={4} background>
 	{#snippet heading()}
 		saturday quiz time
 	{/snippet}
-	
+
 	<p>
 		I contribute puzzles to Australian quiz website <a
 			href="https://www.saturdayquiztime.com.au/">Saturday Quiz Time</a
@@ -42,6 +42,5 @@
 				July 14, 2025
 			</a>
 		</li>
-		
 	</ul>
 </Block>
