@@ -11,7 +11,7 @@
 	{/snippet}
 
 	<p>
-		From 2022: "I hope you enjoy the end of the world as much as I enjoyed making this album.""
+		From 2022: "I hope you enjoy the end of the world as much as I enjoyed making this album."
 	</p>
 
 	<p>

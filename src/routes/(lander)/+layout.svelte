@@ -106,11 +106,14 @@
 				margin-bottom: 6rem;
 				background-color: white;
 				border: 1px solid black;
-				margin: 0px 1.5rem;
+				margin: 0px 0rem;
 				padding: 0.5rem 1rem;
+
+				margin-top: 2em;
 
 				@media (width >= 64rem) {
 					margin-inline: calc(var(--spacing) * 10);
+					margin-top: 0em;
 				}
 			}
 		}

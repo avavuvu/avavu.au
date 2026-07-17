@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Block from '$lib/components/lander/Block.svelte'
-import { fade } from 'svelte/transition'
+	import { fade } from 'svelte/transition'
 
 	const { children, data } = $props()
 </script>
@@ -23,9 +23,17 @@ import { fade } from 'svelte/transition'
 		<li>
 			<a href="/other/music"> music </a>
 		</li>
-		
+	</ul>
 
-		
+	<ul>
+		<li>
+			<a class="no-link" href="https://www.instagram.com/avadinhvu/"> instagram </a>
+		</li>
+		<li>
+			<a class="no-link" href="https://www.linkedin.com/in/ava-dinh-vu-399163414/">
+				linkedin
+			</a>
+		</li>
 	</ul>
 </Block>
 

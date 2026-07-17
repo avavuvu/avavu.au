@@ -23,14 +23,16 @@
 		{metadata.preheader}
 	</p>
 
-	<div in:fade>
+	<div in:fade class="text-left">
 		{#if data.content}
 			<data.content />
 		{:else if data.html}
-			<a
-				class="my-4 block text-[#92ca3a] italic no-underline!"
-				href="https://ava.room.lc/{data.slug}">This newsletter is better read on Showroom</a
-			>
+			<span class="my-4 inline-flex items-center justify-center gap-1">
+				<span class="h-2 w-2 rounded-full bg-[#92ca3a]"></span>
+				<a class=" block italic" href="https://ava.room.lc/{data.slug}"
+					>This newsletter is better read on Showroom</a
+				>
+			</span>
 
 			{@html data.html}
 		{/if}
