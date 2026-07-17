@@ -1,6 +1,6 @@
 ---
 title: Corpus Edition One Cover
-date: '2026-06-31'
+date: '2026-06-30'
 link: https://www.instagram.com/corpuszine/
 type: ephemera
 ---
