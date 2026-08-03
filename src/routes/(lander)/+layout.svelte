@@ -88,6 +88,13 @@
 				text-decoration: underline;
 			}
 
+			pre code {
+			    display: block;
+				overflow: scroll;
+				text-wrap: stable;
+
+			}
+
 			code {
 				word-break: break-all;
 				font-size: smaller;
