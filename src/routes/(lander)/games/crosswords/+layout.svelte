@@ -12,7 +12,7 @@ import { fade } from 'svelte/transition'
 
 	<ul>
 		<li>
-			<a href="/games/crosswords/blue"> crosswords.blue </a>
+			<a href="/games/crosswords/blue"> crossword.blue </a>
 		</li>
 		<li>
 			<a href="/games/crosswords/sqt"> saturday quiz time </a>

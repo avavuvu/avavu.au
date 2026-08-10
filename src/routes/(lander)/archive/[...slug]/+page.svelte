@@ -78,7 +78,7 @@
 
 			<ul>
 				{#each data.works.sort( (a, b) => b.data.metadata.date.localeCompare(a.data.metadata.date) ) as work}
-					<li>
+					<li class="flex gap-1">
 						<span class="inline w-3 sm:hidden lg:inline">
 							{{
 								interactive: '☺',

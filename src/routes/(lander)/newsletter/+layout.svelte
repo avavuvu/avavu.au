@@ -19,6 +19,8 @@
 		})),
 		...external
 	]
+
+	newsletters.sort((a, b) => (a.date as string).localeCompare(b.date as string))
 </script>
 
 <Block colStart={5} depth={2}>
