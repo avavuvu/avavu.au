@@ -1,0 +1,491 @@
+{
+  "width": 500,
+  "height": 500,
+  "nodes": [
+    {
+      "id": "contact",
+      "x": 250,
+      "y": -250
+    },
+    {
+      "id": "ava-dinh-vu",
+      "x": 250,
+      "y": -64.89102824326697
+    },
+    {
+      "id": "ava-wiki",
+      "x": 250,
+      "y": 11.431680582816385
+    },
+    {
+      "id": "github",
+      "x": 250,
+      "y": -24.07810522827218
+    },
+    {
+      "id": "html-day-2026",
+      "x": -250,
+      "y": 250
+    },
+    {
+      "id": "html",
+      "x": -196.8425657709756,
+      "y": 250
+    },
+    {
+      "id": "experimental-magazine-covers",
+      "x": -250,
+      "y": -153.85062220106104
+    },
+    {
+      "id": "farrago",
+      "x": -250,
+      "y": -114.81705683970088
+    },
+    {
+      "id": "marlon-and-the-microwave",
+      "x": 250,
+      "y": -218.9809038042371
+    },
+    {
+      "id": "i-love-you-will-you-marry-me",
+      "x": -250,
+      "y": -250
+    },
+    {
+      "id": "radio-fodder-pizza-party",
+      "x": 1.2778790910417535,
+      "y": -250
+    },
+    {
+      "id": "radio-fodder",
+      "x": -109.89163020109994,
+      "y": -206.0567368798282
+    },
+    {
+      "id": "life-in-jars",
+      "x": 250,
+      "y": 250
+    },
+    {
+      "id": "music",
+      "x": 250,
+      "y": 217.18777183041757
+    },
+    {
+      "id": "the-joe-bogan-experience",
+      "x": 250,
+      "y": -131.2264769338124
+    },
+    {
+      "id": "future-play-naarm",
+      "x": -250,
+      "y": 250
+    },
+    {
+      "id": "hugh-fuchsen-tour-poster",
+      "x": 97.58299272895603,
+      "y": 250
+    },
+    {
+      "id": "friday-blender-meetup-poster",
+      "x": -92.97288704748819,
+      "y": 250
+    },
+    {
+      "id": "farrago-edition-3-redesign",
+      "x": -250,
+      "y": -39.383658685490175
+    },
+    {
+      "id": "tram-and-train-map-redesign",
+      "x": -250,
+      "y": -228.29645510454992
+    },
+    {
+      "id": "farrago-edition-5-cover",
+      "x": -250,
+      "y": -185.4613847125484
+    },
+    {
+      "id": "friday-blender-meetup-video",
+      "x": 250,
+      "y": 82.61154324125518
+    },
+    {
+      "id": "showroom",
+      "x": -48.042917865523336,
+      "y": 250
+    },
+    {
+      "id": "radio-fodder-trivia-1",
+      "x": -134.41405952750358,
+      "y": -250
+    },
+    {
+      "id": "codejam",
+      "x": -250,
+      "y": 141.8764458938246
+    },
+    {
+      "id": "live-coding",
+      "x": -250,
+      "y": 111.33421805842961
+    },
+    {
+      "id": "between-me-and-you",
+      "x": 250,
+      "y": 250
+    },
+    {
+      "id": "anemia",
+      "x": 250,
+      "y": 250
+    },
+    {
+      "id": "radio-fodder-live",
+      "x": -47.45683263707902,
+      "y": -166.7099723035145
+    },
+    {
+      "id": "svelte",
+      "x": 6.971714671865037,
+      "y": -105.74903649757985
+    },
+    {
+      "id": "end-the-boring-internet",
+      "x": 177.3299019801152,
+      "y": -250
+    },
+    {
+      "id": "radio-fodder-trivia-2",
+      "x": -30.123752263469076,
+      "y": -250
+    },
+    {
+      "id": "corpus-cover",
+      "x": 40.59692661316717,
+      "y": 250
+    },
+    {
+      "id": "jack-small-town-girl",
+      "x": 250,
+      "y": -250
+    },
+    {
+      "id": "overcast",
+      "x": 214.4917851169467,
+      "y": -250
+    },
+    {
+      "id": "isn-t-it-strange-that-melbourne-has-trams",
+      "x": 250,
+      "y": -178.61056791360895
+    },
+    {
+      "id": "naarmlc",
+      "x": -250,
+      "y": 77.19119633318829
+    },
+    {
+      "id": "suburble",
+      "x": -35.189060210091846,
+      "y": 18.009718576825314
+    },
+    {
+      "id": "how-to-look-forward-to-the-apocalypse",
+      "x": 218.5774675620062,
+      "y": 250
+    },
+    {
+      "id": "happy-new-year-2025",
+      "x": 145.20327505298187,
+      "y": 250
+    },
+    {
+      "id": "rat-loftus-at-the-penny-black",
+      "x": -222.58314882296628,
+      "y": -250
+    },
+    {
+      "id": "crossword-dot-blue",
+      "x": 58.42319701654701,
+      "y": -250
+    },
+    {
+      "id": "beat-me-at-boggle",
+      "x": 13.483961363472948,
+      "y": 28.010084118491367
+    },
+    {
+      "id": "sequence-of-space-2",
+      "x": 250,
+      "y": 178.61422081225703
+    },
+    {
+      "id": "lovelostjellyfish",
+      "x": 250,
+      "y": 134.47309561636865
+    },
+    {
+      "id": "farrago-edition-6-cover",
+      "x": -250,
+      "y": -80.06180916235714
+    },
+    {
+      "id": "2024-rmit-grad-showcase",
+      "x": 250,
+      "y": -250
+    },
+    {
+      "id": "all-purple-challenge",
+      "x": 185.25578601817824,
+      "y": 250
+    },
+    {
+      "id": "darning-eyebleed-poster",
+      "x": -250,
+      "y": 250
+    },
+    {
+      "id": "jack-rabbit",
+      "x": -250,
+      "y": 219.53913325911685
+    },
+    {
+      "id": "exhaust",
+      "x": -165.5577040572373,
+      "y": -250
+    },
+    {
+      "id": "blender",
+      "x": -50.97931091676638,
+      "y": -250
+    },
+    {
+      "id": "unimelb",
+      "x": -250,
+      "y": 39.18262207777045
+    },
+    {
+      "id": "rmit",
+      "x": -250,
+      "y": 161.50397621756014
+    },
+    {
+      "id": "tailwind",
+      "x": -47.26422150645034,
+      "y": 142.39223180538434
+    },
+    {
+      "id": "javascript",
+      "x": -109.1379068831338,
+      "y": 209.58532300486283
+    },
+    {
+      "id": "animation",
+      "x": 113.00889773115162,
+      "y": -250
+    },
+    {
+      "id": "transness",
+      "x": -250,
+      "y": -250
+    },
+    {
+      "id": "rust",
+      "x": -137.9010074138581,
+      "y": 250
+    }
+  ],
+  "edges": [
+    [
+      "ava-wiki",
+      "ava-dinh-vu"
+    ],
+    [
+      "ava-wiki",
+      "github"
+    ],
+    [
+      "html-day-2026",
+      "html"
+    ],
+    [
+      "experimental-magazine-covers",
+      "farrago"
+    ],
+    [
+      "radio-fodder-pizza-party",
+      "radio-fodder"
+    ],
+    [
+      "life-in-jars",
+      "music"
+    ],
+    [
+      "farrago-edition-3-redesign",
+      "farrago"
+    ],
+    [
+      "farrago-edition-5-cover",
+      "farrago"
+    ],
+    [
+      "radio-fodder-trivia-1",
+      "radio-fodder"
+    ],
+    [
+      "codejam",
+      "live-coding"
+    ],
+    [
+      "between-me-and-you",
+      "anemia"
+    ],
+    [
+      "radio-fodder-live",
+      "radio-fodder"
+    ],
+    [
+      "radio-fodder-live",
+      "svelte"
+    ],
+    [
+      "radio-fodder-trivia-2",
+      "radio-fodder"
+    ],
+    [
+      "naarmlc",
+      "live-coding"
+    ],
+    [
+      "farrago-edition-6-cover",
+      "farrago"
+    ],
+    [
+      "exhaust",
+      "blender"
+    ],
+    [
+      "unimelb",
+      "rmit"
+    ],
+    [
+      "svelte",
+      "radio-fodder-live"
+    ],
+    [
+      "svelte",
+      "crossword-dot-blue"
+    ],
+    [
+      "svelte",
+      "suburble"
+    ],
+    [
+      "svelte",
+      "beat-me-at-boggle"
+    ],
+    [
+      "tailwind",
+      "beat-me-at-boggle"
+    ],
+    [
+      "tailwind",
+      "suburble"
+    ],
+    [
+      "tailwind",
+      "showroom"
+    ],
+    [
+      "tailwind",
+      "javascript"
+    ],
+    [
+      "animation",
+      "marlon-and-the-microwave"
+    ],
+    [
+      "animation",
+      "blender"
+    ],
+    [
+      "music",
+      "anemia"
+    ],
+    [
+      "anemia",
+      "music"
+    ],
+    [
+      "anemia",
+      "life-in-jars"
+    ],
+    [
+      "anemia",
+      "how-to-look-forward-to-the-apocalypse"
+    ],
+    [
+      "anemia",
+      "between-me-and-you"
+    ],
+    [
+      "rust",
+      "showroom"
+    ],
+    [
+      "javascript",
+      "tailwind"
+    ],
+    [
+      "javascript",
+      "html"
+    ],
+    [
+      "rmit",
+      "unimelb"
+    ],
+    [
+      "rmit",
+      "future-play-naarm"
+    ],
+    [
+      "farrago",
+      "unimelb"
+    ],
+    [
+      "farrago",
+      "farrago-edition-6-cover"
+    ],
+    [
+      "farrago",
+      "farrago-edition-5-cover"
+    ],
+    [
+      "farrago",
+      "experimental-magazine-covers"
+    ],
+    [
+      "live-coding",
+      "codejam"
+    ],
+    [
+      "live-coding",
+      "naarmlc"
+    ],
+    [
+      "radio-fodder",
+      "farrago"
+    ],
+    [
+      "radio-fodder",
+      "radio-fodder-live"
+    ],
+    [
+      "html",
+      "html-day-2026"
+    ]
+  ]
+}

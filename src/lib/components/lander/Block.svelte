@@ -17,7 +17,8 @@
 		colStart,
 		colSpan = 2,
 		scrollTo = 'bottom',
-		background = false
+		background = false,
+		leftAlign = false
 	} = $props<{
 		children: Snippet
 		heading: Snippet
@@ -26,6 +27,7 @@
 		colSpan?: number
 		scrollTo?: 'top' | 'bottom'
 		background?: boolean
+		leftAlign?: boolean
 	}>()
 
 	let level = $derived(globalState.depth - depth + 1)
@@ -43,6 +45,7 @@
 
 <div
 	class:needs-background={background}
+	style:text-align={leftAlign ? "left" : "right"}
 	style:opacity="{isLarge.current ? '100' : opacity}%"
 	style:grid-column-start={colStart}
 	style:grid-column-end={colStart + colSpan}

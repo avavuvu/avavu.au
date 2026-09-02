@@ -42,7 +42,7 @@
 
 		<ul>
 			<li>
-				<a href="/other">other</a>
+				<a href="/wiki">about</a>
 			</li>
 			<li>
 				<a href="/archive">everything i've ever made</a>

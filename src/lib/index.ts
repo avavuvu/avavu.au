@@ -1,6 +1,17 @@
 import type { Component } from 'svelte'
 
-export const categoryKeys = ['newsletter', 'games', 'archive', 'web', 'writing'] as const
+export type { Frontmatter, WikiFrontmatter, ArchiveFrontmatter, MarkdownFrontmatter } from '../markdoc/types.ts'
+
+export const categoryKeys = [
+	'newsletter',
+	'games',
+	'web',
+	'writing',
+	'projects',
+	'bio',
+	'people',
+	'glossary'
+] as const
 export type CategoryKey = (typeof categoryKeys)[number]
 
 export type NewsletterData = {
@@ -30,10 +41,17 @@ export interface MarkdownEntry<M = Record<string, unknown>> {
 	metadata: M
 }
 
-const content = import.meta.glob<unknown>(`/src/content/**/*.md`, {
+const entryKind: Partial<Record<CategoryKey, 'wiki' | 'archive'>> = {
+	projects: 'archive',
+	bio: 'wiki',
+	people: 'wiki',
+	glossary: 'wiki'
+}
+
+const content = import.meta.glob<unknown>(['/src/content/**/*.md', '/src/wiki/**/*.md'], {
 	eager: true
 })
-const rawContent = import.meta.glob<string>('/src/content/**/*.md', {
+const rawContent = import.meta.glob<string>(['/src/content/**/*.md', '/src/wiki/**/*.md'], {
 	eager: true,
 	query: '?raw',
 	import: 'default'
@@ -66,24 +84,30 @@ export const getMarkdownContent = <T extends MarkdownEntry>(
 	firstImage: string | null
 	rawMarkdown: string
 }> => {
+	const kind = entryKind[searchCategory]
+
 	return Object.entries(content)
+		.filter(([path]) => path.split('/').at(-2) === searchCategory)
 		.map(([path, data]) => {
 			const id = path.split('/').at(-1)!.replace('.md', '')
-			const category = path.split('/').at(-2)!
-
 			const raw = rawContent[path] ?? ''
+			const entry = data as MarkdownEntry
+
+			let metadata: unknown = entry.metadata
+			if (kind) {
+				metadata = { ...entry.metadata, kind }
+			}
 
 			return {
 				id,
 				path,
-				category,
-				data: data as T,
+				category: searchCategory,
+				data: { ...entry, metadata } as T,
 				plainText: extractPlaintext(raw),
 				firstImage: extractFirstImage(raw),
 				rawMarkdown: raw.replace(/^---[\s\S]*?---\n?/, '').trim()
 			}
 		})
-		.filter(({ category }) => category === searchCategory)
 }
 
 export const getMarkdownEntry = <T extends MarkdownEntry>(

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { PUBLIC_SITE_URL } from '$env/static/public'
 	import Block from '$lib/components/lander/Block.svelte'
 	import Meta from '$lib/components/Meta.svelte'
 	import { formatDate } from '$lib/utils.js'
@@ -18,6 +17,7 @@
 		title={data.entry.data.metadata.title}
 		description={data.entry.plainText}
 		image={data.entry.firstImage || undefined}
+		canonical="/wiki/{data.entry.id}"
 	/>
 {:else if data.view === 'group'}
 	<Meta
@@ -28,19 +28,6 @@
 {:else}
 	<Meta title="Archive" />
 {/if}
-<svelte:head>
-	{#if data.view === 'entry'}
-		{@const metadata = data.entry.data.metadata}
-		{@const canonical = `${PUBLIC_SITE_URL}/archive/type/${metadata.type}/${data.entry.id}`}
-
-		<link rel="canonical" href={canonical} />
-		<meta property="og:url" content={canonical} />
-
-		<title>
-			{metadata.title}
-		</title>
-	{/if}
-</svelte:head>
 
 {#if data.groupedWorks}
 	{#key data.sort}
@@ -78,7 +65,7 @@
 
 			<ul>
 				{#each data.works.sort( (a, b) => b.data.metadata.date.localeCompare(a.data.metadata.date) ) as work}
-					<li class="flex gap-1">
+					<li class="flex gap-1 justify-start text-left">
 						<span class="inline w-3 sm:hidden lg:inline">
 							{{
 								interactive: '☺',
@@ -103,7 +90,7 @@
 	{@const date = new Date(data.entry.data.metadata.date)}
 	{@const metadata = data.entry.data.metadata}
 	{#key data.entry}
-		<Block colStart={1} colSpan={3} depth={5} background>
+		<Block colStart={1} colSpan={3} depth={5} background leftAlign>
 			{#snippet heading()}
 				{metadata.title}
 			{/snippet}

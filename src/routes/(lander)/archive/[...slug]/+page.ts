@@ -1,6 +1,12 @@
 // +page.ts
 import { error } from '@sveltejs/kit'
-import { getMarkdownContent, getMarkdownEntry, type MarkdownEntry } from '$lib'
+import {
+	getMarkdownContent,
+	getMarkdownEntry,
+	type MarkdownEntry,
+	type Frontmatter,
+	type ArchiveFrontmatter
+} from '$lib'
 import type { RouteParams } from '$app/types'
 
 export const prerender = true
@@ -8,23 +14,7 @@ export const prerender = true
 const sortTypes = ['year', 'rating', 'type'] as const
 type SortKey = (typeof sortTypes)[number]
 
-type ArchiveEntry = MarkdownEntry<{
-	title: string
-	date: string
-	rating?: 5
-	type: 'misc' | 'interactive' | 'ephemera' | 'music' | 'video'
-	youtubeId?: string
-	link?: string
-	music?: {
-		bandcamp: string
-		apple: string
-		spotify: string
-	}
-	collaborators?: Array<{
-		name: string
-		url: string
-	}>
-}>
+type ArchiveEntry = MarkdownEntry<Frontmatter & ArchiveFrontmatter>
 
 const sortMap: Record<SortKey, (entry: ArchiveEntry) => string> = {
 	year: (entry) => String(new Date(entry.metadata.date).getFullYear()),
@@ -33,7 +23,7 @@ const sortMap: Record<SortKey, (entry: ArchiveEntry) => string> = {
 }
 
 export const entries = () => {
-	const allWorks = getMarkdownContent<ArchiveEntry>('archive')
+	const allWorks = getMarkdownContent<ArchiveEntry>('projects')
 
 	const paths: RouteParams<'/(lander)/archive/[...slug]'>[] = []
 
@@ -60,7 +50,7 @@ export const entries = () => {
 
 export const load = async ({ params }) => {
 	const [sort, subcategory, slug] = params.slug.split('/')
-	const allWorks = getMarkdownContent<ArchiveEntry>('archive')
+	const allWorks = getMarkdownContent<ArchiveEntry>('projects')
 
 	if (!sortTypes.includes(sort as SortKey)) error(404)
 
@@ -81,7 +71,7 @@ export const load = async ({ params }) => {
 		return { view: 'group' as const, ...group }
 	}
 
-	const entry = getMarkdownEntry<ArchiveEntry>('archive', slug)
+	const entry = getMarkdownEntry<ArchiveEntry>('projects', slug)
 	if (!entry) error(404)
 
 	return { view: 'entry' as const, ...group, entry }
