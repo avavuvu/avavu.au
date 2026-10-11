@@ -1,14 +1,14 @@
 ---
-title: Crossword Dot Blue
+title: Crossword dot blue
 aliases:
     - crosswordblue
 date: '2023-05-31'
 rating: 5
 link: https://crossword.blue
 type: interactive
-
+categories: [games, crosswords]
 ---
 
 ![](/images/interactive/crossworddotblue1.webp)
 
-Artisanal crosswords made by yours truly.
+**Crossword dot blue** is my public crossword repository.

@@ -2,61 +2,89 @@ import { readdirSync, readFileSync, type Dirent } from 'node:fs'
 import { join } from 'node:path'
 import yaml from 'js-yaml'
 import slugify from 'slugify'
-import type { Frontmatter } from './types'
 
 const toSlug = (value: string) => slugify(value, { lower: true, strict: true })
 
-const readFrontmatter = (raw: string): Frontmatter | null => {
+export const readFrontmatter = (raw: string): unknown => {
 	const match = raw.match(/^---\n([\s\S]*?)\n---/)
 	if (!match) return null
 
 	try {
-		return (yaml.load(match[1]) as Frontmatter) ?? {}
+		return yaml.load(match[1]) ?? {}
 	} catch {
 		return null
 	}
 }
 
-export const buildWikiIndex = (wikiRoot: string) => {
-	const index = new Map<string, string>()
-	const aliasPaths: string[] = []
+type PageInfo = { id: string; aliases: string[]; categories: string[]; section: boolean }
 
-	let sections: Dirent[]
+const toStrings = (value: unknown): string[] => (Array.isArray(value) ? value.map(String) : [])
+
+const readPageInfo = (id: string, raw: string): PageInfo => {
+	const frontmatter = readFrontmatter(raw) as {
+		aliases?: unknown
+		categories?: unknown
+		section?: unknown
+	} | null
+	return {
+		id,
+		aliases: toStrings(frontmatter?.aliases),
+		categories: toStrings(frontmatter?.categories),
+		section: frontmatter?.section === true
+	}
+}
+
+const readWikiPages = (wikiRoot: string): PageInfo[] => {
+	let folders: Dirent[]
 	try {
-		sections = readdirSync(wikiRoot, { withFileTypes: true }).filter((entry) =>
+		folders = readdirSync(wikiRoot, { withFileTypes: true }).filter((entry) =>
 			entry.isDirectory()
 		)
 	} catch {
-		return { index, aliasPaths }
+		return []
 	}
 
-	for (const section of sections) {
-		const sectionDir = join(wikiRoot, section.name)
-		const files = readdirSync(sectionDir).filter((file) => file.endsWith('.md'))
+	return folders.flatMap((folder) => {
+		const folderDir = join(wikiRoot, folder.name)
+		return readdirSync(folderDir)
+			.filter((file) => file.endsWith('.md'))
+			.map((file) =>
+				readPageInfo(
+					file.replace(/\.md$/, ''),
+					readFileSync(join(folderDir, file), 'utf-8')
+				)
+			)
+	})
+}
 
-		for (const file of files) {
-			const id = file.replace(/\.md$/, '')
-			const frontmatter = readFrontmatter(readFileSync(join(sectionDir, file), 'utf-8'))
+export const buildWikiIndex = (wikiRoot: string) => {
+	const index = new Map<string, string>()
+	const ids = new Map<string, string>()
+	const aliasPaths: string[] = []
 
-			const href = `/wiki/${id}`
+	const pages = readWikiPages(wikiRoot)
+	const sectionIds = new Set(pages.filter((page) => page.section).map((page) => page.id))
 
-			index.set(toSlug(id), href)
+	for (const page of pages) {
+		const parent = page.categories.find((category) => sectionIds.has(category))
+		const href = parent ? `/${parent}/${page.id}` : `/${page.id}`
 
-			if (Array.isArray(frontmatter?.aliases)) {
-				for (const alias of frontmatter.aliases) {
-					const aliasSlug = toSlug(String(alias))
-					index.set(aliasSlug, href)
-					aliasPaths.push(`/wiki/${aliasSlug}`)
-				}
-			}
+		index.set(toSlug(page.id), href)
+		ids.set(toSlug(page.id), page.id)
+
+		for (const alias of page.aliases) {
+			const aliasSlug = toSlug(alias)
+			if (aliasSlug === toSlug(page.id)) continue
+			index.set(aliasSlug, href)
+			ids.set(aliasSlug, page.id)
+			aliasPaths.push(`/${aliasSlug}`)
 		}
 	}
 
-	return { index, aliasPaths }
+	return { index, ids, aliasPaths }
 }
 
-const externalUrl = (base: string) => (name: string) =>
-	`${base}${name.trim().replace(/\s+/g, '_')}`
+const externalUrl = (base: string) => (name: string) => `${base}${name.trim().replace(/\s+/g, '_')}`
 
 type ExternalLink = {
 	buildUrl: (name: string) => string
@@ -64,8 +92,8 @@ type ExternalLink = {
 }
 
 const externalLinks: Record<string, ExternalLink> = {
-	'WP:': { buildUrl: externalUrl('https://en.wikipedia.org/wiki/')},
-	'WT:': { buildUrl: externalUrl('https://en.wiktionary.org/wiki/')},
+	'WP:': { buildUrl: externalUrl('https://en.wikipedia.org/wiki/') },
+	'WT:': { buildUrl: externalUrl('https://en.wiktionary.org/wiki/') },
 	'IG:': {
 		buildUrl: externalUrl('https://instagram.com/'),
 		formatDisplay: (name) => `@${name.trim()}`
@@ -74,6 +102,9 @@ const externalLinks: Record<string, ExternalLink> = {
 
 const externalPrefixes = Object.keys(externalLinks)
 
+export const isExternalWikiLink = (name: string) =>
+	externalPrefixes.some((prefix) => name.trim().startsWith(prefix))
+
 export const resolveWikiHref = (wikiIndex: Map<string, string>, permalink: string): string => {
 	for (const prefix of externalPrefixes) {
 		if (permalink.startsWith(prefix)) {
@@ -81,7 +112,7 @@ export const resolveWikiHref = (wikiIndex: Map<string, string>, permalink: strin
 		}
 	}
 
-	return wikiIndex.get(permalink) ?? `/wiki/${permalink}`
+	return wikiIndex.get(permalink) ?? `/${permalink}`
 }
 
 export const resolveWikiPageName = (name: string): string => {
@@ -94,13 +125,10 @@ export const resolveWikiPageName = (name: string): string => {
 
 export const defaultWikiDisplayText = (name: string): string => {
 	for (const prefix of externalPrefixes) {
-        if (name.startsWith(prefix)) {
-            const display = name.slice(prefix.length)
+		if (name.startsWith(prefix)) {
+			const display = name.slice(prefix.length)
 
-            return externalLinks[prefix]
-                ?.formatDisplay
-                ?.(display)
-                    ?? display
+			return externalLinks[prefix]?.formatDisplay?.(display) ?? display
 		}
 	}
 
@@ -140,7 +168,7 @@ export const resolveBracketContent = (
 const WIKILINK_PATTERN = /\[\[(.+?)\]\]/g
 
 export const buildLinkGraph = (wikiRoot: string) => {
-	const { index } = buildWikiIndex(wikiRoot)
+	const { ids } = buildWikiIndex(wikiRoot)
 	const edges = new Map<string, Set<string>>()
 
 	let sections: Dirent[]
@@ -167,11 +195,8 @@ export const buildLinkGraph = (wikiRoot: string) => {
 
 				if (externalPrefixes.some((prefix) => permalink.startsWith(prefix))) continue
 
-				const href = index.get(permalink)
-				if (!href) continue
-
-				const targetId = href.replace('/wiki/', '')
-				if (targetId !== id) linked.add(targetId)
+				const targetId = ids.get(permalink)
+				if (targetId && targetId !== id) linked.add(targetId)
 			}
 
 			edges.set(id, linked)

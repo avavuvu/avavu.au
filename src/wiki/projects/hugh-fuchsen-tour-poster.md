@@ -3,7 +3,7 @@ title: Hugh Fuchsen Tour Poster
 date: '2025-06-02'
 link: https://www.instagram.com/p/DKZSti4yciW/?img_index=1
 type: ephemera
-
+categories: [posters]
 ---
 
 ![](/images/posters/hughfuchsen.webp)

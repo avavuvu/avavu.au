@@ -1,6 +1,6 @@
 ---
 title: anemia
-tags: [music]
+categories: [music]
 ---
 
 From 2021-2023, I released three [[musical]] projects under the name *anemia*, [[Life in jars]], [[How to look forward to the apocalypse]], and [[Between me and you]]. I sometimes joke that everyone made a lo-fi album during Covid.

@@ -2,7 +2,7 @@
 title: Happy New Year 2025
 date: '2025-01-01'
 type: ephemera
-
+categories: [posters]
 ---
 
 ![](/images/posters/happynewyear.webp)

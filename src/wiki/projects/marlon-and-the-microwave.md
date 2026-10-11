@@ -6,10 +6,8 @@ rating: 5
 collaborators:
   - name: Justin Ton – Voice of Mike
 link: https://www.youtube.com/watch?v=RI-kPuvQvl0
-type: misc
-tags: ["animation"]
+type: video
+categories: [animation, blender]
 ---
-
-
 
 Marlon's world turns upside down when Marlon discovers a strange being in his microwave.

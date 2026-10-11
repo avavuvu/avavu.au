@@ -5,9 +5,9 @@ link: https://youtube.com/shorts/zXo3PzVJeyE
 type: music
 aliases:
   - Code Jam
-tags: [music]
+categories: [music, live-coding]
 ---
 
-**Code Jam** was the culmination of a six week long [[live coding]] course at MESS. Fully improvised music created through code.
+**Code Jam** was the culmination of a six-week [[live coding]] course at MESS. Fully improvised music created through code.
 
-For more of my reflections read [April's newsletter](https://avavu.au/newsletter/2026-05#code-jam)
+For more of my reflections read [May's newsletter](/newsletter/2026-05).

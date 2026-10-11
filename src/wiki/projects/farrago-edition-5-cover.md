@@ -2,7 +2,7 @@
 title: Farrago Edition 5 Cover
 date: '2024-04-19'
 type: ephemera
-tags: ["made with blender"]
+categories: [blender, magazine-covers, farrago]
 ---
 
 ![](/images/posters/farrago5/front.webp)
@@ -11,4 +11,4 @@ tags: ["made with blender"]
 ![](/images/posters/farrago5/blender2.webp)
 ![](/images/posters/farrago5/back.webp)
 
-Edition 5 of [[Farrago Magazine]], and winner of that year's Fitzpatrick award for best cover
+Edition 5 of [[Farrago Magazine]], and winner of that year's Fitzpatrick award for best cover, created with [[Blender]].

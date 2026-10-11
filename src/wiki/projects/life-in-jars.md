@@ -2,12 +2,11 @@
 title: Life in Jars
 date: '2021-12-19'
 type: music
-tags: [music]
+categories: [music]
 music:
   spotify: https://open.spotify.com/album/5OiYwivCgNmTns9NYghvuc
   apple: https://music.apple.com/us/album/life-in-jars-ep/1577303765
   bandcamp: https://anemia.bandcamp.com/album/life-in-jars
-
 ---
 
 ![](/images/music/jars.webp)

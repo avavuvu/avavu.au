@@ -1,14 +1,16 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte'
 
-	const { children, align = 'right' }: {
+	const {
+		children,
+		align = 'right'
+	}: {
 		children: Snippet
 		align?: 'left' | 'right' | 'center'
 	} = $props()
 </script>
 
 <aside
-	class="float-none my-2"
 	class:left={align === 'left'}
 	class:right={align === 'right'}
 	class:center={align === 'center'}
@@ -25,9 +27,11 @@
 		@media (width >= 40rem) {
 			&.right {
 				float: right;
+				margin: 0 0 1em 1em;
 			}
 			&.left {
 				float: left;
+				margin: 0 1em 1em 0;
 			}
 			&.center {
 				float: none;

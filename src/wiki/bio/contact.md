@@ -1,5 +1,6 @@
 ---
 title: Contact
+categories: [about]
 ---
 
 If you think there is something I should know, send me an email at avadinhvu@gmail.com.

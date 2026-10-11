@@ -4,18 +4,18 @@ import { dirname, join } from 'node:path'
 
 const componentsDir = join(dirname(fileURLToPath(import.meta.url)), '../lib/components/wiki')
 
-export const buildWikiComponentImports = () => {
-	let files: string[]
+const componentNames = () => {
 	try {
-		files = readdirSync(componentsDir).filter((file) => file.endsWith('.svelte'))
+		return readdirSync(componentsDir)
+			.filter((file) => file.endsWith('.svelte'))
+			.map((file) => file.replace(/\.svelte$/, ''))
 	} catch {
-		return ''
+		return []
 	}
-
-	return files
-		.map((file) => {
-			const name = file.replace(/\.svelte$/, '')
-			return `import ${name} from '$lib/components/wiki/${name}.svelte'`
-		})
-		.join('\n')
 }
+
+export const buildWikiComponentImports = (markup: string) =>
+	componentNames()
+		.filter((name) => new RegExp(`<${name}[\\s/>]`).test(markup))
+		.map((name) => `import ${name} from '$lib/components/wiki/${name}.svelte'`)
+		.join('\n')

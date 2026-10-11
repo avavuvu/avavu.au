@@ -1,9 +1,16 @@
-@import 'tailwindcss';
+body, html {
+    margin: 0;
+    padding: 0;
+}
 
-@theme {
-	--font-serif: 'Times New Roman', 'Times', serif;
-	--font-sans: 'Helvetica', 'Arial', sans;
-	--default-font-family: 'Times New Roman', 'Times', serif;
+*,
+::before,
+::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
 }
 
 a[href^='http']:not(.no-link)::after {

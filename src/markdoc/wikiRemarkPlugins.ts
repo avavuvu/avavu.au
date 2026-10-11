@@ -2,6 +2,7 @@ import wikiLinkPlugin from 'remark-wiki-link/lib/index.js'
 import type { Node } from 'unist'
 import type { Root, Html } from 'mdast'
 import {
+	isExternalWikiLink,
 	resolveWikiHref,
 	resolveWikiPageName,
 	resolveBracketContent,
@@ -13,6 +14,7 @@ type WikiLinkNode = Node & {
 	value: string
 	data?: {
 		alias?: string
+		hProperties?: Record<string, unknown>
 		hChildren?: Array<{ type: string; value: string }>
 	}
 }
@@ -23,7 +25,11 @@ const createHtmlWikiLinkPlugin = (wikiIndex: Map<string, string>) => () => async
 	visit(tree, 'html', (node: Html) => {
 		node.value = node.value.replace(/\[\[(.+?)\]\]/g, (_match, raw) => {
 			const { href, exists, displayText } = resolveBracketContent(wikiIndex, raw)
-			const className = exists ? 'internal' : 'internal new'
+			const className = isExternalWikiLink(raw)
+				? 'external'
+				: exists
+					? 'internal'
+					: 'internal new'
 			return `<a class="${className}" href="${href}">${displayText}</a>`
 		})
 	})
@@ -34,6 +40,11 @@ const createWikiLinkDisplayPlugin = () => () => async (tree: Root) => {
 
 	visit(tree, 'wikiLink', (node: WikiLinkNode) => {
 		if (!node.data) return
+
+		if (isExternalWikiLink(node.value)) {
+			node.data.hProperties = { ...node.data.hProperties, className: 'external' }
+		}
+
 		if (node.data.alias !== node.value) return
 
 		const displayText = defaultWikiDisplayText(node.value)

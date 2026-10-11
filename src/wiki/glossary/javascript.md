@@ -1,7 +1,7 @@
 ---
-title: Javascript
+title: JavaScript
 ---
 
-<Wikipedia title="Javascript" />
+<Wikipedia title="JavaScript" />
 
-**Javascript** is one of the three building blocks of the internet, alongside [[CSS]] and [[HTML]].
+**JavaScript** is one of the three building blocks of the internet, alongside [[WP:CSS|CSS]] and [[HTML]].

@@ -4,10 +4,10 @@ aliases:
     - farrago-experimental-covers
 date: '2024-10-13'
 type: ephemera
-
+categories: [magazine-covers]
 ---
 
 ![](/images/posters/farragoUnused/2025_election.webp)
 ![](/images/posters/farragoUnused/2025_graffiti.webp)
 
-Experimental covers for [[Farrago]], both of which were unused
+Experimental covers for [[Farrago]], both of which were unused.

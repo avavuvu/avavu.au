@@ -5,9 +5,8 @@ youtubeId: eVh1kp2aano
 collaborators:
   - name: Peter Shaw
 link: https://www.youtube.com/watch?v=eVh1kp2aano
-type: misc
-tags: ["made with blender"]
-
+type: video
+categories: [blender, animation]
 ---
 
 

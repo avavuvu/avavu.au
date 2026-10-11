@@ -1,6 +1,7 @@
 ---
 title: Music
 aliases: [musical, songs, song]
+categories: [about]
 ---
 
 <Wikipedia title="music"/>
@@ -10,4 +11,5 @@ Writing, playing, and listening to **music** is a passion of mine. I can play gu
 ## anemia
 From 2021-2023, I released music under the name [[anemia]].
 
-<CategoryList category="music"/>
+## Live coding
+My other music project has been [[live coding]], creating music and sound with code, live.

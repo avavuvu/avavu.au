@@ -6,7 +6,6 @@ collaborators:
   - name: Lauren Williams
 link: https://www.youtube.com/watch?v=QPz52Ze-gyU
 type: video
-
 ---
 
 

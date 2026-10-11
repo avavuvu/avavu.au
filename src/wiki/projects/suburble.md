@@ -4,9 +4,9 @@ date: '2025-04-20'
 rating: 5
 link: https://suburble.melbourne
 type: interactive
-
+categories: [games]
 ---
 
 ![](/images/interactive/suburble1.webp)
 
-Guess a Melbourne suburb every day
+Guess a Melbourne suburb every day.

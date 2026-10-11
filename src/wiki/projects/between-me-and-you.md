@@ -3,12 +3,11 @@ title: Between Me & You
 date: '2023-06-21'
 rating: 5
 type: music
-tags: [music]
+categories: [music]
 music:
   spotify: https://open.spotify.com/album/6OlgFi7ICRVw2CYFkf7Urn
   apple: https://music.apple.com/us/album/between-me-you-ep/1688895997
   bandcamp: https://anemia.bandcamp.com/album/between-me-you
-
 ---
 
 ![](/images/music/bmay.webp)

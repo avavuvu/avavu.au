@@ -2,7 +2,6 @@
 title: Tram and Train Map Redesign
 date: '2024-08-07'
 type: misc
-
 ---
 
 ![](/images/misc/trammap-redesign.webp)

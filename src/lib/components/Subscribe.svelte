@@ -15,29 +15,10 @@
 	}
 </script>
 
-<form onsubmit={submit} class="flex flex-col justify-center gap-2">
-	<input
-		class="mx-auto max-w-56 border py-2 text-center"
-		bind:value={emailInput}
-		placeholder="ava@example.com"
-		type="email"
-		required
-	/>
+<form onsubmit={submit}>
+	<input bind:value={emailInput} placeholder="ava@example.com" type="email" required />
 
-	<input
-		class="mx-auto max-w-56 border py-2 text-center"
-		bind:value={nameInput}
-		placeholder="your name"
-		type="text"
-		required
-	/>
+	<input bind:value={nameInput} placeholder="your name" type="text" required />
 
-	<button
-		class="hover:bg-blue mx-auto max-w-36 cursor-pointer border px-4
-		py-2 transition-colors hover:bg-black hover:text-white"
-		type="submit">Subscribe</button
-	>
+	<button type="submit">Subscribe</button>
 </form>
-
-<style>
-</style>

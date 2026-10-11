@@ -6,7 +6,7 @@ collaborators:
     url: https://www.instagram.com/studi0dx/
 link: https://2024.rmitdigitalmedia.com/
 type: interactive
-
+categories: [rmit]
 ---
 
 ![](/images/interactive/rmitgrad1.webp)

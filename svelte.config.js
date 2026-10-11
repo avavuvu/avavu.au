@@ -8,7 +8,6 @@ import { buildWikiComponentImports } from './src/markdoc/wikiComponents.ts'
 
 const wikiRoot = join(dirname(fileURLToPath(import.meta.url)), 'src/wiki')
 const { index: wikiIndex } = buildWikiIndex(wikiRoot)
-const wikiComponentImports = buildWikiComponentImports()
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -22,6 +21,12 @@ const config = {
 		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 		adapter: adapter(),
+		prerender: {
+			handleUnseenRoutes: ({ routes, message }) => {
+				if (routes.some((route) => route !== '/(site)/patreon/[patron]'))
+					throw new Error(message)
+			}
+		},
 		alias: {
 			'@assets/*': './src/assets/*',
 			'@/*': './src/components/*'
@@ -44,11 +49,17 @@ const config = {
 			]
 		}),
 		{
-            script: ({ content, filename }) => {
-                // add the wiki component import to every wiki page
-                // so we don't need to manually add
+			markup: ({ content, filename }) => {
+				if (!filename?.endsWith('.md')) return
+				return { code: content.replaceAll('<script context="module">', '<script module>') }
+			}
+		},
+		{
+			script: ({ content, filename, markup }) => {
+				// add the wiki component import to every wiki page
+				// so we don't need to manually add
 				if (!filename || !filename.includes('/src/wiki/')) return
-				return { code: `${wikiComponentImports}\n${content}` }
+				return { code: `${buildWikiComponentImports(markup)}\n${content}` }
 			}
 		}
 	],

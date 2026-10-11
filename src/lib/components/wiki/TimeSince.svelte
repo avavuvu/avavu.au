@@ -1,11 +1,9 @@
 <script lang="ts">
-	const { date, scale }: { date: string | Date; scale: 'year' } = $props()
+	import { yearsSince } from '$lib/utils'
 
-	const now = new Date().getFullYear()
-	// svelte-ignore state_referenced_locally
-	const timeSince = now - (new Date(date)).getFullYear()
+	const { date }: { date: string | Date; scale: 'year' } = $props()
 </script>
 
 <span>
-    {timeSince}
+	{yearsSince(date)}
 </span>

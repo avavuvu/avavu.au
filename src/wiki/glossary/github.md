@@ -1,5 +1,5 @@
 ---
-title: Github
+title: GitHub
 ---
 
-I use Github to host my code. That fact does not win me any nerd-cred, but Github works well enough and has many integrations. Most of my projects are open source, [view the code here](https://github.com/avavuvu/beatmeatboggle).
+I use GitHub to host my code. That fact does not win me any nerd-cred, but GitHub works well enough and has many integrations. Most of my projects are open source. [View the code here](https://github.com/avavuvu).

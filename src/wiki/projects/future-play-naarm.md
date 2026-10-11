@@ -10,4 +10,4 @@ link: https://openhousemelbourne.org/event-archive/playing-future-naarm-together
 type: interactive
 ---
 
-**Playing Future Naarm Together** is a series of on-going live action role playing games that I have helped facilitate.
+**Playing Future Naarm Together** is a series of ongoing live-action role-playing games that I have helped facilitate.

@@ -1,115 +1,112 @@
-export type Point = { x: number; y: number }
+import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY } from 'd3-force'
 
-export type GraphLayout = {
-	positions: Map<string, Point>
-	edges: Array<[string, string]>
+type SimNode = {
+	id: string
+	x: number
+	y: number
+	vx?: number
+	vy?: number
 }
 
-type LayoutOptions = {
-	width: number
-	height: number
-	iterations?: number
+type SimLink = {
+	source: string | SimNode
+	target: string | SimNode
 }
 
-const length = (v: Point) => Math.sqrt(v.x * v.x + v.y * v.y) || 0.0001
+const REFERENCE_CELL = 130
+const MARGIN = 30
+const GRAVITY = 0.015
+const GRAVITY_UNLINKED = 0.05
 
-export const layoutGraph = (
-	edges: Map<string, Set<string>>,
-	{ width, height, iterations = 300 }: LayoutOptions
-): GraphLayout => {
-	const nodeIds = new Set<string>()
-	const edgeList: Array<[string, string]> = []
+const resolveOverlaps = (nodes: SimNode[], radiusOf: (id: string) => number, rounds: number) => {
+	for (let round = 0; round < rounds; round++) {
+		let moved = false
 
-	for (const [from, targets] of edges) {
-		nodeIds.add(from)
-		for (const to of targets) {
-			if (to === from) continue
-			nodeIds.add(to)
-			edgeList.push([from, to])
-		}
-	}
+		for (let i = 0; i < nodes.length; i++) {
+			for (let j = i + 1; j < nodes.length; j++) {
+				const a = nodes[i]
+				const b = nodes[j]
+				const minSeparation = radiusOf(a.id) + radiusOf(b.id)
 
-	const pos = new Map<string, Point>()
-	const disp = new Map<string, Point>()
+				let dx = a.x - b.x
+				let dy = a.y - b.y
+				let dist = Math.sqrt(dx * dx + dy * dy)
+				if (dist >= minSeparation) continue
 
-	for (const id of nodeIds) {
-		pos.set(id, {
-			x: (Math.random() - 0.5) * width,
-			y: (Math.random() - 0.5) * height
-		})
-	}
+				moved = true
 
-	if (nodeIds.size === 0) {
-		return { positions: pos, edges: edgeList }
-	}
+				if (dist < 1e-6) {
+					const angle = i * 2.399963 + j
+					dx = Math.cos(angle)
+					dy = Math.sin(angle)
+					dist = 1
+				}
 
-	const area = width * height
-	const k = Math.sqrt(area / nodeIds.size)
-
-	const fa = (x: number) => (x * x) / k
-	const fr = (x: number) => (k * k) / x
-
-	let t = width / 10
-	const coolingStep = t / iterations
-
-	for (let i = 0; i < iterations; i++) {
-		for (const v of nodeIds) {
-			disp.set(v, { x: 0, y: 0 })
-		}
-
-		for (const v of nodeIds) {
-			const vPos = pos.get(v)!
-
-			for (const u of nodeIds) {
-				if (u === v) continue
-
-				const uPos = pos.get(u)!
-				const delta = { x: vPos.x - uPos.x, y: vPos.y - uPos.y }
-				const dist = length(delta)
-				const force = fr(dist)
-				const vDisp = disp.get(v)!
-
-				disp.set(v, {
-					x: vDisp.x + (delta.x / dist) * force,
-					y: vDisp.y + (delta.y / dist) * force
-				})
+				const push = (minSeparation - dist) / 2 / dist
+				a.x += dx * push
+				a.y += dy * push
+				b.x -= dx * push
+				b.y -= dy * push
 			}
 		}
 
-		for (const [from, to] of edgeList) {
-			const vPos = pos.get(from)!
-			const uPos = pos.get(to)!
-			const delta = { x: vPos.x - uPos.x, y: vPos.y - uPos.y }
-			const dist = length(delta)
-			const force = fa(dist)
+		if (!moved) break
+	}
+}
 
-			const vDisp = disp.get(from)!
-			disp.set(from, {
-				x: vDisp.x - (delta.x / dist) * force,
-				y: vDisp.y - (delta.y / dist) * force
-			})
-
-			const uDisp = disp.get(to)!
-			disp.set(to, {
-				x: uDisp.x + (delta.x / dist) * force,
-				y: uDisp.y + (delta.y / dist) * force
-			})
-		}
-
-		for (const v of nodeIds) {
-			const vDisp = disp.get(v)!
-			const dispLen = length(vDisp)
-			const vPos = pos.get(v)!
-			const clamped = Math.min(dispLen, t)
-
-			pos.set(v, {
-				x: Math.min(width / 2, Math.max(-width / 2, vPos.x + (vDisp.x / dispLen) * clamped)),
-				y: Math.min(height / 2, Math.max(-height / 2, vPos.y + (vDisp.y / dispLen) * clamped))
-			})
-		}
-
-		t -= coolingStep
+export const layoutGraph = (
+	nodeIds: string[],
+	edgeList: Array<[string, string]>,
+	labelOf: (id: string) => string
+) => {
+	const degree = new Map<string, number>()
+	for (const id of nodeIds) degree.set(id, 0)
+	for (const [from, to] of edgeList) {
+		degree.set(from, (degree.get(from) ?? 0) + 1)
+		degree.set(to, (degree.get(to) ?? 0) + 1)
 	}
 
-	return { positions: pos, edges: edgeList }
+	const startRadius = Math.sqrt((nodeIds.length * REFERENCE_CELL * REFERENCE_CELL) / Math.PI)
+
+	const simNodes: SimNode[] = nodeIds.map((id, i) => {
+		const angle = (i / nodeIds.length) * Math.PI * 2
+		return { id, x: Math.cos(angle) * startRadius, y: Math.sin(angle) * startRadius }
+	})
+
+	const simLinks: SimLink[] = edgeList.map(([source, target]) => ({ source, target }))
+
+	const collideRadius = (id: string) =>
+		17 + labelOf(id).length * 4.1 + (degree.get(id) ?? 0) * 1.8
+	const gravity = (node: SimNode) => ((degree.get(node.id) ?? 0) > 0 ? GRAVITY : GRAVITY_UNLINKED)
+
+	const simulation = forceSimulation(simNodes)
+		.force('charge', forceManyBody().strength(-260))
+		.force(
+			'link',
+			forceLink<SimNode, SimLink>(simLinks)
+				.id((node) => node.id)
+				.distance(110)
+				.strength(0.3)
+		)
+		.force('x', forceX<SimNode>(0).strength(gravity))
+		.force('y', forceY<SimNode>(0).strength(gravity))
+		.force('collide', forceCollide<SimNode>((node) => collideRadius(node.id)).iterations(5))
+		.stop()
+
+	for (let i = 0; i < 400; i++) simulation.tick()
+
+	resolveOverlaps(simNodes, collideRadius, 120)
+
+	const minX = Math.min(...simNodes.map((node) => node.x)) - MARGIN
+	const minY = Math.min(...simNodes.map((node) => node.y)) - MARGIN
+
+	const positions: Record<string, [number, number]> = {}
+	for (const node of simNodes) {
+		positions[node.id] = [
+			Math.round((node.x - minX) * 10) / 10,
+			Math.round((node.y - minY) * 10) / 10
+		]
+	}
+
+	return { nodeIds, edgeList, positions }
 }

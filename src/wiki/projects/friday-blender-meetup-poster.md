@@ -6,9 +6,9 @@ collaborators:
   - name: Adrian Frichitthavong
     url: https://www.instagram.com/studi0dx/
 type: ephemera
-
+categories: [posters, blender]
 ---
 
 ![](/images/posters/fridayblendermeetup.webp)
 
-Promotional image for the weekly Friday Blender Meetups, run by Adrian Frichitthavong
+Promotional image for the weekly Friday Blender Meetups, run by Adrian Frichitthavong.

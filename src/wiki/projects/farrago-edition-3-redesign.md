@@ -2,7 +2,7 @@
 title: Farrago Edition 3 Redesign
 date: '2024-10-13'
 type: ephemera
-
+categories: [magazine-covers, farrago]
 ---
 
 ![](/images/posters/farragoUnused/2024_edition_5_reedit.webp)

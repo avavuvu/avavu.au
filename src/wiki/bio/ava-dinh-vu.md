@@ -2,6 +2,7 @@
 title: Ava Dinh-Vu
 aliases:
     - me
+categories: [about]
 ---
 
 <WikiImage src="/images/wiki/me.webp" alt="Me sitting on a couch">
@@ -12,4 +13,6 @@ My name is Ava Dinh-Vu, although I sometimes write my name as Ava Vu, or Ava Din
 
 I like the internet and wearing many hats.
 
-If you think there is something I should know, send me an email at avadinhvu@gmail.com
+I write a monthly [[newsletter]], and sometimes [[essays]].
+
+If you think there is something I should know, send me an email at avadinhvu@gmail.com.

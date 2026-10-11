@@ -1,79 +1,159 @@
 [[redirects]]
-  from = "/about"
-  to = "/other/about"
+  from = "/subscribe"
+  to = "/newsletter"
   status = 301
 
 [[redirects]]
-    from = "/subscribe"
-    to = "/newsletter"
-    status = 301
+  from = "/projects"
+  to = "/archive"
+  status = 301
 
 [[redirects]]
-    from = "/projects"
-    to = "/archive"
-    status = 301
+  from = "/projects/:group/:id"
+  to = "/:id"
+  status = 301
 
 [[redirects]]
-    from = "/projects/misc/*"
-    to = "/archive/type/misc/:splat"
-    status = 301
+  from = "/archive/:sort/:group/:id"
+  to = "/:id"
+  status = 301
 
 [[redirects]]
-    from = "/projects/video/*"
-    to = "/archive/type/video/:splat"
-    status = 301
+  from = "/archive/*"
+  to = "/archive"
+  status = 301
 
 [[redirects]]
-    from = "/projects/music/*"
-    to = "/archive/type/music/:splat"
-    status = 301
+  from = "/wiki"
+  to = "/about/ava-wiki"
+  status = 301
 
 [[redirects]]
-    from = "/projects/interactive/*"
-    to = "/archive/type/interactive/:splat"
-    status = 301
+  from = "/wiki/graph"
+  to = "/graph"
+  status = 301
 
 [[redirects]]
-    from = "/projects/ephemera/*"
-    to = "/archive/type/ephemera/:splat"
-    status = 301
+  from = "/wiki/random"
+  to = "/random"
+  status = 301
 
 [[redirects]]
-    from = "/projects/year-2025/*"
-    to = "/archive/type/year/2025/:splat"
-    status = 301
+  from = "/wiki/:id"
+  to = "/:id"
+  status = 301
 
 [[redirects]]
-    from = "/projects/year-2024/*"
-    to = "/archive/type/year/2024/:splat"
-    status = 301
+  from = "/writing"
+  to = "/essays"
+  status = 301
 
 [[redirects]]
-    from = "/projects/year-2023/*"
-    to = "/archive/type/year/2023/:splat"
-    status = 301
+  from = "/writing/I%20didn't%20like%2010,000%20gecs"
+  to = "/essays/i-didn-t-really-like-that-100-gecs-album"
+  status = 301
 
 [[redirects]]
-    from = "/projects/year-2022/*"
-    to = "/archive/type/year/2022/:splat"
-    status = 301
+  from = "/writing/Smug%20Republic"
+  to = "/essays/the-republicans-still-fighting-the-last-war"
+  status = 301
 
 [[redirects]]
-    from = "/projects/year-2021/*"
-    to = "/archive/type/year/2021/:splat"
-    status = 301
+  from = "/writing/closest_trams"
+  to = "/essays/finding-melbourne-s-most-useless-tram-stop"
+  status = 301
 
 [[redirects]]
-    from = "/projects/rating-5/*"
-    to = "/archive/rating/5/:splat"
-    status = 301
+  from = "/writing/top10"
+  to = "/essays/my-top-10-favourite-lyrics-of-2025"
+  status = 301
 
 [[redirects]]
-    from = "/projects/other/*"
-    to = "/archive/rating/other/:splat"
-    status = 301
+  from = "/writing/visa"
+  to = "/essays/what-to-do-if-you-get-a-visa-that-s-only-valid-for-fifteen-minutes-how-to-guide"
+  status = 301
 
 [[redirects]]
-    from = "/writing"
-    to = "/other/writing"
-    status = 301
+  from = "/writing/website_workshop"
+  to = "/essays/how-to-make-one-website"
+  status = 301
+
+[[redirects]]
+  from = "/writing/white_australia_needs_coffee"
+  to = "/essays/white-australia-needs-coffee"
+  status = 301
+
+[[redirects]]
+  from = "/writing/*"
+  to = "/essays/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/other/about"
+  to = "/about"
+  status = 301
+
+[[redirects]]
+  from = "/other/writing"
+  to = "/essays"
+  status = 301
+
+[[redirects]]
+  from = "/other/music/*"
+  to = "/about/music"
+  status = 301
+
+[[redirects]]
+  from = "/other/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/web/radiofodder"
+  to = "/web/radio-fodder-live"
+  status = 301
+
+[[redirects]]
+  from = "/web/runandgets"
+  to = "/web"
+  status = 301
+
+[[redirects]]
+  from = "/games/boggle"
+  to = "/games/beat-me-at-boggle"
+  status = 301
+
+[[redirects]]
+  from = "/games/crosswords/blue"
+  to = "/games/crossword-dot-blue"
+  status = 301
+
+[[redirects]]
+  from = "/games/crosswords/sqt"
+  to = "/games/saturday-quiz-time"
+  status = 301
+
+[[redirects]]
+  from = "/games/allpurple/*"
+  to = "/games/all-purple-challenge"
+  status = 301
+
+[[redirects]]
+  from = "/games/allpurple"
+  to = "/games/all-purple-challenge"
+  status = 301
+
+[[headers]]
+  for = "/*.md"
+  [headers.values]
+    Content-Type = "text/markdown; charset=utf-8"
+
+[[headers]]
+  for = "/llms.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+
+[[headers]]
+  for = "/patreon/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"

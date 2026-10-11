@@ -6,10 +6,9 @@ collaborators:
     url: https://www.instagram.com/studi0dx/
 link: https://www.instagram.com/reel/C_P0VjLxMOu/
 type: ephemera
-tags: ["made with blender"]
-
+categories: [blender]
 ---
 
 ![](/images/posters/fridayblendermeetup-video.webp)
 
-Promotional video for the weekly Friday Blender Meetups, run by Adrian Frichitthavong
+Promotional video for the weekly Friday Blender Meetups, run by Adrian Frichitthavong.

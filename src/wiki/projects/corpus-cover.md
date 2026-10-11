@@ -1,13 +1,16 @@
 ---
-title: Corpus Edition One Cover
+title: Corpus Edition 1 Cover
 date: '2026-06-30'
 link: https://www.instagram.com/corpuszine/
 type: ephemera
+aliases:
+    - Corpus
+categories: [magazine-covers]
 ---
 
 ![](/images/posters/corpus/0.webp)
 
-**Corpus** is a magazine from the University of Melbourne's Medical Students' Society. I created the magazine cover for them for their first edition.
+**Corpus** is a magazine from the University of Melbourne's Medical Students' Society. I created the [[magazine cover]] for their first edition.
 
 ![](/images/posters/corpus/1.webp)
 
