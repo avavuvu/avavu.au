@@ -13,6 +13,15 @@ const program = new Command()
 		'--autoplay',
 		'videos: play silently on a loop, with no controls (the sound is removed)'
 	)
+	.option(
+		'--high',
+		'videos: high quality (1280px, up to 30 fps, constant quality, stereo sound); other video options override it'
+	)
+	.option(
+		'--poster-at <seconds>',
+		'videos without --autoplay: time of the frame for the poster image (default: 1)',
+		Number
+	)
 	.option('--caption <text>', 'caption under the image or video')
 	.option('--alt <text>', 'images: alt text')
 	.addOption(
@@ -25,38 +34,54 @@ const program = new Command()
 	.option('--name <name>', 'file name without extension (default: the page id)')
 	.option(
 		'--max <pixels>',
-		'largest width or height (default: 1600 for images, 640 for videos)',
+		'largest width or height (default: 1600 for images, 640 for videos, 1280 with --high)',
 		Number
 	)
 	.option('--quality <number>', 'images: WebP quality (default: 82)', Number)
 	.option(
 		'--target-kb <number>',
-		'videos: approximate file size in kilobytes (default: 100)',
+		'videos: approximate file size in kilobytes (default: 100; with --high, replaces constant quality)',
 		Number
 	)
 	.option(
 		'--crf <number>',
-		'videos: constant VP9 quality instead of a size target, lower is better and larger',
+		'videos: constant VP9 quality instead of a size target, lower is better and larger (32 with --high)',
 		Number
 	)
-	.option('--fps <number>', 'videos: frames per second (default: 24)', Number)
+	.option(
+		'--fps <number>',
+		'videos: maximum frames per second (default: 24, or 30 with --high)',
+		Number
+	)
 	.action((file: string, page: string, options) => {
 		if (isVideo(file) && (options.wikiImage || options.alt)) {
 			console.warn('Videos always use <WikiVideo>, so --wiki-image and --alt are ignored.')
 		}
 		if (
 			!isVideo(file) &&
-			(options.autoplay || options.crf || options.fps || options.targetKb)
+			(options.autoplay ||
+				options.high ||
+				options.posterAt !== undefined ||
+				options.crf ||
+				options.fps ||
+				options.targetKb)
 		) {
 			console.warn(
-				'--autoplay, --target-kb, --crf and --fps are only for videos, so they are ignored.'
+				'--autoplay, --high, --poster-at, --target-kb, --crf and --fps are only for videos, so they are ignored.'
 			)
+		}
+		if (options.autoplay && options.posterAt !== undefined) {
+			console.warn('Autoplay videos have no poster, so --poster-at is ignored.')
 		}
 		if (options.crf !== undefined && options.targetKb !== undefined) {
 			console.warn('--crf replaces the size target, so --target-kb is ignored.')
 		}
 
-		const { src, page: pageFile } = addImage({
+		const {
+			src,
+			poster,
+			page: pageFile
+		} = addImage({
 			source: file,
 			pageId: page,
 			wikiImage: options.wikiImage,
@@ -69,9 +94,11 @@ const program = new Command()
 			quality: options.quality,
 			crf: options.crf,
 			fps: options.fps,
-			targetKb: options.targetKb
+			targetKb: options.targetKb,
+			high: options.high,
+			posterAt: options.posterAt
 		})
-		console.log(`Added ${src} to ${pageFile}`)
+		console.log(`Added ${src}${poster ? ` with the poster ${poster}` : ''} to ${pageFile}`)
 	})
 
 try {

@@ -4,6 +4,7 @@
 
 	const {
 		src,
+		poster,
 		children,
 		align = 'right',
 		autoplay = false,
@@ -12,6 +13,7 @@
 		controls = !autoplay
 	}: {
 		src: string
+		poster?: string
 		children?: Snippet
 		align?: 'center' | 'left' | 'right'
 		autoplay?: boolean
@@ -22,7 +24,16 @@
 </script>
 
 <WikiFrame {align}>
-	<video {src} {autoplay} {loop} {muted} {controls} playsinline></video>
+	<video
+		{src}
+		{poster}
+		{autoplay}
+		{loop}
+		{muted}
+		{controls}
+		preload={autoplay ? undefined : 'none'}
+		playsinline
+	></video>
 
 	{#if children}
 		{@render children()}
