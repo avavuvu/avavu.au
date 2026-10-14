@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2025-08"
 title: 'On LARPing and the magic of email'
 date: 2025-08-01
 preheader: 'Edition One'

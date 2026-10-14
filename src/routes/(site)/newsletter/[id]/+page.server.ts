@@ -1,15 +1,28 @@
-import { error } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 import { externalNewsletterSchema } from '$lib/schema'
-import { getEntry, getPageLinks, loadEntry } from '$lib/server/content'
+import {
+	aliasSlugsOf,
+	getEntriesIn,
+	getEntry,
+	getEntryByAlias,
+	getPageLinks,
+	loadEntry
+} from '$lib/server/content'
 import { fetchJsonCached } from '$lib/server/externalCache'
-import { getCategoryMembers, getCategoryNodeIds } from '$lib/wikiCategory'
+import { getCanonicalPath, getCategoryMembers, getCategoryNodeIds } from '$lib/wikiCategory'
 import { marked } from 'marked'
 
-export const entries = () => getCategoryMembers('newsletter').map((id) => ({ id }))
+export const entries = () =>
+	[...getCategoryMembers('newsletter'), ...aliasSlugsOf(getEntriesIn('newsletter'))].map(
+		(id) => ({ id })
+	)
 
 export const load = async ({ params }) => {
 	const entry = getEntry(params.id)
 	if (entry) return { ...loadEntry(entry), external: null }
+
+	const aliasTarget = getEntryByAlias(params.id, getEntriesIn('newsletter'))
+	if (aliasTarget) redirect(308, getCanonicalPath(aliasTarget.id))
 
 	const data = await fetchJsonCached(
 		`https://ava.room.lc/api/newsletters/${params.id}`,

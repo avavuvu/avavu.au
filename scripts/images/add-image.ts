@@ -1,35 +1,77 @@
 import { Command, Option } from 'commander'
-import { addImage } from './addImage.ts'
+import { addImage, isVideo } from './addImage.ts'
 
 const program = new Command()
 	.name('add-image')
 	.description(
-		'Convert an image to WebP (rotated, metadata removed), save it in static/images/wiki/, and add it to the top of a page.'
+		'Convert an image to WebP, or a video (.mov, .mp4, .m4v, .webm, .mkv, .avi) to WebM, with the metadata removed. Save it in static/images/wiki/, and add it to the top of a page.'
 	)
-	.argument('<image>', 'path to the image file')
+	.argument('<file>', 'path to the image or video file')
 	.argument('<page>', 'id of the page, for example public-transport')
-	.option('--wiki-image', 'use <WikiImage> (a framed image) instead of a markdown image')
-	.option('--caption <text>', 'caption under the image')
-	.option('--alt <text>', 'alt text')
+	.option('--wiki-image', 'images: use <WikiImage> (a framed image) instead of a markdown image')
+	.option(
+		'--autoplay',
+		'videos: play silently on a loop, with no controls (the sound is removed)'
+	)
+	.option('--caption <text>', 'caption under the image or video')
+	.option('--alt <text>', 'images: alt text')
 	.addOption(
-		new Option('--align <side>', 'position of a <WikiImage>').choices(['left', 'right', 'center'])
+		new Option('--align <side>', 'position of a <WikiImage> or <WikiVideo>').choices([
+			'left',
+			'right',
+			'center'
+		])
 	)
 	.option('--name <name>', 'file name without extension (default: the page id)')
-	.option('--max <pixels>', 'largest width or height', Number, 1600)
-	.option('--quality <number>', 'WebP quality', Number, 82)
-	.action((image: string, page: string, options) => {
-		const { src, page: file } = addImage({
-			source: image,
+	.option(
+		'--max <pixels>',
+		'largest width or height (default: 1600 for images, 640 for videos)',
+		Number
+	)
+	.option('--quality <number>', 'images: WebP quality (default: 82)', Number)
+	.option(
+		'--target-kb <number>',
+		'videos: approximate file size in kilobytes (default: 100)',
+		Number
+	)
+	.option(
+		'--crf <number>',
+		'videos: constant VP9 quality instead of a size target, lower is better and larger',
+		Number
+	)
+	.option('--fps <number>', 'videos: frames per second (default: 24)', Number)
+	.action((file: string, page: string, options) => {
+		if (isVideo(file) && (options.wikiImage || options.alt)) {
+			console.warn('Videos always use <WikiVideo>, so --wiki-image and --alt are ignored.')
+		}
+		if (
+			!isVideo(file) &&
+			(options.autoplay || options.crf || options.fps || options.targetKb)
+		) {
+			console.warn(
+				'--autoplay, --target-kb, --crf and --fps are only for videos, so they are ignored.'
+			)
+		}
+		if (options.crf !== undefined && options.targetKb !== undefined) {
+			console.warn('--crf replaces the size target, so --target-kb is ignored.')
+		}
+
+		const { src, page: pageFile } = addImage({
+			source: file,
 			pageId: page,
 			wikiImage: options.wikiImage,
+			autoplay: options.autoplay,
 			caption: options.caption,
 			alt: options.alt,
 			align: options.align,
 			name: options.name,
 			maxSize: options.max,
-			quality: options.quality
+			quality: options.quality,
+			crf: options.crf,
+			fps: options.fps,
+			targetKb: options.targetKb
 		})
-		console.log(`Added ${src} to ${file}`)
+		console.log(`Added ${src} to ${pageFile}`)
 	})
 
 try {

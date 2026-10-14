@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2025-11"
 title: 'New social media and the smug republic'
 date: 2025-11-01
 preheader: 'Edition Four'

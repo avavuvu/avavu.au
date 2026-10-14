@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2026-06"
 title: The Slow Train to Sydney
 subject: The Slow Train to Sydney
 date: 2026-06-03

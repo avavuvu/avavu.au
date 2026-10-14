@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2026-05"
 title: Code
 date: 2026-05-02
 preheader: 'Edition Ten: Boggle, AI Psychosis, and Make It Up Club'

@@ -1,17 +1,17 @@
 import rawGraphData from '$lib/wikiGraph.json'
 import type { GraphData } from '$lib'
-import { labelWidth } from '$lib/graphLabel'
+import { labelBox, type LabelBox } from '$lib/graphLabel'
 
-export { LABEL_HEIGHT } from '$lib/graphLabel'
+export { LINE_HEIGHT } from '$lib/graphLabel'
 
 export type Point = { x: number; y: number }
 
-export type GraphNode = Point & {
-	id: string
-	label: string
-	href: string
-	width: number
-}
+export type GraphNode = Point &
+	LabelBox & {
+		id: string
+		label: string
+		href: string
+	}
 
 export type GraphEdge = { from: GraphNode; to: GraphNode }
 
@@ -28,7 +28,7 @@ export const nodes: GraphNode[] = graph.nodeIds.map((id) => {
 		y,
 		label,
 		href: graph.paths[id] ?? `/${id}`,
-		width: labelWidth(label)
+		...labelBox(label)
 	}
 })
 

@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2025-12"
 title: 'I have a confession'
 date: 2025-11-29
 preheader: "Edition Five: I'm sorry"

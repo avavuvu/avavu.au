@@ -18,5 +18,17 @@
 <WikiFrame {align}>
 	<img {src} {alt} />
 
-	{@render children?.()}
+	<div>
+	    {@render children?.()}
+	</div>
 </WikiFrame>
+
+<style>
+    img {
+        margin-bottom: 0 !important;
+    }
+
+    div {
+        padding: 0 0.5em 0.5em;
+    }
+</style>

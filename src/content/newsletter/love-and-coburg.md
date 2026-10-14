@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2026-03"
 title: Love and Coburg
 date: 2026-03-07
 preheader: 'Edition Eight: Coburg, Laneway 2026, and Cameron Winter'
@@ -10,7 +12,7 @@ categories: [newsletter]
 > _Laugh like you were born to hear the joke_  
 > _You know how to get to me_  
 > _With a missed opportunity_
-
+>
 > Stella Donnelly's **W.A.L.K**, from *Love and Fortune*
 
 # How's your year going, {{name}}?
@@ -86,7 +88,7 @@ My enjoyment was severely hampered by The Forum being a standing venue. My legs 
 The crowd was blessed with a few new songs, one of which elicited genuine laughs from the audience as he sang, "_It's a shame what happened to Jesus_". There was something really special about it. There's something about the Cameron Winter moment that feels very old fashioned. It's rare that a group of people can sit (or stand) in a room together and experience something new—because it feels like the internet has taken away the ability to surprise. Of course, I was able to find a bootleg of the song on Reddit. I'm told it's called _Emperor XIII In Shades_, but even the diehard Geese-heads in the front didn't seem to know it, and I certainly didn't.
 
 > _I don't like what happened to Jesus_
-
+>
 > _But I sure do like Saturday morning_
 
 When he sang that God was real, the house lights came on and bathed us in a white godly presence. For a brief moment, he made an atheist doubt.

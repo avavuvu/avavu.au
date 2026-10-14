@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2026-01"
 title: 'The cheeky nation'
 date: 2026-01-01
 preheader: 'Edition Six: Vietnam and the New Year'

@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2026-04"
 title: Queer Media and You, and U
 date: 2026-04-01
 preheader: "Edition Nine: A review of Underscores' U, Detransition, Baby, Transamerica, and Strapped"

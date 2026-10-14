@@ -13,4 +13,4 @@ I wanted to trigger video samples from code, but I couldn't find any software th
 
 The setup was a little bit stupid. [Strudel](https://strudel.cc/) sent MIDI to my website running in Chrome. The audio from both went through Blackhole into Ableton, and then out to an audio interface. OBS recorded the Chrome window and laid the Strudel window over it. In the end, OBS kept making Chrome lag, so I never shared my code with the audience.
 
-I did two performances, so I could change and improve things between them. For more, read [June's newsletter](/newsletter/2026-06).
+I did two performances, so I could change and improve things between them. For more, read [June's newsletter](/newsletter/the-slow-train-to-sydney).

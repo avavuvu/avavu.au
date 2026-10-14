@@ -1,13 +1,18 @@
 import { error } from '@sveltejs/kit'
-import { getEntriesIn, getEntry, getRawMarkdown } from '$lib/server/content'
+import { aliasSlugsOf, getEntriesIn, getEntryByAlias, getRawMarkdown } from '$lib/server/content'
 
 export const prerender = true
 
-export const entries = () => getEntriesIn('newsletter').map(({ id }) => ({ id }))
+export const entries = () => {
+	const newsletters = getEntriesIn('newsletter')
+	return [...newsletters.map(({ id }) => id), ...aliasSlugsOf(newsletters)].map((id) => ({ id }))
+}
 
 export function GET({ params }) {
-	const entry = getEntry(params.id)
-	if (!entry || !getEntriesIn('newsletter').includes(entry)) error(404, 'Newsletter not found')
+	const newsletters = getEntriesIn('newsletter')
+	const entry =
+		newsletters.find(({ id }) => id === params.id) ?? getEntryByAlias(params.id, newsletters)
+	if (!entry) error(404, 'Newsletter not found')
 
 	const { title, subject, date, preheader } = entry.metadata
 

@@ -7,7 +7,7 @@ import { buildLinkGraph, readContentFiles, readFrontmatter } from '../../src/mar
 import { fetchJsonCached } from '../../src/lib/server/externalCache.ts'
 import { entrySchema, externalNewsletterListSchema } from '../../src/lib/schema.ts'
 import type { Backlinks, GraphData, Patrons } from '../../src/lib/index.ts'
-import { labelWidth } from '../../src/lib/graphLabel.ts'
+import { labelBox } from '../../src/lib/graphLabel.ts'
 import { layoutGraph } from './layout.ts'
 import { fetchPaidPatrons } from './patreon.ts'
 
@@ -182,14 +182,17 @@ for (const [slug, { id, name }] of Object.entries(patrons)) {
 	titles[id] = name
 }
 
-const { crossings, ...layout } = layoutGraph(
-	[...pages.keys(), ...newsletterIds, ...patronIds],
+const nodeIds = [...pages.keys(), ...newsletterIds, ...patronIds]
+const boxes = new Map(nodeIds.map((id) => [id, labelBox(titles[id] ?? id)]))
+
+const { crossings, overlaps, ...layout } = layoutGraph(
+	nodeIds,
 	edgeList,
-	(id) => labelWidth(titles[id] ?? id),
+	(id) => boxes.get(id)!,
 	([from, to]) => (categories[to] ?? []).includes(from)
 )
 console.log(
-	`Graph: ${layout.nodeIds.length} nodes, ${edgeList.length} edges, ${crossings} crossings`
+	`Graph: ${layout.nodeIds.length} nodes, ${edgeList.length} edges, ${crossings} crossings, ${overlaps} edges behind nodes`
 )
 
 const pageCategories: Record<string, string[]> = {}

@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2025-10"
 title: The most important new emoji and the All Purple Challenge
 date: 2025-10-01
 preheader: 'Edition Three: PLEASE READ THIS OR ELSE'

@@ -1,3 +1,4 @@
+import slugify from 'slugify'
 import type { Backlinks, ContentEntry, Entry, Member } from '$lib'
 import { entrySchema } from '$lib/schema'
 import {
@@ -57,6 +58,14 @@ export const getEntries = (): ContentEntry<Entry>[] =>
 	}))
 
 export const getEntry = (id: string) => getEntries().find((entry) => entry.id === id)
+
+export const toSlug = (value: string) => slugify(value, { lower: true, strict: true })
+
+export const getEntryByAlias = (slug: string, entries = getEntries()) =>
+	entries.find(({ metadata }) => (metadata.aliases ?? []).some((alias) => toSlug(alias) === slug))
+
+export const aliasSlugsOf = (entries: ContentEntry<Entry>[]) =>
+	entries.flatMap(({ metadata }) => (metadata.aliases ?? []).map(toSlug))
 
 export const getEntriesIn = (category: string) =>
 	getEntries()

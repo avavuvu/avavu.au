@@ -16,7 +16,7 @@ const config: OptionsSvelteSitemap = {
 		...Object.entries(graph.paths as Record<string, string>)
 			.filter(([id, path]) => path !== `/${id}`)
 			.map(([id]) => `${id}.html`),
-		...aliasPaths.map((path) => `${path.slice(1)}.html`)
+		...aliasPaths.flatMap((path) => [`${path.slice(1)}.html`, `**/${path.slice(1)}.html`])
 	]
 }
 

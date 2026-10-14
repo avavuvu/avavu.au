@@ -1,4 +1,6 @@
 ---
+aliases:
+    - "2025-09"
 title: Female Sexual Aggression Summer
 date: 2025-09-01
 preheader: 'Edition Two'

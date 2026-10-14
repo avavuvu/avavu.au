@@ -5,10 +5,10 @@ import louvain from 'graphology-communities-louvain'
 type Point = { x: number; y: number }
 type Layout = Map<string, Point>
 type Edge = [string, string]
+type SizeOf = (id: string) => { width: number; height: number }
 
 const SEEDS = [1, 2, 3, 4, 5, 6, 7, 8]
 const MARGIN = 30
-const LABEL_HEIGHT = 18
 const LABEL_GAP = 8
 const CATEGORY_WEIGHT = 3
 
@@ -18,6 +18,11 @@ const COMMUNITY_PULL = 0.25
 const INSIDE_DISTANCE = 70
 const BETWEEN_DISTANCE = 100
 const CHARGE = -90
+const EDGE_CLEARANCE = 3
+
+export type LayoutOptions = { spread: number; clearingRounds: number; overlapCost: number }
+
+const DEFAULT_OPTIONS: LayoutOptions = { spread: 1.3, clearingRounds: 60, overlapCost: 3 }
 
 const seededRandom = (seed: number) => () => {
 	seed = (seed + 0x6d2b79f5) | 0
@@ -47,7 +52,93 @@ export const countCrossings = (layout: Layout, edges: Edge[]) => {
 	return crossings
 }
 
-const resolveOverlaps = (layout: Layout, widthOf: (id: string) => number) => {
+const uniquePairs = (edges: Edge[]) => [
+	...new Map(
+		edges
+			.filter(([a, b]) => a !== b)
+			.map(([a, b]): [string, Edge] => [a < b ? `${a}\u0000${b}` : `${b}\u0000${a}`, [a, b]])
+	).values()
+]
+
+const segmentHitsBox = (
+	a: Point,
+	b: Point,
+	centre: Point,
+	halfWidth: number,
+	halfHeight: number
+) => {
+	const dx = b.x - a.x
+	const dy = b.y - a.y
+	let enter = 0
+	let exit = 1
+	for (const [p, q] of [
+		[-dx, a.x - (centre.x - halfWidth)],
+		[dx, centre.x + halfWidth - a.x],
+		[-dy, a.y - (centre.y - halfHeight)],
+		[dy, centre.y + halfHeight - a.y]
+	]) {
+		if (p === 0) {
+			if (q < 0) return false
+		} else if (p < 0) {
+			enter = Math.max(enter, q / p)
+		} else {
+			exit = Math.min(exit, q / p)
+		}
+	}
+	return enter <= exit
+}
+
+type EdgeOverlap = { id: string; edge: Edge }
+
+export const findEdgeOverlaps = (layout: Layout, edges: Edge[], sizeOf: SizeOf, clearance = 0) => {
+	const overlaps: EdgeOverlap[] = []
+	for (const edge of uniquePairs(edges)) {
+		const a = layout.get(edge[0])!
+		const b = layout.get(edge[1])!
+		for (const [id, centre] of layout) {
+			if (id === edge[0] || id === edge[1]) continue
+			const { width, height } = sizeOf(id)
+			const halfWidth = width / 2 + clearance
+			const halfHeight = height / 2 + clearance
+			if (segmentHitsBox(a, b, centre, halfWidth, halfHeight)) overlaps.push({ id, edge })
+		}
+	}
+	return overlaps
+}
+
+const clearEdges = (layout: Layout, edges: Edge[], sizeOf: SizeOf, rounds: number) => {
+	let current = layout
+
+	for (let round = 0; round < rounds; round++) {
+		const overlaps = findEdgeOverlaps(current, edges, sizeOf, EDGE_CLEARANCE)
+		if (overlaps.length === 0) break
+
+		const next = new Map([...current].map(([id, point]) => [id, { ...point }]))
+		for (const { id, edge } of overlaps) {
+			const a = current.get(edge[0])!
+			const b = current.get(edge[1])!
+			const centre = current.get(id)!
+			const length = Math.hypot(b.x - a.x, b.y - a.y)
+			const normal = { x: -(b.y - a.y) / length, y: (b.x - a.x) / length }
+			const distance = (centre.x - a.x) * normal.x + (centre.y - a.y) * normal.y
+			const { width, height } = sizeOf(id)
+			const extent =
+				(width / 2) * Math.abs(normal.x) +
+				(height / 2) * Math.abs(normal.y) +
+				EDGE_CLEARANCE
+			const push = Math.max(0, extent - Math.abs(distance)) * (distance < 0 ? -1 : 1)
+			const point = next.get(id)!
+			point.x += normal.x * push
+			point.y += normal.y * push
+		}
+
+		current = resolveOverlaps(next, sizeOf)
+	}
+
+	return current
+}
+
+const resolveOverlaps = (layout: Layout, sizeOf: SizeOf) => {
 	const nodes = [...layout].map(([id, point]) => ({ id, ...point }))
 
 	for (let round = 0; round < 200; round++) {
@@ -57,9 +148,10 @@ const resolveOverlaps = (layout: Layout, widthOf: (id: string) => number) => {
 			for (let j = i + 1; j < nodes.length; j++) {
 				const a = nodes[i]
 				const b = nodes[j]
-				const overlapX =
-					(widthOf(a.id) + widthOf(b.id)) / 2 + LABEL_GAP - Math.abs(a.x - b.x)
-				const overlapY = LABEL_HEIGHT + LABEL_GAP - Math.abs(a.y - b.y)
+				const sizeA = sizeOf(a.id)
+				const sizeB = sizeOf(b.id)
+				const overlapX = (sizeA.width + sizeB.width) / 2 + LABEL_GAP - Math.abs(a.x - b.x)
+				const overlapY = (sizeA.height + sizeB.height) / 2 + LABEL_GAP - Math.abs(a.y - b.y)
 				if (overlapX <= 0 || overlapY <= 0) continue
 
 				moved = true
@@ -85,11 +177,15 @@ const layoutOnce = (
 	nodeIds: string[],
 	edges: Edge[],
 	isCategoryEdge: (edge: Edge) => boolean,
-	widthOf: (id: string) => number,
-	seed: number
+	sizeOf: SizeOf,
+	seed: number,
+	options: LayoutOptions
 ): Layout => {
 	const random = seededRandom(seed)
-	const radiusOf = (id: string) => widthOf(id) / 2 + 12
+	const radiusOf = (id: string) => {
+		const { width, height } = sizeOf(id)
+		return Math.max(width, height) / 2 + 12
+	}
 
 	const graph = new Graph({ type: 'undirected' })
 	for (const id of nodeIds) graph.addNode(id)
@@ -194,19 +290,38 @@ const layoutOnce = (
 		.stop()
 		.tick(1200)
 
-	return resolveOverlaps(new Map(nodes.map(({ id, x, y }) => [id, { x, y }])), widthOf)
+	return clearEdges(
+		resolveOverlaps(
+			new Map(
+				nodes.map(({ id, x, y }) => [id, { x: x * options.spread, y: y * options.spread }])
+			),
+			sizeOf
+		),
+		edges,
+		sizeOf,
+		options.clearingRounds
+	)
 }
 
 export const layoutGraph = (
 	nodeIds: string[],
 	edgeList: Edge[],
-	widthOf: (id: string) => number,
-	isCategoryEdge: (edge: Edge) => boolean
+	sizeOf: SizeOf,
+	isCategoryEdge: (edge: Edge) => boolean,
+	overrides: Partial<LayoutOptions> = {}
 ) => {
-	const { layout, crossings } = SEEDS.map((seed) => {
-		const layout = layoutOnce(nodeIds, edgeList, isCategoryEdge, widthOf, seed)
-		return { layout, crossings: countCrossings(layout, edgeList) }
-	}).sort((a, b) => a.crossings - b.crossings)[0]
+	const options = { ...DEFAULT_OPTIONS, ...overrides }
+	const score = ({ crossings, overlaps }: { crossings: number; overlaps: number }) =>
+		crossings + options.overlapCost * overlaps
+
+	const { layout, crossings, overlaps } = SEEDS.map((seed) => {
+		const layout = layoutOnce(nodeIds, edgeList, isCategoryEdge, sizeOf, seed, options)
+		return {
+			layout,
+			crossings: countCrossings(layout, edgeList),
+			overlaps: findEdgeOverlaps(layout, edgeList, sizeOf).length
+		}
+	}).sort((a, b) => score(a) - score(b))[0]
 
 	const points = [...layout.values()]
 	const minX = Math.min(...points.map(({ x }) => x)) - MARGIN
@@ -217,5 +332,5 @@ export const layoutGraph = (
 		positions[id] = [Math.round((x - minX) * 10) / 10, Math.round((y - minY) * 10) / 10]
 	}
 
-	return { nodeIds, edgeList, positions, crossings }
+	return { nodeIds, edgeList, positions, crossings, overlaps }
 }

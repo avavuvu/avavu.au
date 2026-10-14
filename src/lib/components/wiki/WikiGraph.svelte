@@ -4,7 +4,7 @@
 	import { zoom, zoomIdentity, type ZoomBehavior } from 'd3-zoom'
 	import type { Attachment } from 'svelte/attachments'
 	import {
-		LABEL_HEIGHT,
+		LINE_HEIGHT,
 		bounds,
 		edges,
 		graphCenter,
@@ -127,6 +127,7 @@
 				<a
 					href={node.href}
 					tabindex={interactive ? 0 : -1}
+					aria-label={node.label}
 					class:current={node.id === current}
 					class:dimmed={isDimmed(node.id)}
 					onpointerenter={() => (hovered = node.id)}
@@ -134,11 +135,19 @@
 				>
 					<rect
 						x={node.x - node.width / 2}
-						y={node.y - LABEL_HEIGHT / 2}
+						y={node.y - node.height / 2}
 						width={node.width}
-						height={LABEL_HEIGHT}
+						height={node.height}
 					/>
-					<text x={node.x} y={node.y}>{node.label}</text>
+					<text>
+						{#each node.lines as line, index}
+							<tspan
+								x={node.x}
+								y={node.y + (index - (node.lines.length - 1) / 2) * LINE_HEIGHT}
+								>{line}</tspan
+							>
+						{/each}
+					</text>
 				</a>
 			{/each}
 		</g>
