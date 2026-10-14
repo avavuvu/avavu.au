@@ -2,5 +2,5 @@ import { loadComponent } from '$lib/content'
 
 export const load = async ({ data }) => ({
 	...data,
-	component: data.path ? await loadComponent(data.path) : null
+	component: data.entry ? await loadComponent(data.entry.path) : null
 })

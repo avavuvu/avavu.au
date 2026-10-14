@@ -1,22 +1,22 @@
 import { join } from 'node:path'
 import { error } from '@sveltejs/kit'
 import { PUBLIC_SITE_URL } from '$env/static/public'
-import type { Member } from '$lib'
-import { essaySchema, externalNewsletterListSchema, externalNewsletterSchema } from '$lib/schema'
-import { getMembers, getNewsletters, getRawMarkdown, getWikiEntries } from '$lib/server/content'
+import type { Link, Member } from '$lib'
+import { externalNewsletterListSchema, externalNewsletterSchema } from '$lib/schema'
+import {
+	getEntries,
+	getEntriesIn,
+	getEntry,
+	getMembers,
+	getRawMarkdown,
+	sectionOf
+} from '$lib/server/content'
 import { fetchJsonCached } from '$lib/server/externalCache'
-import { essaySlug } from '$lib/server/markdoc'
 import { yearsSince } from '$lib/utils'
-import { getCanonicalPath, isCategory, sections } from '$lib/wikiCategory'
-import { buildWikiIndex, readFrontmatter, resolveBracketContent } from '../../markdoc/wikilinks'
+import { getCanonicalPath, getCategoriesOf, isCategory, sections } from '$lib/wikiCategory'
+import { buildWikiIndex, resolveBracketContent } from '../../markdoc/wikilinks'
 
-const { index: wikiIndex } = buildWikiIndex(join(process.cwd(), 'src/wiki'))
-
-const essaySources = import.meta.glob<string>('/src/content/writing/*.mdoc', {
-	eager: true,
-	query: '?raw',
-	import: 'default'
-})
+const { index: wikiIndex } = buildWikiIndex(join(process.cwd(), 'src/content'))
 
 const absolute = (href: string) => (href.startsWith('/') ? `${PUBLIC_SITE_URL}${href}` : href)
 
@@ -28,16 +28,48 @@ const readAttributes = (source: string): Record<string, string> =>
 		])
 	)
 
-const stripFrontmatter = (source: string) => source.replace(/^---\n[\s\S]*?\n---\n?/, '')
-
 const absoluteLinks = (markdown: string) =>
-	markdown.replace(/(!?\[[^\]]*\]\()(\/[^)\s]*)/g, (_, prefix, href) => prefix + absolute(href))
+	markdown
+		.replace(/(!?\[[^\]]*\]\()(\/[^)\s]*)/g, (_, prefix, href) => prefix + absolute(href))
+		.replace(/(\s(?:src|href)=")(\/[^"]*)/g, (_, prefix, href) => prefix + absolute(href))
 
 const wikipediaUrl = (name: string) => `https://en.wikipedia.org/wiki/${name.replace(/ /g, '_')}`
 
+const convertMedia = (markdown: string) =>
+	markdown
+		.replace(/<YouTube([^>]*?)\/>/g, (_, attributes) => {
+			const { id, start } = readAttributes(attributes)
+			const seconds = start?.replace(/[{}]/g, '')
+			return `[YouTube video](https://www.youtube.com/watch?v=${id}${seconds ? `&t=${seconds}` : ''})`
+		})
+		.replace(
+			/<TikTok([^>]*?)\/>/g,
+			(_, attributes) =>
+				`[TikTok video](https://www.tiktok.com/embed/v2/${readAttributes(attributes).id})`
+		)
+		.replace(
+			/<Video([^>]*?)\/>/g,
+			(_, attributes) => `[Video](${absolute(readAttributes(attributes).src)})`
+		)
+
+const convertLongForm = (markdown: string) => {
+	const notes: string[] = []
+
+	const body = markdown
+		.replace(/<Sidenote>([\s\S]*?)<\/Sidenote>/g, (_, content) => {
+			notes.push(`[^${notes.length + 1}]: ${convertMedia(content).trim()}`)
+			return `[^${notes.length}]`
+		})
+		.replace(/<From>([\s\S]*?)<\/From>/g, (_, source) => `— ${source.trim()}`)
+		.replace(/<\/?(?:Quote|Wide)>/g, '')
+		.replace(/\n{3,}/g, '\n\n')
+
+	return notes.length > 0 ? `${body.trim()}\n\n${notes.join('\n\n')}` : body
+}
+
 const convertWiki = (markdown: string) =>
 	absoluteLinks(
-		markdown
+		convertMedia(convertLongForm(markdown))
 			.replaceAll('{{name}}', 'Web Surfer')
 			.replace(/<WikiGraph\s*\/>/g, '')
 			.replace(/<TimeSince([^>]*)\/>/g, (_, attributes) =>
@@ -64,64 +96,45 @@ const convertWiki = (markdown: string) =>
 			})
 	)
 
-const convertEssayTags = (markdoc: string) =>
-	markdoc
-		.replace(/\{%\s*youtube\s+([^%]*?)\/%\}/g, (_, attributes) => {
-			const { watch, start } = readAttributes(attributes)
-			return `[YouTube video](https://www.youtube.com/watch?v=${watch}${start ? `&t=${start}` : ''})`
-		})
-		.replace(/\{%\s*tiktok\s+([^%]*?)\/%\}/g, (_, attributes) => {
-			return `[TikTok video](https://www.tiktok.com/embed/v2/${readAttributes(attributes).videoid})`
-		})
-		.replace(/\{%\s*video\s+([^%]*?)\/%\}/g, (_, attributes) => {
-			return `[Video](${absolute(readAttributes(attributes).src)})`
-		})
-		.replace(/\{%\s*street-view\s+([^%]*?)\/%\}/g, (_, attributes) => {
-			return `![Street view](${absolute(`/images/writing/tram/${readAttributes(attributes).name}.jpg`)})`
-		})
-		.replace(
-			/\{%\s*from\s*%\}([\s\S]*?)\{%\s*\/from\s*%\}/g,
-			(_, source) => `— ${source.trim()}`
-		)
-		.replace(/\{%[^%]*%\}/g, '')
-
-const convertEssay = (markdoc: string) => {
-	const notes: string[] = []
-
-	const body = stripFrontmatter(markdoc)
-		.replace(
-			/\{%\s*note-content\s+i="([^"]+)"\s*%\}([\s\S]*?)\{%\s*\/note-content\s*%\}/g,
-			(_, id, content) => {
-				const text = convertEssayTags(content).trim().replace(/\n/g, '\n    ')
-				notes.push(`[^${id}]: ${text}`)
-				return ''
-			}
-		)
-		.replace(/\{%\s*note\s+i="([^"]+)"\s*\/%\}/g, '[^$1]')
-
-	const converted = absoluteLinks(convertEssayTags(body))
-		.replace(/\n{3,}/g, '\n\n')
-		.trim()
-
-	return notes.length > 0 ? `${converted}\n\n${absoluteLinks(notes.join('\n\n'))}` : converted
-}
-
 const linkList = (links: Member[]) =>
 	links.map(({ href, title }) => `- [${title}](${absolute(href)})`).join('\n')
+
+const seeAlso = (links: Link[] = []) =>
+	links.length > 0
+		? [
+				'## See also',
+				links
+					.map(
+						({ title, url, source }) =>
+							`- ${source ? `${source}: ` : ''}[${title}](${url})`
+					)
+					.join('\n')
+			]
+		: []
 
 type Document = {
 	title: string
 	path: string
 	date?: string
+	url?: string
 	categories?: Member[]
 	body: string
 	extra?: string[]
 }
 
-const renderDocument = ({ title, path, date, categories = [], body, extra = [] }: Document) => {
+const renderDocument = ({
+	title,
+	path,
+	date,
+	url,
+	categories = [],
+	body,
+	extra = []
+}: Document) => {
 	const details = [
 		`URL: ${absolute(path)}`,
 		date && `Date: ${date}`,
+		url && `Link: ${absolute(url)}`,
 		categories.length > 0 &&
 			`Categories: ${categories.map(({ href, title }) => `[${title}](${absolute(href)})`).join(', ')}`
 	]
@@ -134,151 +147,111 @@ const renderDocument = ({ title, path, date, categories = [], body, extra = [] }
 		.concat('\n')
 }
 
-type Page = { path: string; title: string; section: string | null; render: () => Promise<string> }
+type Page = {
+	path: string
+	title: string
+	date: string
+	section: string | null
+	render: () => Promise<string>
+}
 
-const essays = () =>
-	Object.entries(essaySources)
-		.map(([file, source]) => {
-			const id = file.split('/').at(-1)!.replace('.mdoc', '')
-			const metadata = essaySchema.parse(readFrontmatter(source) ?? {})
-			return { path: `/essays/${essaySlug(id)}`, metadata, source }
-		})
-		.sort((a, b) => b.metadata.date.localeCompare(a.metadata.date))
-
-const newsletterSummaries = async () => {
-	const local = getNewsletters().map(({ id, path, metadata }) => ({
-		slug: id,
-		title: metadata.title,
-		date: metadata.date,
-		local: { path, metadata }
-	}))
-
-	const external = (
+const externalNewsletters = async () =>
+	(
 		await fetchJsonCached(
 			'https://ava.room.lc/api/newsletters',
 			'newsletters-list',
 			externalNewsletterListSchema,
 			[]
 		)
-	).map(({ slug, title, date }) => ({ slug, title, date, local: null }))
-
-	return [...local, ...external].sort((a, b) => b.date.localeCompare(a.date))
-}
+	).filter(({ slug }) => !getEntry(slug))
 
 const buildPages = async (): Promise<Page[]> => {
-	const essayList = essays()
-	const newsletters = await newsletterSummaries()
+	const entries = getEntries()
+	const external = await externalNewsletters()
 
-	const essayLinks = essayList.map(({ path, metadata }) => ({
-		href: path,
-		title: metadata.title
-	}))
-	const newsletterLinks = newsletters.map(({ slug, title }) => ({
-		href: `/newsletter/${slug}`,
-		title
-	}))
-
-	const entries = getWikiEntries()
 	const titleOf = new Map(entries.map(({ id, metadata }) => [id, metadata.title]))
-	const essayPaths = new Set(essayList.map(({ path }) => path))
+	const categoryLinks = (ids: string[] = []) =>
+		ids.map((category) => ({
+			href: getCanonicalPath(category),
+			title: titleOf.get(category) ?? category
+		}))
+
+	const newsletterLinks = [
+		...getEntriesIn('newsletter').map(({ id, metadata }) => ({
+			href: getCanonicalPath(id),
+			title: metadata.title,
+			date: metadata.date ?? ''
+		})),
+		...external.map(({ slug, title, date }) => ({ href: `/newsletter/${slug}`, title, date }))
+	]
+		.sort((a, b) => b.date.localeCompare(a.date))
+		.map(({ href, title }) => ({ href, title }))
 
 	const membersOf = (id: string) => {
-		if (id === 'essays') return essayLinks
 		if (id === 'newsletter') return newsletterLinks
 		return isCategory(id) ? getMembers(id) : []
 	}
 
-	const wikiPages: Page[] = entries
-		.filter(({ id }) => !essayPaths.has(getCanonicalPath(id)))
-		.map(({ id, path, metadata }) => {
-			const canonical = getCanonicalPath(id)
-			return {
-				path: canonical,
-				title: metadata.title,
-				section: metadata.section
-					? id
-					: ((metadata.categories ?? []).find((category) =>
-							sections.includes(category)
-						) ?? null),
-				render: async () => {
-					const members = membersOf(id)
-					return renderDocument({
-						title: metadata.title,
-						path: canonical,
-						date:
-							metadata.kind === 'archive' && !metadata.section
-								? metadata.date
-								: undefined,
-						categories: (metadata.categories ?? []).map((category) => ({
-							href: getCanonicalPath(category),
-							title: titleOf.get(category) ?? category
-						})),
-						body: convertWiki(getRawMarkdown(path)),
-						extra:
-							members.length > 0
-								? [`## Pages tagged as ${metadata.title}`, linkList(members)]
-								: []
-					})
-				}
+	const entryPages: Page[] = entries.map(({ id, path, metadata }) => {
+		const canonical = getCanonicalPath(id)
+		const intro = [
+			metadata.preheader && `*${metadata.preheader}*`,
+			metadata.layout === 'longform' && metadata.description
+		].filter(Boolean)
+
+		return {
+			path: canonical,
+			title: metadata.title,
+			date: metadata.date ?? '',
+			section: metadata.section ? id : (sectionOf(id) ?? null),
+			render: async () => {
+				const members = membersOf(id)
+				return renderDocument({
+					title: metadata.title,
+					path: canonical,
+					date: metadata.section ? undefined : metadata.date,
+					url: metadata.url,
+					categories: categoryLinks(getCategoriesOf(id)),
+					body: [...intro, convertWiki(getRawMarkdown(path))].join('\n\n'),
+					extra: [
+						...(members.length > 0
+							? [`## Pages tagged as ${metadata.title}`, linkList(members)]
+							: []),
+						...seeAlso(metadata.links)
+					]
+				})
 			}
-		})
+		}
+	})
 
-	const essayPages: Page[] = essayList.map(({ path, metadata, source }) => ({
-		path,
-		title: metadata.title,
-		section: 'essays',
-		render: async () =>
-			renderDocument({
-				title: metadata.title,
-				path,
-				date: metadata.date,
-				body: `${metadata.description}\n\n${convertEssay(source)}`,
-				extra: metadata.links
-					? [
-							'## See also',
-							metadata.links
-								.map(({ title, pub, url }) => `- ${pub}: [${title}](${url})`)
-								.join('\n')
-						]
-					: []
-			})
-	}))
-
-	const newsletterPages: Page[] = newsletters.map(({ slug, title, date, local }) => {
+	const externalPages: Page[] = external.map(({ slug, title, date }) => {
 		const path = `/newsletter/${slug}`
-
 		return {
 			path,
 			title,
+			date,
 			section: 'newsletter',
 			render: async () => {
-				if (local) {
-					return renderDocument({
-						title,
-						path,
-						date,
-						body: `*${local.metadata.preheader}*\n\n${convertWiki(getRawMarkdown(local.path))}`
-					})
-				}
-
 				const data = await fetchJsonCached(
 					`https://ava.room.lc/api/newsletters/${slug}`,
 					`newsletter-${slug}`,
 					externalNewsletterSchema,
 					null
 				)
-
 				return renderDocument({
 					title,
 					path,
 					date,
+					categories: categoryLinks(['newsletter']),
 					body: data ? `*${data.subtitle}*\n\n${data.content}` : ''
 				})
 			}
 		}
 	})
 
-	return [...wikiPages, ...essayPages, ...newsletterPages]
+	return [...entryPages, ...externalPages].sort(
+		(a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title)
+	)
 }
 
 let pagesPromise: Promise<Page[]> | null = null

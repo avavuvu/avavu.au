@@ -1,8 +1,10 @@
 import wikiLinkPlugin from 'remark-wiki-link/lib/index.js'
 import type { Node } from 'unist'
-import type { Root, Html } from 'mdast'
+import type { Root, Html, Heading, PhrasingContent } from 'mdast'
+import slugify from 'slugify'
 import {
 	isExternalWikiLink,
+	splitHash,
 	resolveWikiHref,
 	resolveWikiPageName,
 	resolveBracketContent,
@@ -35,23 +37,50 @@ const createHtmlWikiLinkPlugin = (wikiIndex: Map<string, string>) => () => async
 	})
 }
 
-const createWikiLinkDisplayPlugin = () => () => async (tree: Root) => {
+const textOf = (nodes: PhrasingContent[]): string =>
+	nodes
+		.map((node) =>
+			'value' in node ? node.value : 'children' in node ? textOf(node.children) : ''
+		)
+		.join('')
+
+const createHeadingIdPlugin = () => () => async (tree: Root) => {
 	const { visit } = await import('unist-util-visit')
+	const used = new Map<string, number>()
 
-	visit(tree, 'wikiLink', (node: WikiLinkNode) => {
-		if (!node.data) return
-
-		if (isExternalWikiLink(node.value)) {
-			node.data.hProperties = { ...node.data.hProperties, className: 'external' }
-		}
-
-		if (node.data.alias !== node.value) return
-
-		const displayText = defaultWikiDisplayText(node.value)
-		node.data.alias = displayText
-		node.data.hChildren = [{ type: 'text', value: displayText }]
+	visit(tree, 'heading', (node: Heading) => {
+		const base = slugify(textOf(node.children), { lower: true, strict: true })
+		if (!base) return
+		const count = used.get(base) ?? 0
+		used.set(base, count + 1)
+		const data = (node.data ??= {}) as { hProperties?: Record<string, unknown> }
+		data.hProperties = { ...data.hProperties, id: count ? `${base}-${count + 1}` : base }
 	})
 }
+
+const createWikiLinkDisplayPlugin =
+	(wikiIndex: Map<string, string>) => () => async (tree: Root) => {
+		const { visit } = await import('unist-util-visit')
+
+		visit(tree, 'wikiLink', (node: WikiLinkNode) => {
+			if (!node.data) return
+
+			if (isExternalWikiLink(node.value)) {
+				node.data.hProperties = { ...node.data.hProperties, className: 'external' }
+			} else {
+				const [page, hash] = splitHash(resolveWikiPageName(node.value))
+				if (hash && wikiIndex.has(page)) {
+					node.data.hProperties = { ...node.data.hProperties, className: 'internal' }
+				}
+			}
+
+			if (node.data.alias !== node.value) return
+
+			const displayText = defaultWikiDisplayText(node.value)
+			node.data.alias = displayText
+			node.data.hChildren = [{ type: 'text', value: displayText }]
+		})
+	}
 
 export const createWikiRemarkPlugins = (wikiIndex: Map<string, string>) => [
 	[
@@ -63,6 +92,7 @@ export const createWikiRemarkPlugins = (wikiIndex: Map<string, string>) => [
 			hrefTemplate: (permalink: string) => resolveWikiHref(wikiIndex, permalink)
 		}
 	],
-	createWikiLinkDisplayPlugin(),
-	createHtmlWikiLinkPlugin(wikiIndex)
+	createWikiLinkDisplayPlugin(wikiIndex),
+	createHtmlWikiLinkPlugin(wikiIndex),
+	createHeadingIdPlugin()
 ]

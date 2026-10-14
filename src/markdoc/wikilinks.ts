@@ -1,5 +1,5 @@
-import { readdirSync, readFileSync, type Dirent } from 'node:fs'
-import { join } from 'node:path'
+import { readdirSync, readFileSync } from 'node:fs'
+import { basename, join } from 'node:path'
 import yaml from 'js-yaml'
 import slugify from 'slugify'
 
@@ -16,7 +16,13 @@ export const readFrontmatter = (raw: string): unknown => {
 	}
 }
 
-type PageInfo = { id: string; aliases: string[]; categories: string[]; section: boolean }
+type PageInfo = {
+	id: string
+	raw: string
+	aliases: string[]
+	categories: string[]
+	section: boolean
+}
 
 const toStrings = (value: unknown): string[] => (Array.isArray(value) ? value.map(String) : [])
 
@@ -28,45 +34,52 @@ const readPageInfo = (id: string, raw: string): PageInfo => {
 	} | null
 	return {
 		id,
+		raw,
 		aliases: toStrings(frontmatter?.aliases),
 		categories: toStrings(frontmatter?.categories),
 		section: frontmatter?.section === true
 	}
 }
 
-const readWikiPages = (wikiRoot: string): PageInfo[] => {
-	let folders: Dirent[]
+export const readContentFiles = (contentRoot: string) => {
+	let files: string[]
 	try {
-		folders = readdirSync(wikiRoot, { withFileTypes: true }).filter((entry) =>
-			entry.isDirectory()
-		)
+		files = readdirSync(contentRoot, { recursive: true, encoding: 'utf-8' })
 	} catch {
 		return []
 	}
 
-	return folders.flatMap((folder) => {
-		const folderDir = join(wikiRoot, folder.name)
-		return readdirSync(folderDir)
-			.filter((file) => file.endsWith('.md'))
-			.map((file) =>
-				readPageInfo(
-					file.replace(/\.md$/, ''),
-					readFileSync(join(folderDir, file), 'utf-8')
-				)
-			)
-	})
+	return files
+		.filter((file) => file.endsWith('.md'))
+		.sort()
+		.map((file) => ({
+			id: basename(file, '.md'),
+			file: join(contentRoot, file),
+			raw: readFileSync(join(contentRoot, file), 'utf-8')
+		}))
 }
 
-export const buildWikiIndex = (wikiRoot: string) => {
+const readWikiPages = (contentRoot: string): PageInfo[] =>
+	readContentFiles(contentRoot).map(({ id, raw }) => readPageInfo(id, raw))
+
+export const buildWikiIndex = (contentRoot: string) => {
 	const index = new Map<string, string>()
 	const ids = new Map<string, string>()
 	const aliasPaths: string[] = []
 
-	const pages = readWikiPages(wikiRoot)
+	const pages = readWikiPages(contentRoot)
 	const sectionIds = new Set(pages.filter((page) => page.section).map((page) => page.id))
 
+	const pageIds = new Map<string, string>()
 	for (const page of pages) {
-		const parent = page.categories.find((category) => sectionIds.has(category))
+		for (const alias of page.aliases) pageIds.set(toSlug(alias), page.id)
+	}
+	for (const page of pages) pageIds.set(toSlug(page.id), page.id)
+
+	for (const page of pages) {
+		const parent = page.categories
+			.map((category) => pageIds.get(toSlug(category)))
+			.find((category) => category !== undefined && sectionIds.has(category))
 		const href = parent ? `/${parent}/${page.id}` : `/${page.id}`
 
 		index.set(toSlug(page.id), href)
@@ -105,6 +118,11 @@ const externalPrefixes = Object.keys(externalLinks)
 export const isExternalWikiLink = (name: string) =>
 	externalPrefixes.some((prefix) => name.trim().startsWith(prefix))
 
+export const splitHash = (permalink: string): [string, string] => {
+	const index = permalink.indexOf('#')
+	return index < 0 ? [permalink, ''] : [permalink.slice(0, index), permalink.slice(index)]
+}
+
 export const resolveWikiHref = (wikiIndex: Map<string, string>, permalink: string): string => {
 	for (const prefix of externalPrefixes) {
 		if (permalink.startsWith(prefix)) {
@@ -112,7 +130,8 @@ export const resolveWikiHref = (wikiIndex: Map<string, string>, permalink: strin
 		}
 	}
 
-	return wikiIndex.get(permalink) ?? `/${permalink}`
+	const [page, hash] = splitHash(permalink)
+	return (wikiIndex.get(page) ?? `/${page}`) + hash
 }
 
 export const resolveWikiPageName = (name: string): string => {
@@ -120,7 +139,8 @@ export const resolveWikiPageName = (name: string): string => {
 		return name
 	}
 
-	return toSlug(name)
+	const [page, hash] = splitHash(name)
+	return toSlug(page) + (hash ? `#${toSlug(hash.slice(1))}` : '')
 }
 
 export const defaultWikiDisplayText = (name: string): string => {
@@ -160,47 +180,31 @@ export const resolveBracketContent = (
 	const permalink = resolveWikiPageName(name)
 	const href = resolveWikiHref(wikiIndex, permalink)
 	const isExternal = externalPrefixes.some((prefix) => permalink.startsWith(prefix))
-	const exists = isExternal || wikiIndex.has(permalink)
+	const exists = isExternal || wikiIndex.has(splitHash(permalink)[0])
 
 	return { href, exists, displayText }
 }
 
 const WIKILINK_PATTERN = /\[\[(.+?)\]\]/g
 
-export const buildLinkGraph = (wikiRoot: string) => {
-	const { ids } = buildWikiIndex(wikiRoot)
+export const buildLinkGraph = (contentRoot: string) => {
+	const { ids } = buildWikiIndex(contentRoot)
 	const edges = new Map<string, Set<string>>()
 
-	let sections: Dirent[]
-	try {
-		sections = readdirSync(wikiRoot, { withFileTypes: true }).filter((entry) =>
-			entry.isDirectory()
-		)
-	} catch {
-		return edges
-	}
+	for (const { id, raw } of readWikiPages(contentRoot)) {
+		const linked = new Set<string>()
 
-	for (const section of sections) {
-		const sectionDir = join(wikiRoot, section.name)
-		const files = readdirSync(sectionDir).filter((file) => file.endsWith('.md'))
+		for (const match of raw.matchAll(WIKILINK_PATTERN)) {
+			const name = match[1].split('|')[0].trim()
+			const permalink = resolveWikiPageName(name)
 
-		for (const file of files) {
-			const id = file.replace(/\.md$/, '')
-			const raw = readFileSync(join(sectionDir, file), 'utf-8')
-			const linked = new Set<string>()
+			if (externalPrefixes.some((prefix) => permalink.startsWith(prefix))) continue
 
-			for (const match of raw.matchAll(WIKILINK_PATTERN)) {
-				const name = match[1].split('|')[0].trim()
-				const permalink = resolveWikiPageName(name)
-
-				if (externalPrefixes.some((prefix) => permalink.startsWith(prefix))) continue
-
-				const targetId = ids.get(permalink)
-				if (targetId && targetId !== id) linked.add(targetId)
-			}
-
-			edges.set(id, linked)
+			const targetId = ids.get(splitHash(permalink)[0])
+			if (targetId && targetId !== id) linked.add(targetId)
 		}
+
+		edges.set(id, linked)
 	}
 
 	return edges

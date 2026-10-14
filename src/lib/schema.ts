@@ -2,8 +2,6 @@ import { z } from 'zod'
 
 const isoDate = z.coerce.date().transform((date) => date.toISOString().slice(0, 10))
 
-const pageId = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'must be a page id, like "live-coding"')
-
 export const collaboratorSchema = z.strictObject({
 	name: z.string(),
 	url: z.url().optional()
@@ -15,13 +13,19 @@ export const musicLinksSchema = z.strictObject({
 	spotify: z.url()
 })
 
-const wikiFields = {
+export const linkSchema = z.strictObject({
 	title: z.string().min(1),
-	aliases: z.array(z.string()).optional(),
-	categories: z.array(pageId).optional(),
-	section: z.literal(true).optional(),
-	layout: z.literal('minimal').optional()
-}
+	url: z.url(),
+	source: z.string().optional()
+})
+
+export const imageSchema = z.strictObject({
+	src: z.string().min(1),
+	alt: z.string()
+})
+
+export type Link = z.output<typeof linkSchema>
+export type Image = z.output<typeof imageSchema>
 
 export const projectTypes = [
 	'misc',
@@ -32,62 +36,54 @@ export const projectTypes = [
 	'writing'
 ] as const
 
-export const wikiPageSchema = z
-	.strictObject(wikiFields)
-	.transform((page) => ({ ...page, kind: 'wiki' as const }))
+const projectOnlyFields = ['rating', 'collaborators', 'music'] as const
 
-export const projectSchema = z
+export const entrySchema = z
 	.strictObject({
-		...wikiFields,
-		date: isoDate,
-		type: z.enum(projectTypes),
+		title: z.string().min(1),
+		date: isoDate.optional(),
+		description: z.string().optional(),
+		image: imageSchema.optional(),
+		url: z.string().optional(),
+		links: z.array(linkSchema).optional(),
+		aliases: z.array(z.string()).optional(),
+		categories: z.array(z.string().min(1)).optional(),
+		section: z.literal(true).optional(),
+		layout: z.enum(['minimal', 'longform']).optional(),
+		preheader: z.string().optional(),
+		subject: z.string().optional(),
+		type: z.enum(projectTypes).optional(),
 		rating: z.literal(5).optional(),
-		link: z.string().optional(),
-		youtubeId: z.string().optional(),
 		collaborators: z.array(collaboratorSchema).optional(),
 		music: musicLinksSchema.optional()
 	})
-	.transform((page) => ({ ...page, kind: 'archive' as const }))
+	.superRefine((entry, context) => {
+		if (entry.type && !entry.date) {
+			context.addIssue({
+				code: 'custom',
+				path: ['date'],
+				message: 'projects (with a type) need a date'
+			})
+		}
+		if (entry.layout === 'longform' && !entry.date) {
+			context.addIssue({
+				code: 'custom',
+				path: ['date'],
+				message: 'longform pages need a date'
+			})
+		}
+		for (const field of projectOnlyFields) {
+			if (!entry.type && entry[field] !== undefined) {
+				context.addIssue({
+					code: 'custom',
+					path: [field],
+					message: `"${field}" needs a type`
+				})
+			}
+		}
+	})
 
-export const wikiFolderSchemas = {
-	projects: projectSchema,
-	bio: wikiPageSchema,
-	people: wikiPageSchema,
-	glossary: wikiPageSchema
-} as const
-
-export type WikiFolder = keyof typeof wikiFolderSchemas
-export const wikiFolders = Object.keys(wikiFolderSchemas) as WikiFolder[]
-
-export type WikiPage = z.output<typeof wikiPageSchema>
-export type Project = z.output<typeof projectSchema>
-export type WikiMeta = WikiPage | Project
-
-export const newsletterSchema = z.strictObject({
-	title: z.string().min(1),
-	subject: z.string().optional(),
-	date: isoDate,
-	preheader: z.string()
-})
-
-export type Newsletter = z.output<typeof newsletterSchema>
-
-export const essaySchema = z.strictObject({
-	title: z.string().min(1),
-	date: isoDate,
-	description: z.string(),
-	heroImageSrc: z.string(),
-	heroImageAlt: z.string(),
-	color: z.string(),
-	tags: z
-		.array(z.string())
-		.nullish()
-		.transform((tags) => tags ?? []),
-	links: z.array(z.strictObject({ title: z.string(), pub: z.string(), url: z.url() })).optional(),
-	bsky: z.strictObject({ did: z.string(), postCid: z.string() }).optional()
-})
-
-export type Essay = z.output<typeof essaySchema>
+export type Entry = z.output<typeof entrySchema>
 
 export const externalNewsletterSummarySchema = z.object({
 	slug: z.string().min(1),

@@ -62,10 +62,10 @@
 <p hidden={anyMatch}>Nothing matches “{query}”.</p>
 
 <style>
-    nav {
-        display: flex;
-        gap: 0.5em;
-    }
+	nav {
+		display: flex;
+		gap: 0.5em;
+	}
 
 	ul.archive {
 		list-style: none;
@@ -73,10 +73,9 @@
 	}
 
 	input {
-	    border-radius: 0;
+		border-radius: 0;
 		outline: none;
 		border: 1px solid black;
-
 	}
 
 	span {

@@ -1,8 +1,9 @@
 <script lang="ts">
 	import '../layout.css'
-	import { page } from '$app/state'
+	import { navigating, page } from '$app/state'
 	import { afterNavigate, goto } from '$app/navigation'
 	import WikiGraph from '$lib/components/wiki/WikiGraph.svelte'
+	import { getIdForPath } from '$lib/wikiCategory'
 
 	const { children } = $props()
 
@@ -12,6 +13,9 @@
 	const closed = $derived(page.route.id === '/(site)/graph')
 	const home = $derived(page.route.id === '/(site)')
 
+	const loading = $derived(navigating.to !== null)
+	const pendingId = $derived(navigating.to ? getIdForPath(navigating.to.url.pathname) : null)
+
 	afterNavigate(({ type, from }) => {
 		if (from && from.route.id !== '/(site)/graph') previousPath = from.url.pathname
 		if (type !== 'popstate' && content) content.scrollTop = 0
@@ -19,13 +23,26 @@
 
 	const reopen = () => goto(previousPath ?? '/')
 
+	let pressedOutside = false
+
+	const pressBackground = (event: PointerEvent) => {
+		pressedOutside = event.target === event.currentTarget
+	}
+
+	const clickBackground = (event: MouseEvent) => {
+		if (pressedOutside && event.target === event.currentTarget) goto('/graph')
+		pressedOutside = false
+	}
+
 	let lastFocus: { current: string | null; highlighted: string[] | null } = {
 		current: null,
 		highlighted: null
 	}
 
 	const focus = $derived.by(() => {
-		if (!closed) {
+		if (pendingId) {
+			lastFocus = { current: pendingId, highlighted: null }
+		} else if (!closed && !loading) {
 			lastFocus = {
 				current: page.data.current ?? null,
 				highlighted: page.data.highlighted ?? null
@@ -43,7 +60,13 @@
 	<button class="open" onclick={reopen}>open</button>
 {/if}
 
-<main class:wide={page.data.wide} class:closed>
+<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+<main
+	class:wide={page.data.wide}
+	class:closed
+	onpointerdown={pressBackground}
+	onclick={clickBackground}
+>
 	<section class:wide={page.data.wide}>
 		<header>
 			<a href="/graph">close</a>
@@ -52,7 +75,7 @@
 			{/if}
 		</header>
 
-		<div class="content" bind:this={content}>
+		<div class="content" class:loading aria-busy={loading} bind:this={content}>
 			{@render children()}
 		</div>
 	</section>
@@ -85,7 +108,6 @@
 		width: 100%;
 		max-width: 40rem;
 		max-height: calc(100svh - 2rem);
-
 
 		&.wide {
 			max-width: 52rem;
@@ -158,14 +180,33 @@
 	.content {
 		padding: 1em 2em 2em;
 		overflow-y: auto;
+		transition: opacity 200ms ease-in;
+
+		&.loading {
+			opacity: 0;
+			transition: opacity 150ms ease-out;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+
+			&.loading {
+				opacity: 0.5;
+				transition: none;
+			}
+		}
 	}
 
 	header {
+		position: sticky;
+		top: 0;
+		z-index: 1;
 		display: flex;
 		justify-content: start;
 		gap: 1em;
 		padding: 0 2em;
 		border-bottom: 1px solid black;
+		background-color: white;
 
 		a {
 			color: black;

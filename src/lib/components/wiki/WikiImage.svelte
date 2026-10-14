@@ -9,7 +9,7 @@
 		align = 'right'
 	}: {
 		src: string
-		children: Snippet
+		children?: Snippet
 		alt: string
 		align?: 'center' | 'left' | 'right'
 	} = $props()
@@ -18,5 +18,5 @@
 <WikiFrame {align}>
 	<img {src} {alt} />
 
-	{@render children()}
+	{@render children?.()}
 </WikiFrame>

@@ -4,8 +4,8 @@ import { dirname, join } from 'node:path'
 import { buildWikiIndex } from './src/markdoc/wikilinks.ts'
 import graph from './src/lib/wikiGraph.json' with { type: 'json' }
 
-const wikiRoot = join(dirname(fileURLToPath(import.meta.url)), 'src/wiki')
-const { aliasPaths } = buildWikiIndex(wikiRoot)
+const contentRoot = join(dirname(fileURLToPath(import.meta.url)), 'src/content')
+const { aliasPaths } = buildWikiIndex(contentRoot)
 
 const config: OptionsSvelteSitemap = {
 	domain: 'https://www.avavu.au',

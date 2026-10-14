@@ -1,21 +1,20 @@
 import { error } from '@sveltejs/kit'
-import { getNewsletter, getNewsletters, getRawMarkdown } from '$lib/server/content'
+import { getEntriesIn, getEntry, getRawMarkdown } from '$lib/server/content'
 
 export const prerender = true
 
-export const entries = () => getNewsletters().map(({ id }) => ({ id }))
+export const entries = () => getEntriesIn('newsletter').map(({ id }) => ({ id }))
 
 export function GET({ params }) {
-	const entry = getNewsletter(params.id)
+	const entry = getEntry(params.id)
+	if (!entry || !getEntriesIn('newsletter').includes(entry)) error(404, 'Newsletter not found')
 
-	if (!entry) {
-		error(404, 'Newsletter not found')
-	}
+	const { title, subject, date, preheader } = entry.metadata
 
 	return new Response(
 		JSON.stringify({
 			markdown: getRawMarkdown(entry.path),
-			data: entry.metadata
+			data: { title, subject, date, preheader }
 		}),
 		{ status: 200 }
 	)

@@ -1,14 +1,14 @@
 import { error, redirect } from '@sveltejs/kit'
 import slugify from 'slugify'
-import { getPageLinks, getWikiEntries } from '$lib/server/content'
-import { getCanonicalPath, getCategoryNodeIds, isCategory, staticRoutes } from '$lib/wikiCategory'
+import { getEntries, loadEntry } from '$lib/server/content'
+import { getCanonicalPath, staticRoutes } from '$lib/wikiCategory'
 
 const toSlug = (value: string) => slugify(value, { lower: true, strict: true })
 
 export const entries = () => {
 	const ids = new Set<string>()
 
-	for (const entry of getWikiEntries()) {
+	for (const entry of getEntries()) {
 		if (!staticRoutes.includes(entry.id)) ids.add(entry.id)
 
 		for (const alias of entry.metadata.aliases ?? []) {
@@ -21,22 +21,13 @@ export const entries = () => {
 }
 
 export const load = ({ params }) => {
-	const entries = getWikiEntries()
+	const entries = getEntries()
 
-	const entry = entries.find((work) => work.id === params.id)
-	if (entry) {
-		const category = isCategory(entry.id)
-		return {
-			entry,
-			...getPageLinks(entry.id),
-			current: entry.id,
-			highlighted: category ? getCategoryNodeIds(entry.id) : null,
-			canonical: getCanonicalPath(entry.id)
-		}
-	}
+	const entry = entries.find((candidate) => candidate.id === params.id)
+	if (entry) return loadEntry(entry)
 
-	const aliasTarget = entries.find((work) =>
-		(work.metadata.aliases ?? []).some((alias) => toSlug(alias) === params.id)
+	const aliasTarget = entries.find((candidate) =>
+		(candidate.metadata.aliases ?? []).some((alias) => toSlug(alias) === params.id)
 	)
 	if (aliasTarget) redirect(308, getCanonicalPath(aliasTarget.id))
 

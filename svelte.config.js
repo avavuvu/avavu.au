@@ -6,8 +6,8 @@ import { buildWikiIndex } from './src/markdoc/wikilinks.ts'
 import { createWikiRemarkPlugins } from './src/markdoc/wikiRemarkPlugins.ts'
 import { buildWikiComponentImports } from './src/markdoc/wikiComponents.ts'
 
-const wikiRoot = join(dirname(fileURLToPath(import.meta.url)), 'src/wiki')
-const { index: wikiIndex } = buildWikiIndex(wikiRoot)
+const contentRoot = join(dirname(fileURLToPath(import.meta.url)), 'src/content')
+const { index: wikiIndex } = buildWikiIndex(contentRoot)
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -58,7 +58,7 @@ const config = {
 			script: ({ content, filename, markup }) => {
 				// add the wiki component import to every wiki page
 				// so we don't need to manually add
-				if (!filename || !filename.includes('/src/wiki/')) return
+				if (!filename || !filename.includes('/src/content/')) return
 				return { code: `${buildWikiComponentImports(markup)}\n${content}` }
 			}
 		}

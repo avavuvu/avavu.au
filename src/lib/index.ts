@@ -1,4 +1,4 @@
-export type { Essay, ExternalNewsletter, Newsletter, Project, WikiMeta, WikiPage } from './schema'
+export type { Entry, ExternalNewsletter, Image, Link } from './schema'
 
 export type ContentEntry<M> = {
 	id: string
@@ -16,6 +16,7 @@ export type GraphData = {
 	positions: Record<string, [number, number]>
 	titles: Record<string, string>
 	categories: Record<string, string[]>
+	pageCategories: Record<string, string[]>
 	sections: string[]
 	paths: Record<string, string>
 }

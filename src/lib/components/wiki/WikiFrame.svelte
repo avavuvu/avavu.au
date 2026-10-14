@@ -27,10 +27,12 @@
 		@media (width >= 40rem) {
 			&.right {
 				float: right;
+				clear: right;
 				margin: 0 0 1em 1em;
 			}
 			&.left {
 				float: left;
+				clear: left;
 				margin: 0 1em 1em 0;
 			}
 			&.center {

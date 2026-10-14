@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit'
 import { projectTypes } from '$lib/schema'
-import { getWikiEntries } from '$lib/server/content'
+import { getEntries } from '$lib/server/content'
 import { getCanonicalPath } from '$lib/wikiCategory'
 
 const sorts = ['year', 'type', 'rating'] as const
@@ -26,18 +26,10 @@ export const load = ({ params }) => {
 	const sort = (params.sort ?? 'year') as Sort
 	if (!sorts.includes(sort) || params.sort === 'year') error(404)
 
-	const works: Work[] = getWikiEntries('projects')
-		.flatMap(({ id, metadata }) =>
-			metadata.kind === 'archive' && !metadata.section
-				? [
-						{
-							href: getCanonicalPath(id),
-							title: metadata.title,
-							date: metadata.date,
-							type: metadata.type,
-							rating: metadata.rating
-						}
-					]
+	const works: Work[] = getEntries()
+		.flatMap(({ id, metadata: { title, date, type, rating, section } }) =>
+			type && date && !section
+				? [{ href: getCanonicalPath(id), title, date, type, rating }]
 				: []
 		)
 		.sort((a, b) => b.date.localeCompare(a.date))

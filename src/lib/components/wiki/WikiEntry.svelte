@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount, type Component, type Snippet } from 'svelte'
-	import { formatDate } from '$lib/utils'
-	import type { Member, WikiMeta } from '$lib'
+	import EntryHeader from '$lib/components/EntryHeader.svelte'
+	import SeeAlso from '$lib/components/SeeAlso.svelte'
+	import type { Entry, Member } from '$lib'
+	import { youtubeIdFrom } from '$lib/utils'
 
 	const {
 		metadata,
@@ -11,7 +13,7 @@
 		backlinks = [],
 		children
 	}: {
-		metadata: WikiMeta
+		metadata: Entry
 		component: Component
 		members?: Member[]
 		categories?: Member[]
@@ -19,10 +21,10 @@
 		children?: Snippet
 	} = $props()
 
+	const youtubeId = $derived(metadata.type ? youtubeIdFrom(metadata.url) : undefined)
+
 	$effect(() => {
-		if (metadata.kind === 'archive' && metadata.youtubeId) {
-			import('@justinribeiro/lite-youtube')
-		}
+		if (youtubeId) import('@justinribeiro/lite-youtube')
 	})
 
 	const Content = $derived(component)
@@ -50,21 +52,13 @@
 </script>
 
 <article>
-	<hgroup>
-		<h1>{metadata.title}</h1>
-		{#if metadata.kind === 'archive'}
-			<p>{formatDate(new Date(metadata.date))}</p>
-		{/if}
-	</hgroup>
-	{#if categories.length > 0}
-		<ul class="categories">
-			{#each categories as { href, title }}
-				<li><a {href}>{title}</a></li>
-			{/each}
-		</ul>
-	{/if}
+	<EntryHeader
+		title={metadata.title}
+		date={metadata.section ? undefined : metadata.date}
+		{categories}
+	/>
 
-	{#if metadata.kind === 'archive' && !metadata.section}
+	{#if metadata.type && !metadata.section}
 		{#if metadata.collaborators}
 			<p>
 				With:
@@ -80,8 +74,8 @@
 			</p>
 		{/if}
 
-		{#if metadata.youtubeId}
-			<lite-youtube videoid={metadata.youtubeId}></lite-youtube>
+		{#if youtubeId}
+			<lite-youtube videoid={youtubeId}></lite-youtube>
 		{/if}
 	{/if}
 
@@ -89,9 +83,11 @@
 
 	{@render children?.()}
 
-	{#if metadata.kind === 'archive' && metadata.link}
-		<p><a href={metadata.link}>{metadata.title}</a></p>
+	{#if metadata.url}
+		<p><a href={metadata.url}>{metadata.title}</a></p>
 	{/if}
+
+	<SeeAlso links={metadata.links} />
 
 	{#if showMembers || showBacklinks}
 		<div class="panels">
@@ -124,27 +120,6 @@
 </article>
 
 <style>
-	article > hgroup {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		/*margin-bottom: 1em;*/
-
-		h1,
-		p {
-			margin: 0;
-		}
-	}
-
-	.categories {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5em;
-		margin: 0;
-		padding: 0;
-		font-style: italic;
-	}
-
 	.panels {
 		clear: both;
 		display: grid;

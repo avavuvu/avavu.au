@@ -1,6 +1,6 @@
 import type { Component } from 'svelte'
 
-const components = import.meta.glob<Component>(['/src/content/**/*.md', '/src/wiki/**/*.md'], {
+const components = import.meta.glob<Component>('/src/content/**/*.md', {
 	import: 'default'
 })
 
