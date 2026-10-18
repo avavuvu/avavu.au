@@ -1,8 +1,9 @@
 ---
-title: Ava's wiki
+title: Avas's wiki
 categories: [about]
 aliases:
     - wiki
+    - avas-wiki
 ---
 
 You are currently browsing **Ava's wiki**, a personal wiki about me, [[Ava Dinh-Vu]]. 

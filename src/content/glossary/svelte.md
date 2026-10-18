@@ -1,5 +1,7 @@
 ---
 title: Svelte
+aliases:
+    - SvelteKit
 ---
 
 <Wikipedia title="Svelte"/>
