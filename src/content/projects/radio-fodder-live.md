@@ -1,5 +1,7 @@
 ---
 title: Radio Fodder Live
+aliases:
+    - radiofodderlive
 date: '2025-03-02'
 url: https://radiofodder.live
 type: interactive
