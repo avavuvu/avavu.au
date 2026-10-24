@@ -10,7 +10,7 @@ categories: [newsletter]
 
 # Hey {{name}}.
 
-If you don't want the Ava Dinh-Vu magic ruined, I'll ask you to stop reading because I'm going to pull back the curtain. I was aware when I bought the domain for my website, Beat Me At Boggle Dot Com, that it looks like it says Beat Meat Boggle. When people have brought this up with me I've been feigning ignorance—but it's true: I am a pervert.
+If you don't want the Ava Dinh-Vu magic ruined, I'll ask you to stop reading because I'm going to pull back the curtain. I was aware when I bought the domain for my website, [[Beat Me At Boggle]] Dot Com, that it looks like it says Beat Meat Boggle. When people have brought this up with me I've been feigning ignorance—but it's true: I am a pervert.
 
 I did toy with hyphens to spell beat-me-at-boggle.com, or even changing it to beat-ava-at-boggle.com. But I knew I made the right choice after I verbally told my friend Sarah that she should visit Beat Me At Boggle Dot Com. It was only when she punched the domain into her phone that she died laughing. Since policy changed in the 2010s, there have been so many new top level domains, you can buy .game, .live, .sexy, .blue, or .bingo. I considered them all, but you really can't beat the classics.
 

@@ -1,5 +1,6 @@
 ---
 title: Ava Lawton
+categories: [friends]
 ---
 
 <WikiImage src="/images/wiki/ava-lawton-2.webp" alt="">

@@ -7,4 +7,4 @@ type: ephemera
 
 ![](/images/music/jack/rabbit.jpg)
 
-My cover for my dear friend Jack's little single. I may or may not have also provided the drums for this track, but that's a separate thing.
+My cover for my dear friend [[Jack Loftus]]'s little single. I may or may not have also provided the drums for this track, but that's a separate thing.

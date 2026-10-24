@@ -52,7 +52,7 @@ This review of Harry Styles’s oral sex anthem is delivered with a gentle tone 
 
 ### [Rat Loftus – Paperback](https://open.spotify.com/track/1kCkwpudI9ACrZrwsstTid?si=ed28829f0b9e4a0c)
 
-My friends at Rat Loftus just released a new single. I did the cover art for this one and their last song Paperback.
+My friends at [[Rat Loftus]] just released a new single. I did the cover art for this one and their last song Paperback.
 
 ### [Bassvictim – Forever](https://www.youtube.com/watch?v=SedSc6ZxJbU)
 
