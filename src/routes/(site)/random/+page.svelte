@@ -5,7 +5,10 @@
 	const { data } = $props()
 
 	onMount(() => {
-		goto(data.paths[Math.floor(Math.random() * data.paths.length)], { replaceState: true })
+	    const potentialPages = data.paths.filter(path => !["/random", "/", "/about"].includes(path))
+	    const page = potentialPages[Math.floor(Math.random() * potentialPages.length)]
+
+		goto(page, { replaceState: true })
 	})
 </script>
 

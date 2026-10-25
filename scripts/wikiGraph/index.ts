@@ -1,3 +1,5 @@
+/// <reference types="bun" />
+//
 import { writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, join, relative } from 'node:path'
@@ -10,6 +12,7 @@ import type { Backlinks, GraphData, Patrons } from '../../src/lib/index.ts'
 import { labelBox } from '../../src/lib/graphLabel.ts'
 import { layoutGraph } from './layout.ts'
 import { fetchPaidPatrons } from './patreon.ts'
+import { buildMovies } from './movies/movies.ts'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const contentRoot = join(root, 'src/content')
@@ -69,6 +72,8 @@ for (const { slug, title } of externalNewsletters) {
 }
 
 for (const page of pages.values()) titles[page.id] = page.meta.title
+
+
 
 const paidPatrons = await fetchPaidPatrons()
 if (paidPatrons === null) {
@@ -208,3 +213,5 @@ const graph: GraphData = { ...layout, titles, categories, pageCategories, sectio
 await writeFile(outPath, JSON.stringify(graph))
 await writeFile(backlinksPath, JSON.stringify(backlinks))
 await writeFile(patronsPath, JSON.stringify(patrons))
+
+await buildMovies(root)

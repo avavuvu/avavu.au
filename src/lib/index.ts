@@ -26,3 +26,14 @@ export type Backlinks = Record<string, string[]>
 export type Patron = { id: string; name: string; tier: string | null }
 
 export type Patrons = Record<string, Patron>
+
+export type Movie = {
+	id: string
+	title: string
+	year?: number
+	url: string
+	watched: string
+	rating?: number
+	comment?: string
+	image?: string
+}
