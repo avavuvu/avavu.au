@@ -7,6 +7,6 @@ categories: [friends]
     Ava was one of the first people to play [[Beat Me at Boggle]]
 </WikiImage>
 
-**Ava Lawton** is a friend of mine. She is kind and glamourous. She likes strange movies, fine things, and computer history. She wrote a (*the?*) thesis on the websites of art museums. 
+**Ava Lawton** is a [[friend]] of mine. She is kind and glamourous. She likes strange movies, fine things, and computer history. She wrote a (*the?*) thesis on the websites of art museums. 
 
 I lived with her briefly, [[Love and Coburg|which you can read about here.]]

@@ -1,5 +1,7 @@
 ---
 title: Friends
+aliases:
+    - friend
 ---
 
 <Wikipedia title="friendship"/>
